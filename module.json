@@ -1,0 +1,16 @@
+{
+	"name": "elevation-drag-ruler",
+	"title": "Elevation Drag Ruler",
+	"description": "Adds a speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from Enhanced Terrain Layer.",
+	"version": "1.0.0",
+	"minimumCoreVersion": "0.8.6",
+	"compatibleCoreVersion": "9",
+	"author": "Pepijn Sietsema",
+	"scripts": [
+		"scripts/hook.js"
+	],
+	"url": "https://github.com/PepijnMC/ElevationDragRuler",
+	"manifest": "https://github.com/PepijnMC/ElevationDragRuler/releases/latest/download/module.json",
+	"download": "https://github.com/PepijnMC/ElevationDragRuler/releases/latest/download/module.zip",
+	"id": "elevation-drag-ruler"
+}

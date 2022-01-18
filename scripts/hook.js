@@ -2,14 +2,14 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 	class ElevationSpeedProvider extends SpeedProvider {
 		get colors() {
 			return [
-				{id: "walk", default: 0x00FF00, "name": "elevation-drag-ruler.settings.colors.walk"},
-				{id: "walkDash", default: 0xFFFF00, "name": "elevation-drag-ruler.settings.colors.walkDash"},
-				{id: "fly", default: 0x00FFFF, "name": "elevation-drag-ruler.settings.colors.fly"},
-				{id: "flyDash", default: 0xFFFF00, "name": "elevation-drag-ruler.settings.colors.flyDash"},
-				{id: "swim", default: 0x0000FF, "name": "elevation-drag-ruler.settings.colors.swim"},
-				{id: "swimDash", default: 0xFFFF00, "name": "elevation-drag-ruler.settings.colors.swimDash"},
-				{id: "burrow", default: 0xFFAA00, "name": "elevation-drag-ruler.settings.colors.burrow"},
-				{id: "burrowDash", default: 0xFFFF00, "name": "elevation-drag-ruler.settings.colors.burrowDash"}
+				{id: "walk", default: 0x00FF00, "name": "walking"},
+				{id: "walkDash", default: 0xFFFF00, "name": "dash walking"},
+				{id: "fly", default: 0x00FFFF, "name": "flying"},
+				{id: "flyDash", default: 0xFFFF00, "name": "dash flying"},
+				{id: "swim", default: 0x0000FF, "name": "swimming"},
+				{id: "swimDash", default: 0xFFFF00, "name": "dash swimming"},
+				{id: "burrow", default: 0xFFAA00, "name": "burrowing"},
+				{id: "burrowDash", default: 0xFFFF00, "name": "dash burrowing"}
 			]
 		}
 	
@@ -68,8 +68,8 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 			return [
 				{
 					id: "defaultHovering",
-					name: "elevation-drag-ruler.settings.forceHovering.name",
-					hint: "elevation-drag-ruler.settings.forceHovering.hint",
+					name: "Force Hovering",
+					hint: "Forces hovering creatures to use their flying speed instead of their walking speed at elevation 0.",
 					scope: "world",
 					config: true,
 					type: Boolean,
@@ -77,8 +77,8 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 				},
 				{
 					id: "defaultFlying",
-					name: "elevation-drag-ruler.settings.forceFlying.name",
-					hint: "elevation-drag-ruler.settings.forceFlying.hint",
+					name: "Force Flying",
+					hint: "Forces creatures with a greater flying than walking speed to use their flying speed at elevation 0.",
 					scope: "world",
 					config: true,
 					type: Boolean,

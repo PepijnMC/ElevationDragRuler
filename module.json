@@ -2,7 +2,7 @@
 	"name": "elevation-drag-ruler",
 	"title": "Elevation Drag Ruler",
 	"description": "Adds a dnd5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from Enhanced Terrain Layer.",
-	"version": "1.1.1",
+	"version": "1.1.0",
 	"minimumCoreVersion": "9.238",
 	"compatibleCoreVersion": "9",
 	"author": "Pepijn Sietsema",
@@ -19,9 +19,9 @@
 			"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-drag-ruler/master/module.json"
 		},
 		{
-			"name": "terrain-ruler"
+			"name": "terrain-ruler",
 			"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-terrain-ruler/master/module.json"
-		}
+		},
 		{
 			"name": "enhanced-terrain-layer",
 			"manifest": "https://github.com/ironmonk88/enhanced-terrain-layer/releases/latest/download/module.json"

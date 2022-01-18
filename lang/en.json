@@ -1,0 +1,24 @@
+{
+	"elevation-drag-ruler": {
+		"settings": {
+			"forceHovering": {
+				"name": "Force Hovering",
+				"hint": "Forces hovering creatures to use their flying speed instead of their walking speed at elevation 0."
+			},
+			"forceFlying": {
+				"name": "Force Flying",
+				"hint": "Forces creatures with a greater flying than walking speed to use their flying speed at elevation 0."
+			},
+			"colors": {
+				"walk": "walking",
+				"walkDash": "dash walking",
+				"fly": "flying",
+				"flyDash": "dash Flying",
+				"swim": "swimming",
+				"swimDash": "dash swimming",
+				"burrow": "burrowing",
+				"burrowDash": "dash burrowing"
+			}
+		}
+	}
+}

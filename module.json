@@ -6,13 +6,6 @@
 	"minimumCoreVersion": "9.238",
 	"compatibleCoreVersion": "9",
 	"author": "Pepijn Sietsema",
-	"languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json"
-		}
-	],
 	"dependencies": [
 		{
 			"name": "drag-ruler",

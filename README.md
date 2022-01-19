@@ -2,14 +2,19 @@
 
 # Elevation Drag Ruler
 A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from the Enhanced Terrain Layer module.
+  
 ## Requirements
 - Dnd5e System
 - [Drag Ruler](https://github.com/manuelVo/foundryvtt-drag-ruler) module by Manuel Vögele
 - [Terrain Ruler](https://github.com/manuelVo/foundryvtt-terrain-ruler) module by Manuel Vögele
 - [Enhanced Terrain Layer](https://github.com/ironmonk88/enhanced-terrain-layer) module by IronMonk
+  
 ## Movement Options
+A creature's movement option is picked when you first start dragging it. It can not change to a different movement option dynamically, as that goes beyond what a speedcontroller for Drag Ruler can do. This is most noticable with water, as entering it from land will not automatically switch to your swimming speed. So make sure to stop and start when entering or leaving water for the best experience.
+  
 ### Walking
 A creature's default movement option is walking.
+  
 ### Flying
 Creatures will be set to fly, and thus use their flying speed, when the token's elevation is above 0. When flying, creatures will ignore all difficult terrain set by the Enhanced Terrain Layer module.
 
@@ -25,3 +30,7 @@ Creatures will be set to burrow, and thus use their burrowing speed, when the to
 
 ### Urban Terrain
 Because elevation is useful for more than just determining a creature's movement type, all elevation based movement switching can be disabled using the "urban" terrain environment. Instead, the creature will use its highest movement speed between walking and flying.
+  
+## Future Plans
+These are features currently in the work, vague ideas, and anything in between.
+- **Force Swimming**: Add a setting to force creatures to swim in water terrain even at elevation 0. It will still use walking/flying speed if the creature has no swimming speed but if you are using any creatures whose walking speed is higher than their swimming speed you will not be able to switch to their walking speed anymore while in water. 

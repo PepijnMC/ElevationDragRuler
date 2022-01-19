@@ -2,7 +2,8 @@
 
 # Elevation Drag Ruler
 A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from the Enhanced Terrain Layer module.
-  
+
+[![Showcase Video](http://img.youtube.com/vi/QRoWH8K9td4/0.jpg)](http://www.youtube.com/watch?v=QRoWH8K9td4 "[Foundry VTT] Elevation Drag Ruler v1.1.1 Module Showcase")
 ## Requirements
 - [DnD5e](https://foundryvtt.com/packages/dnd5e) system by Atropos
 - [Drag Ruler](https://github.com/manuelVo/foundryvtt-drag-ruler) module by Manuel Vögele

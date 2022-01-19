@@ -4,7 +4,7 @@
 A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from the Enhanced Terrain Layer module.
   
 ## Requirements
-- Dnd5e System
+- [DnD5e](https://foundryvtt.com/packages/dnd5e) system by Atropos
 - [Drag Ruler](https://github.com/manuelVo/foundryvtt-drag-ruler) module by Manuel Vögele
 - [Terrain Ruler](https://github.com/manuelVo/foundryvtt-terrain-ruler) module by Manuel Vögele
 - [Enhanced Terrain Layer](https://github.com/ironmonk88/enhanced-terrain-layer) module by IronMonk
@@ -24,6 +24,8 @@ Additionally, this speedprovider includes two settings to streamline setting up 
 
 ### Swimming
 Creatures will be set to swim, and thus use their swimming speed, when the token's elevation is below 0 and is within "water" terrain from the Enhanced Terrain Layer module. If the creature has no swimming speed, it will use the greater of their walking or flying speed but water will count as difficult terrain.
+  
+**Note**: The module does not automatically use your swimming speed when you are in water at elevation 0, it will keep using your walking speed and water will continue to count as difficult terrain! You have to set the elevation below 0. This is done because of creatures with a larger walking/flying/burrowing than swimming speed, the module has no access to how far they have already travelled and they might be unable to use their smaller swimming speed once they reach the water. Additionally, with only a small swimming speed a creature will still have other movement options left after using up their swimming speed which can then be utilized by bringing the token back to elevation 0. I might add a setting to force swimming even at elevation 0, for people who prefer a more streamlined swimming experience over handling this edge case.
 
 ### Burrowing
 Creatures will be set to burrow, and thus use their burrowing speed, when the token's elevation is below 0 and is not within "water" terrain. While burrowing, creatures will ignore all difficult terrain set by the Enhanced Terrain Layer module.

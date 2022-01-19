@@ -11,7 +11,7 @@ A creature's default movement option is walking.
 ### Flying
 Creatures will be set to fly, and thus use their flying speed, when the token's elevation is above 0. When flying, creatures will ignore all difficult terrain set by the Enhanced Terrain Layer module.
 
-Additionally, this speedprovider includes two settings to streamline setting up flying creatures.
+Additionally, this speedprovider includes two settings to streamline setting up flying creatures. These settings can be found within Drag Ruler's settings.
 - **Force Hovering**: When enabled, changes the default movement option to flying instead of walking for creatures that can hover. The creature will still burrow or swim when its elevation is below 0. Enabled by default.
 - **Force Flying**: When enabled, changes the default movement option to flying instead of walking for creatures with a greater flying than walking speed. The creature will still burrow or swim when its elevation is below 0. Disabled by default.
 

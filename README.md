@@ -36,7 +36,7 @@ Because elevation is useful for more than just determining a creature's movement
 
 ## Known Bugs
 These are known issues. I am just starting with JavaScript so although I will try to fix and streamline this module, it might take some time as I figure things out. This is a hobby project, but please feel free to contribute, it will only help me learn!
-- Dashing using multiple movement options is severely lacking. Can only be fixed by properly keeping track of spent movement during a combat turn, which will also fix many lackingedge cases.
+- Dashing using multiple movement options is severely lacking. Can only be fixed by properly keeping track of spent movement during a combat turn, which will also fix many edge cases.
 
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.

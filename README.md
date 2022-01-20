@@ -5,10 +5,10 @@ A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick bet
 
 [![Showcase Video](http://img.youtube.com/vi/QRoWH8K9td4/0.jpg)](http://www.youtube.com/watch?v=QRoWH8K9td4 "[Foundry VTT] Elevation Drag Ruler v1.1.1 Module Showcase")
 ## Requirements
-- [DnD5e](https://foundryvtt.com/packages/dnd5e) system by Atropos
-- [Drag Ruler](https://github.com/manuelVo/foundryvtt-drag-ruler) module by Manuel Vögele
-- [Terrain Ruler](https://github.com/manuelVo/foundryvtt-terrain-ruler) module by Manuel Vögele
-- [Enhanced Terrain Layer](https://github.com/ironmonk88/enhanced-terrain-layer) module by IronMonk
+- <a href="https://foundryvtt.com/packages/dnd5e" target="_blank">DnD5e</a> system by Atropos
+- <a href="https://github.com/manuelVo/foundryvtt-drag-ruler" target="_blank">Drag Ruler</a> module by Manuel Vögele
+- <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
+- <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
   
 ## Movement Options
 A creature's movement option is picked when you first start dragging it. It can not change to a different movement option dynamically, as that goes beyond what a speedcontroller for Drag Ruler can do. This is most noticeable with water, as entering it from land will not automatically switch to your swimming speed. So make sure to stop and start when entering or leaving water for the best experience.

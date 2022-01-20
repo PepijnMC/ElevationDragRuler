@@ -1,3 +1,5 @@
+var EDR_movementMode;
+
 Hooks.once("dragRuler.ready", (SpeedProvider) => {
 	class ElevationSpeedProvider extends SpeedProvider {
 		get colors() {
@@ -69,6 +71,7 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 				speedColor = 'fly';
 				dashColor = 'flyDash';
 			}
+			EDR_movementMode = speedColor;
 			return [{range: tokenSpeed, color: speedColor}, {range: tokenSpeed * 2, color: dashColor}];
 		}
 
@@ -98,13 +101,15 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 		getCostForStep(token, area, options={}) {
 			options.token = token;
 			const terrain = area.map(space => canvas.terrain.terrainFromGrid(space.x, space.y));
-			const flying = dragRuler.getColorForDistanceAndToken(0, token) == 65535;
+			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
+			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
 			const swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
+			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed));
 			var environment = 0;
 			if (terrain[0][0])
 				environment = terrain[0][0].data.environment;
 
-			if (environment == 'urban' || flying || (environment == 'water' && swimSpeed > 0))
+			if (environment == 'urban' || EDR_movementMode == 'fly' || (environment == 'water' && (EDR_movementMode == 'swim' || shouldSwim)))
 				return 1;
 			if (environment == 'water' && swimSpeed == 0)
 				return 2;

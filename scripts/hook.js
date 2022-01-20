@@ -58,7 +58,7 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 					speedColor = 'swim';
 					dashColor = 'swimDash';
 				}
-				if (elevation == 0 && ((settingDefaultHovering && hovering) || ((settingDefaultFlying || environment == 'water') && flySpeed >= walkSpeed))) {
+				if (elevation == 0 && ((settingDefaultHovering && hovering) || (settingDefaultFlying && flySpeed >= walkSpeed))) {
 					tokenSpeed = flySpeed;
 					speedColor = 'fly';
 					dashColor = 'flyDash';

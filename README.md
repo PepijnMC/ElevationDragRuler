@@ -33,7 +33,11 @@ Creatures will be set to burrow, and thus use their burrowing speed, when the to
 
 ### Urban Terrain
 Because elevation is useful for more than just determining a creature's movement type, all elevation based movement switching can be disabled using the "urban" terrain environment. Instead, the creature will use its highest movement speed between walking and flying.
-  
+
+## Known Bugs
+These are known issues. I am just starting with JavaScript so although I will try to fix and streamline this module, it might take some time as I figure things out. This is a hobby project, but please feel free to contribute, it will only help me learn!
+- Dashing using multiple movement options is severely lacking. Can only be fixed by properly keeping track of spent movement during a combat turn, which will also fix many lackingedge cases.
+
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.
-- **Force Swimming**: Add a setting to force creatures to swim in water terrain even at elevation 0. It will still use walking/flying speed if the creature has no swimming speed but if you are using any creatures whose walking speed is higher than their swimming speed you will not be able to switch to their walking speed anymore while in water. 
+- Properly keep track of spent movement during combat. At the moment many features are kind of bodged together, which mostly works but results in many weird edge cases and messy code.

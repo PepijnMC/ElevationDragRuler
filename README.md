@@ -24,16 +24,20 @@ Additionally, this speedprovider includes two settings to streamline setting up 
 - **Force Flying**: When enabled, changes the default movement option to flying instead of walking for creatures with a greater flying than walking speed. The creature will still burrow or swim when its elevation is below 0. Disabled by default.
 
 ### Swimming
-Creatures will be set to swim, and thus use their swimming speed, when the token's elevation is below 0 and is within "water" terrain from the Enhanced Terrain Layer module. If the creature has no swimming speed, it will use the greater of their walking or flying speed but water will count as difficult terrain.
-  
-**Note**: The module does not automatically use your swimming speed when you are in water at elevation 0, it will keep using your walking speed and water will continue to count as difficult terrain! You have to set the elevation below 0. This is done because of creatures with a larger walking/flying/burrowing than swimming speed, the module has no access to how far they have already travelled and they might be unable to use their smaller swimming speed once they reach the water. Additionally, with only a small swimming speed a creature will still have other movement options left after using up their swimming speed which can then be utilized by bringing the token back to elevation 0. I might add a setting to force swimming even at elevation 0, for people who prefer a more streamlined swimming experience over handling this edge case.
+Creatures will be set to swim, and thus use their swimming speed, when the token's elevation is below or at 0 and is within "water" terrain from the Enhanced Terrain Layer module. If the creature has no swimming speed, it will use the greater of their walking or flying speed but water will count as difficult terrain.
+
+**Note**: When a creature's swimming speed is smaller than both their walking and flying speed, the token's elevation needs to be below 0 for it to start swimming. Once their small swimming speed has been used up they can then be moved to elevation 0 to use what is left of their greater walking or flying speed, but in difficult terrain.
 
 ### Burrowing
 Creatures will be set to burrow, and thus use their burrowing speed, when the token's elevation is below 0 and is not within "water" terrain. While burrowing, creatures will ignore all difficult terrain set by the Enhanced Terrain Layer module.
 
 ### Urban Terrain
 Because elevation is useful for more than just determining a creature's movement type, all elevation based movement switching can be disabled using the "urban" terrain environment. Instead, the creature will use its highest movement speed between walking and flying.
-  
+
+## Known Bugs
+These are known issues. I am just starting with JavaScript so although I will try to fix and streamline this module, it might take some time as I figure things out. This is a hobby project, but please feel free to contribute, it will only help me learn!
+- Dashing using multiple movement options is severely lacking. Can only be fixed by properly keeping track of spent movement during a combat turn, which will also fix many edge cases.
+
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.
-- **Force Swimming**: Add a setting to force creatures to swim in water terrain even at elevation 0. It will still use walking/flying speed if the creature has no swimming speed but if you are using any creatures whose walking speed is higher than their swimming speed you will not be able to switch to their walking speed anymore while in water. 
+- Properly keep track of spent movement during combat. At the moment many features are kind of bodged together, which mostly works but results in many weird edge cases and messy code.

@@ -19,9 +19,12 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 
 			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
 			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
+
 			var swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
+			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed)) || swimSpeed == 0;
 			if (swimSpeed == 0)
 				swimSpeed = Math.max(walkSpeed, flySpeed);
+			
 			const burrowSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.burrow"));
 			const hovering = getProperty(token, "actor.data.data.attributes.movement.hover");
 			var tokenSpeed = walkSpeed;
@@ -50,7 +53,12 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 					speedColor = 'fly';
 					dashColor = 'flyDash';
 				}
-				if (elevation == 0 && ((settingDefaultHovering && hovering) || (flySpeed >= walkSpeed && settingDefaultFlying))) {
+				if (elevation == 0 && environment == 'water' && shouldSwim) {
+					tokenSpeed = swimSpeed;
+					speedColor = 'swim';
+					dashColor = 'swimDash';
+				}
+				if (elevation == 0 && ((settingDefaultHovering && hovering) || (settingDefaultFlying && flySpeed >= walkSpeed))) {
 					tokenSpeed = flySpeed;
 					speedColor = 'fly';
 					dashColor = 'flyDash';
@@ -96,7 +104,7 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 			if (terrain[0][0])
 				environment = terrain[0][0].data.environment;
 
-			if (environment == 'urban' || flying)
+			if (environment == 'urban' || flying || (environment == 'water' && swimSpeed > 0))
 				return 1;
 			if (environment == 'water' && swimSpeed == 0)
 				return 2;

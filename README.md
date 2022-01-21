@@ -41,4 +41,3 @@ These are known issues. I am just starting with JavaScript so although I will tr
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.
 - Keep track of spent movement during a combat turn.
-- None at the moment!

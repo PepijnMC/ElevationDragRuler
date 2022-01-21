@@ -3,6 +3,7 @@ var EDR_movementMode;
 
 //Hooking into Drag Ruler when it's ready.
 Hooks.once("dragRuler.ready", (SpeedProvider) => {
+	var EDR_movementMode = {};
 	class ElevationSpeedProvider extends SpeedProvider {
 		//An array of colors to be used by the movement ranges.
 		get colors() {
@@ -83,7 +84,7 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 				dashColor = 'flyDash';
 			}
 			//pass the picked movementSpeed to the global variable, to be used in the getCostForStep function from Drag Ruler.
-			EDR_movementMode = speedColor;
+			EDR_movementMode[token.id] = speedColor;
 			return [{range: tokenSpeed, color: speedColor}, {range: tokenSpeed * 2, color: dashColor}];
 		}
 		
@@ -114,18 +115,19 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 		getCostForStep(token, area, options={}) {
 			options.token = token;
 			const terrain = area.map(space => canvas.terrain.terrainFromGrid(space.x, space.y));
-			
+      
 			//Checks if the token will swim in water at elevation 0 with a proper swimSpeed.
 			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
 			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
 			const swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
 			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed));
+
 			//Gets the environment from under the token.
 			var environment = 0;
 			if (terrain[0][0])
 				environment = terrain[0][0].data.environment;
 			//Skips the cost calculations provided by Terrain Ruler and instead returns 1 (no difficult terrain) or 2 (standard difficult terrain) depending on the token's current movement speed and the environment.
-			if (environment == 'urban' || EDR_movementMode == 'fly' || (environment == 'water' && (EDR_movementMode == 'swim' || shouldSwim)))
+			if (environment == 'urban' || EDR_movementMode[token.id] == 'fly' || (environment == 'water' && (EDR_movementMode[token.id] == 'swim' || shouldSwim)))
 				return 1;
 			if (environment == 'water' && swimSpeed == 0)
 				return 2;

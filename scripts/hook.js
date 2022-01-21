@@ -1,58 +1,6 @@
-var ESPmovementMode;
-var ESPcombatRound;
-
-function getCombatant(token) {
-	const combatant = game.combat.getCombatantByToken(token.id);
-	if (!combatant)
-		return;
-	return combatant;
-}
-
-function tokenInCombat(token) {
-	const combatant = getCombatant(token);
-	if (!combatant)
-		return;
-	return combatant;
-}
-
-function updateLastMovementOption(token) {
-	if (!window.ESPmovementMode)
-		window.ESPmovementMode = {};
-	const combat = game.combat;
-	if (!combat) {
-		window.ESPmovementMode = {};
-		window.ESPcombatRound = -1;
-		return;
-	}
-	if (!combat.started) {
-		window.ESPmovementMode = {};
-		window.ESPcombatRound = -1;
-		return;
-	}
-	const combatant = tokenInCombat(token);
-	if (!combatant) {
-		window.ESPmovementMode[token.id] = {};
-		return;
-	}
- 	const currentCombatRound = combat.current.round;
-	if (currentCombatRound > window.ESPcombatRound) {
-		window.ESPmovementMode = {};
-		window.ESPcombatRound = currentCombatRound;
-		return;
-	}
-	if(!window.ESPmovementMode[token.id])
-		return;
-	if (token.x == window.ESPmovementMode[token.id].xPosition && token.y == window.ESPmovementMode[token.id].yPosition) {
-		window.ESPmovementMode[token.id] = {};
-		return;
-	}
-	window.ESPmovementMode[token.id];
-}
-
 Hooks.once("dragRuler.ready", (SpeedProvider) => {
-	window.ESPcombatRound = -1;
+	var EDR_movementMode = {};
 	class ElevationSpeedProvider extends SpeedProvider {
-		
 		get colors() {
 			return [
 				{id: "walk", default: 0x00FF00, "name": "walking"},
@@ -65,24 +13,21 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 				{id: "burrowDash", default: 0xFFFF00, "name": "dash burrowing"}
 			]
 		}
-
+	
 		getRanges(token) {
 			const settingDefaultHovering = this.getSetting('defaultHovering');
 			const settingDefaultFlying = this.getSetting('defaultFlying');
 
 			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
 			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
+
 			var swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
 			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed)) || swimSpeed == 0;
 			if (swimSpeed == 0)
 				swimSpeed = Math.max(walkSpeed, flySpeed);
+			
 			const burrowSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.burrow"));
 			const hovering = getProperty(token, "actor.data.data.attributes.movement.hover");
-			console.log(ESPmovementMode)
-			updateLastMovementOption(token);
-			console.log(ESPmovementMode)
-			console.log('-----------');
-			window.ESPmovementMode[token.id] = {"movementMode": 'walking', "xPosition": token.x, "yPosition": token.y};
 			var tokenSpeed = walkSpeed;
 			var speedColor = 'walk';
 			var dashColor = 'walkDash'
@@ -95,42 +40,37 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 			
 			if (environment != 'urban') {
 				if (elevation < 0 && environment != 'water') {
-					window.ESPmovementMode[token.id] = "burrowing";
 					tokenSpeed = burrowSpeed;
 					speedColor = 'burrow';
 					dashColor = 'burrowDash';
 				}
 				if (elevation < 0 && environment == 'water') {
-					window.ESPmovementMode[token.id] = "swimming";
 					tokenSpeed = swimSpeed;
 					speedColor = 'swim';
 					dashColor = 'swimDash';
 				}
 				if (elevation > 0) {
-					window.ESPmovementMode[token.id] = "flying";
 					tokenSpeed = flySpeed;
 					speedColor = 'fly';
 					dashColor = 'flyDash';
 				}
 				if (elevation == 0 && environment == 'water' && shouldSwim) {
-					window.ESPmovementMode[token.id] = "swimming";
 					tokenSpeed = swimSpeed;
 					speedColor = 'swim';
 					dashColor = 'swimDash';
 				}
-				if (elevation == 0 && ((settingDefaultHovering && hovering) || ((settingDefaultFlying) && flySpeed >= walkSpeed))) {
-					window.ESPmovementMode[token.id] = "flying";
+				if (elevation == 0 && ((settingDefaultHovering && hovering) || (settingDefaultFlying && flySpeed >= walkSpeed))) {
 					tokenSpeed = flySpeed;
 					speedColor = 'fly';
 					dashColor = 'flyDash';
 				}
 			}
 			if (environment == 'urban' && (flySpeed >= walkSpeed || (settingDefaultHovering && hovering))) {
-				window.ESPmovementMode[token.id] = "flying";
 				tokenSpeed = flySpeed;
 				speedColor = 'fly';
 				dashColor = 'flyDash';
 			}
+			EDR_movementMode[token.id] = speedColor;
 			return [{range: tokenSpeed, color: speedColor}, {range: tokenSpeed * 2, color: dashColor}];
 		}
 
@@ -160,12 +100,15 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 		getCostForStep(token, area, options={}) {
 			options.token = token;
 			const terrain = area.map(space => canvas.terrain.terrainFromGrid(space.x, space.y));
+			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
+			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
 			const swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
+			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed));
 			var environment = 0;
 			if (terrain[0][0])
 				environment = terrain[0][0].data.environment;
 
-			if (environment == 'urban' || window.ESPmovementMode == "flying" || (environment == 'water' && window.ESPmovementMode == "swimming"))
+			if (environment == 'urban' || EDR_movementMode[token.id] == 'fly' || (environment == 'water' && (EDR_movementMode[token.id] == 'swim' || shouldSwim)))
 				return 1;
 			if (environment == 'water' && swimSpeed == 0)
 				return 2;

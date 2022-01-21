@@ -1,17 +1,17 @@
-![Latest Release Download Count](https://img.shields.io/github/downloads/PepijnMC/ElevationDragRuler/latest/module.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2FPepijnMC%2FElevationDragRuler%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge) <br><a href='https://ko-fi.com/pepijn' target='_blank'><img height='35' style='border:0px;height:45px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+![Latest Release Download Count](https://img.shields.io/github/downloads/PepijnMC/ElevationDragRuler/module.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2FPepijnMC%2FElevationDragRuler%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge) <br><a href='https://ko-fi.com/pepijn' target='_blank'><img height='35' style='border:0px;height:45px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 # Elevation Drag Ruler
 A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from the Enhanced Terrain Layer module.
 
 [![Showcase Video](http://img.youtube.com/vi/QRoWH8K9td4/0.jpg)](http://www.youtube.com/watch?v=QRoWH8K9td4 "[Foundry VTT] Elevation Drag Ruler v1.1.1 Module Showcase")
 ## Requirements
-- [DnD5e](https://foundryvtt.com/packages/dnd5e) system by Atropos
-- [Drag Ruler](https://github.com/manuelVo/foundryvtt-drag-ruler) module by Manuel Vögele
-- [Terrain Ruler](https://github.com/manuelVo/foundryvtt-terrain-ruler) module by Manuel Vögele
-- [Enhanced Terrain Layer](https://github.com/ironmonk88/enhanced-terrain-layer) module by IronMonk
+- <a href="https://foundryvtt.com/packages/dnd5e" target="_blank">DnD5e</a> system by Atropos
+- <a href="https://github.com/manuelVo/foundryvtt-drag-ruler" target="_blank">Drag Ruler</a> module by Manuel Vögele
+- <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
+- <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
   
 ## Movement Options
-A creature's movement option is picked when you first start dragging it. It can not change to a different movement option dynamically, as that goes beyond what a speedcontroller for Drag Ruler can do. This is most noticable with water, as entering it from land will not automatically switch to your swimming speed. So make sure to stop and start when entering or leaving water for the best experience.
+A creature's movement option is picked when you first start dragging it. It can not change to a different movement option dynamically, as that goes beyond what a speedcontroller for Drag Ruler can do. This is most noticeable with water, as entering it from land will not automatically switch to your swimming speed. So make sure to stop and start when entering or leaving water for the best experience.
   
 ### Walking
 A creature's default movement option is walking.
@@ -36,8 +36,9 @@ Because elevation is useful for more than just determining a creature's movement
 
 ## Known Bugs
 These are known issues. I am just starting with JavaScript so although I will try to fix and streamline this module, it might take some time as I figure things out. This is a hobby project, but please feel free to contribute, it will only help me learn!
-- Dashing using multiple movement options is severely lacking. Can only be fixed by properly keeping track of spent movement during a combat turn, which will also fix many edge cases.
+- When you have a swimming speed but it's smaller than your walking/flying speed, entering water will not negate difficult terrain. The module does not know how far you have already moved during your combat turn and thus can't know if you still have swimming speed left to use.
 
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.
-- Properly keep track of spent movement during combat. At the moment many features are kind of bodged together, which mostly works but results in many weird edge cases and messy code.
+- Keep track of spent movement during a combat turn.
+- None at the moment!

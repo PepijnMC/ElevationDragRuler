@@ -1,6 +1,3 @@
-//A global variable is not ideal but will do for now, this value will eventually be moved and stored on the Foundry token instead.
-var EDR_movementMode;
-
 //Hooking into Drag Ruler when it's ready.
 Hooks.once("dragRuler.ready", (SpeedProvider) => {
 	var EDR_movementMode = {};

@@ -38,6 +38,7 @@ Because elevation is useful for more than just determining a creature's movement
 ## Known Bugs
 These are known issues. I am just starting with JavaScript so although I will try to fix and streamline this module, it might take some time as I figure things out. This is a hobby project, but please feel free to contribute, it will only help me learn!
 - When you have a swimming speed but it's smaller than your walking/flying speed, entering water will not negate difficult terrain. The module does not know how far you have already moved during your combat turn and thus can't know if you still have swimming speed left to use.
+- Overlapping terrain might cause issues.
 
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.

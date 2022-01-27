@@ -10,7 +10,9 @@ A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick bet
 - <a href="https://github.com/manuelVo/foundryvtt-drag-ruler" target="_blank">Drag Ruler</a> module by Manuel Vögele
 - <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
-  
+## Difficult Terrain
+In Dnd5e difficult terrain does not stack and so this module does not increase movement cost when multiple terrains overlap. An exception to this is water terrain, because it is not technically considered difficult terrain, and can thus stack with actual difficult terrain. This module calculates these increases according to Dnd5e rules.
+
 ## Movement Options
 A creature's movement option is picked when you first start dragging it. It can not change to a different movement option dynamically, as that goes beyond what a speedcontroller for Drag Ruler can do. This is most noticeable with water, as entering it from land will not automatically switch to your swimming speed. So make sure to stop and start when entering or leaving water for the best experience.
   
@@ -22,12 +24,13 @@ Creatures will be set to fly, and thus use their flying speed, when the token's 
 
 Additionally, this speedprovider includes two settings to streamline setting up flying creatures. These settings can be found within Drag Ruler's settings.
 - **Force Hovering**: When enabled, changes the default movement option to flying instead of walking for creatures that can hover. The creature will still burrow or swim when its elevation is below 0. Enabled by default.
-- **Force Flying**: When enabled, changes the default movement option to flying instead of walking for creatures with a greater flying than walking speed. The creature will still burrow or swim when its elevation is below 0. Disabled by default.
+- **Force Flying**: When enabled, changes the default movement option to flying instead of walking for creatures with a greater flying than walking speed. The creature will still burrow or swim when its elevation is below 0. Enabled by default.
 
 ### Swimming
 Creatures will be set to swim, and thus use their swimming speed, when the token's elevation is below or at 0 and is within "water" terrain from the Enhanced Terrain Layer module. If the creature has no swimming speed, it will use the greater of their walking or flying speed but water will count as difficult terrain.
 
-**Note**: When a creature's swimming speed is smaller than both their walking and flying speed, the token's elevation needs to be below 0 for it to start swimming. Once their small swimming speed has been used up they can then be moved to elevation 0 to use what is left of their greater walking or flying speed, but in difficult terrain.
+Additionally, this speedprovider includes a setting to streamline setting up swimming creatures. This setting can be found within Drag Ruler's settings.
+- **Force Swimming**: When enabled, changes the default movement option to swimming instead of walking in water terrain for creatures with a greater swimming than flying or walking speed. Enabled by default.
 
 ### Burrowing
 Creatures will be set to burrow, and thus use their burrowing speed, when the token's elevation is below 0 and is not within "water" terrain. While burrowing, creatures will ignore all difficult terrain set by the Enhanced Terrain Layer module.
@@ -38,9 +41,7 @@ Because elevation is useful for more than just determining a creature's movement
 ## Known Bugs
 These are known issues. I am just starting with JavaScript so although I will try to fix and streamline this module, it might take some time as I figure things out. This is a hobby project, but please feel free to contribute, it will only help me learn!
 - When you have a swimming speed but it's smaller than your walking/flying speed, entering water will not negate difficult terrain. The module does not know how far you have already moved during your combat turn and thus can't know if you still have swimming speed left to use.
-- Overlapping terrain might cause issues.
 
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.
 - Keep track of spent movement during a combat turn.
-- Handle multiple overlapping terrains better.

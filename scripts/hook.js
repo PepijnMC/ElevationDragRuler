@@ -17,9 +17,11 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 		}
 		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
 		getRanges(token) {
+
 			//Gets the module settings.
 			const settingDefaultHovering = this.getSetting('defaultHovering');
 			const settingDefaultFlying = this.getSetting('defaultFlying');
+			const settingDefaultSwimming = this.getSetting('defaultSwimming');
 			
 			//Gets the token's movement speeds from DnD5e. Also checks if the creature can hover or not.
 			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
@@ -28,7 +30,7 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 			const burrowSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.burrow"));
 			var swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
 			//Checks if the token doesn't have other useful movement for traversing water terrain. If true the token will swim even at elevation 0.
-			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed)) || swimSpeed == 0;
+			const shouldSwim = (((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed)) || swimSpeed == 0) && settingDefaultSwimming;
 			//If the token's swimSpeed is 0, set it to the highest between their walkSpeed and flySpeed.
 			if (swimSpeed == 0)
 				swimSpeed = Math.max(walkSpeed, flySpeed);
@@ -40,19 +42,17 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 			
 			//Gets the token's elevation and the terrain below it
 			const elevation = token.data.elevation;
-			const terrain = canvas.terrain.terrainFromPixels(token.x, token.y);
-			var environment = 0;
-			if (terrain[0])
-				environment = terrain[0].data.environment;
-			
-			//If the terrain is urban, disable any elevation checks and instead use the token's walkSpeed or flySpeed, whichever is larger.
-			if (environment != 'urban') {
-				if (elevation < 0 && environment != 'water') {
+			const terrains = canvas.terrain.terrainFromPixels(token.x, token.y);
+			var environments = [];
+			if (terrains.length > 0)
+				terrains.forEach(terrain => environments.push(terrain.data.environment));
+			if (!environments.includes('urban')) {
+				if (elevation < 0 && !environments.includes('water')) {
 					tokenSpeed = burrowSpeed;
 					speedColor = 'burrow';
 					dashColor = 'burrowDash';
 				}
-				if (elevation < 0 && environment == 'water') {
+				if (elevation < 0 && environments.includes('water')) {
 					tokenSpeed = swimSpeed;
 					speedColor = 'swim';
 					dashColor = 'swimDash';
@@ -63,7 +63,7 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 					dashColor = 'flyDash';
 				}
 				//is shouldSwim is true, the token will use its swimSpeed in water even at elevation 0.
-				if (elevation == 0 && environment == 'water' && shouldSwim) {
+				if (elevation == 0 && environments.includes('water') && shouldSwim) {
 					tokenSpeed = swimSpeed;
 					speedColor = 'swim';
 					dashColor = 'swimDash';
@@ -75,7 +75,8 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 					dashColor = 'flyDash';
 				}
 			}
-			if (environment == 'urban' && (flySpeed >= walkSpeed || (settingDefaultHovering && hovering))) {
+			//If the terrain is urban, disable any elevation checks and instead use the token's walkSpeed or flySpeed, whichever is larger.
+			if (environments.includes('urban') && (flySpeed >= walkSpeed || (settingDefaultHovering && hovering))) {
 				tokenSpeed = flySpeed;
 				speedColor = 'fly';
 				dashColor = 'flyDash';
@@ -104,30 +105,67 @@ Hooks.once("dragRuler.ready", (SpeedProvider) => {
 					scope: "world",
 					config: true,
 					type: Boolean,
-					default: false,
+					default: true,
+				},
+				{
+					id: "defaultSwimming",
+					name: "Force Swimming",
+					hint: "Forces creatures with a greater swimming than walking or flying speed to use their swimming speed in water at elevation 0.",
+					scope: "world",
+					config: true,
+					type: Boolean,
+					default: true,
 				}
 			]
 		}
 		//Called by Drag Ruler when a token is moved around. Does not take the grid into account, it is called for every tiny movement.
 		getCostForStep(token, area, options={}) {
+			const settingDefaultSwimming = this.getSetting('defaultSwimming');
 			options.token = token;
-			const terrain = area.map(space => canvas.terrain.terrainFromGrid(space.x, space.y));
-      
-			//Checks if the token will swim in water at elevation 0 with a proper swimSpeed.
+
+			const terrains = area.map(space => canvas.terrain.terrainFromGrid(space.x, space.y))[0];
+			var environments = [];
+			if (terrains.length > 0)
+				terrains.forEach(terrain => environments.push(terrain.data.environment));
+
 			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
 			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
 			const swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
-			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed));
-
-			//Gets the environment from under the token.
-			var environment = 0;
-			if (terrain[0][0])
-				environment = terrain[0][0].data.environment;
-			//Skips the cost calculations provided by Terrain Ruler and instead returns 1 (no difficult terrain) or 2 (standard difficult terrain) depending on the token's current movement speed and the environment.
-			if (environment == 'urban' || EDR_movementMode[token.id] == 'fly' || (environment == 'water' && (EDR_movementMode[token.id] == 'swim' || shouldSwim)))
+			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed) && settingDefaultSwimming) || (EDR_movementMode[token.id] == 'swim' && swimSpeed > 0);
+			
+			//Ignore all difficult terrain in urban terrain or if the token is flying.
+			if ((environments.includes('urban')) || 
+				(EDR_movementMode[token.id] == 'fly')) 
+			{
 				return 1;
-			if (environment == 'water' && swimSpeed == 0)
-				return 2;
+			}
+			if (environments.includes('water')) {
+				//If the terrain is water and the creature is able to swim it will look for any non-water difficult terrain.
+				if (shouldSwim) {
+					var terrainCost = 1;
+					terrains.forEach(function(terrain) {
+						if (terrain.data.environment != 'water') {
+							terrainCost = Math.max(terrainCost, terrain.data.multiple);
+						}
+					});
+					return terrainCost;
+				}
+				//If the terrain is water and the creature is unable to swim, it will increase the movement cost based on other difficult terrain according to dnd5e rules.
+				else {
+					var terrainCost = 1;
+					var waterCost = 1;
+					terrains.forEach(function(terrain) {
+						if (terrain.data.environment != 'water') {
+							terrainCost = Math.max(terrainCost, terrain.data.multiple);
+						}
+						else {
+							waterCost = Math.max(waterCost, terrain.data.multiple);
+						}
+					});
+					const cost = terrainCost + waterCost - 1;
+					return cost;
+				}
+			}
 			
 			const costs = area.map(space => terrainRuler.getCost(space.x, space.y, options));
 			return costs.reduce((max, current) => Math.max(max, current));

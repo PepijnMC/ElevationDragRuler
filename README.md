@@ -12,6 +12,8 @@ A Foundry VTT module which adds a DnD5e speedprovider for Drag Ruler to pick bet
 - <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
 ## Difficult Terrain
+> *Requires <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> and <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a>!*
+
 In Dnd5e difficult terrain does not stack and so this module does not increase movement cost when multiple terrains overlap. An exception to this is water terrain, because it is not technically considered difficult terrain, and can thus stack with actual difficult terrain. This module calculates these increases according to Dnd5e rules.
 
 ## Movement Options

@@ -8,6 +8,7 @@ A Foundry VTT module which adds a DnD5e speedprovider for Drag Ruler to pick bet
 ## Requirements
 - <a href="https://foundryvtt.com/packages/dnd5e" target="_blank">DnD5e</a> system by Atropos
 - <a href="https://github.com/manuelVo/foundryvtt-drag-ruler" target="_blank">Drag Ruler</a> module by Manuel Vögele
+### Optional
 - <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
 ## Difficult Terrain
@@ -27,7 +28,9 @@ Additionally, this speedprovider includes two settings to streamline setting up 
 - **Force Flying**: When enabled, changes the default movement option to flying instead of walking for creatures with a greater flying than walking speed. The creature will still burrow or swim when its elevation is below 0. Enabled by default.
 
 ### Swimming
-Creatures will be set to swim, and thus use their swimming speed, when the token's elevation is below or at 0 and is within "water" terrain from the Enhanced Terrain Layer module. If the creature has no swimming speed, it will use the greater of their walking or flying speed but water will count as difficult terrain.
+> *Requires <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> and <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a>!*
+  
+Creatures will be set to swim, and thus use their swimming speed, when the token's elevation is below 0 and is within "water" terrain from the Enhanced Terrain Layer module. If the creature has no swimming speed, it will use the greater of their walking or flying speed but water will count as difficult terrain.
 
 Additionally, this speedprovider includes a setting to streamline setting up swimming creatures. This setting can be found within Drag Ruler's settings.
 - **Force Swimming**: When enabled, changes the default movement option to swimming instead of walking in water terrain for creatures with a greater swimming than flying or walking speed. Enabled by default.
@@ -36,6 +39,8 @@ Additionally, this speedprovider includes a setting to streamline setting up swi
 Creatures will be set to burrow, and thus use their burrowing speed, when the token's elevation is below 0 and is not within "water" terrain. While burrowing, creatures will ignore all difficult terrain set by the Enhanced Terrain Layer module.
 
 ### Urban Terrain
+> *Requires <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> and <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a>!*
+
 Because elevation is useful for more than just determining a creature's movement type, all elevation based movement switching can be disabled using the "urban" terrain environment. Instead, the creature will use its highest movement speed between walking and flying.
 
 ## Known Bugs

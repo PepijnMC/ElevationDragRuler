@@ -10,14 +10,6 @@
 		{
 			"name": "drag-ruler",
 			"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-drag-ruler/master/module.json"
-		},
-		{
-			"name": "terrain-ruler",
-			"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-terrain-ruler/master/module.json"
-		},
-		{
-			"name": "enhanced-terrain-layer",
-			"manifest": "https://github.com/ironmonk88/enhanced-terrain-layer/releases/latest/download/module.json"
 		}
 	],
 	"scripts": [

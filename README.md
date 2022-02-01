@@ -1,8 +1,8 @@
 ![Latest Release Download Count](https://img.shields.io/github/downloads/PepijnMC/ElevationDragRuler/latest/module.zip?color=2b82fc&label=latest%20downloads&style=for-the-badge)
 ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2FPepijnMC%2FElevationDragRuler%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge) <br><a href='https://ko-fi.com/pepijn' target='_blank'><img height='35' style='border:0px;height:45px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
-# Elevation Drag Ruler
-A Foundry VTT module which adds a dnd5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from the Enhanced Terrain Layer module.
+# DnD5e Drag Ruler Integration
+A Foundry VTT module which adds a DnD5e speedprovider for Drag Ruler to pick between different movement options based on elevation and terrain from the Enhanced Terrain Layer module.
 
 [![Showcase Video](http://img.youtube.com/vi/QRoWH8K9td4/0.jpg)](http://www.youtube.com/watch?v=QRoWH8K9td4 "[Foundry VTT] Elevation Drag Ruler v1.1.1 Module Showcase")
 ## Requirements

@@ -14,7 +14,7 @@ A Foundry VTT module which adds a DnD5e speedprovider for Drag Ruler to manually
 ## Movement Options
 A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use.
   
-*Note**: Currently, manually selected movement speeds are client-side and don't sync between players. This will likely be solved in a future update but for now don't be too confused.
+**Note**: Currently, manually selected movement speeds are client-side and don't sync between players. This will likely be solved in a future update but for now don't be too confused.
   
 ### Elevation
 When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will be forced to fly and below ground the creature will be forced to burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.

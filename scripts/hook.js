@@ -1,199 +1,269 @@
+var EDR_selectedSpeed = {};
+
+//Handles adding the 'Switch Speed' button to the Token HUD.
+class SpeedButton {
+	//Returns a list of the actor's available and relevant movement options.
+	static getTokenSpeeds(actor) {
+		const defaultSpeeds = actor.data.data.attributes.movement;
+		var tokenSpeeds = ['auto'] 
+		for (const [key, value] of Object.entries(defaultSpeeds)) {
+			if (value > 0 && key != 'hover'&& key != 'climb') tokenSpeeds.push(key);
+		}
+		return tokenSpeeds;
+	}
+
+	//Called when the 'Switch Speed' button is clicked.
+	static buttonEventHandler(actor, app, html, data) {
+		const id = actor.parent.data._id;
+		const speeds = this.getTokenSpeeds(actor);
+
+		//Cycles through the available speeds.
+		var indexSpeed = 0
+		if (speeds.includes(EDR_selectedSpeed[id])) {
+			indexSpeed = speeds.indexOf(EDR_selectedSpeed[id]) + 1;
+			if (indexSpeed >= speeds.length) {
+				indexSpeed = 0;
+			}
+		}
+		EDR_selectedSpeed[id] = speeds[indexSpeed]
+
+		//Re-add the button to update its icon to the new selected speed.
+		this.addTokenButton(app, html, data)
+	}
+
+	static getTokenActor(data) {
+		return canvas.tokens.get(data._id).actor;; 
+	}
+
+	//Returns a basic button based on the currently selected speed.
+	static createButton(actor) {
+		const id = actor.parent.data._id;
+
+		let button = document.createElement('div');
+		button.classList.add('control-icon');
+		button.classList.add('switch-speed');
+		//The icon depends on the currently selected speed.
+		button.innerHTML = '<i class="fas fa-arrows-alt-v fa-fw"></i>'
+		if (EDR_selectedSpeed[id]) {
+			if (EDR_selectedSpeed[id] == 'walk') button.innerHTML = '<i class="fas fa-walking fa-fw"></i>';
+			if (EDR_selectedSpeed[id] == 'swim') button.innerHTML = '<i class="fas fa-swimmer fa-fw"></i>';
+			if (EDR_selectedSpeed[id] == 'fly') button.innerHTML = '<i class="fas fa-crow fa-fw"></i>';
+			if (EDR_selectedSpeed[id] == 'burrow') button.innerHTML = '<i class="fas fa-mountain fa-fw"></i>';
+		}
+		button.title = 'Switch Speed';
+
+		return button;
+	}
+
+	//Removes the old button.
+	static removeTokenButton(app, html, data) {
+		html.find('.switch-speed').remove();
+	}
+
+	//Creates a clickable button and adds it to the Token HUD.
+	static addTokenButton(app, html, data) {
+		this.removeTokenButton(app, html, data);
+		const actor = this.getTokenActor(data);
+		const speedButton = this.createButton(actor);
+
+		$(speedButton)
+			.click((event) =>
+				this.buttonEventHandler(actor,app, html, data)
+			)
+
+		html.find('div.left').append(speedButton);
+	}
+}
+
 //Hooking into Drag Ruler when it's ready.
-Hooks.once("dragRuler.ready", (SpeedProvider) => {
+Hooks.once('dragRuler.ready', (SpeedProvider) => {
+	
 	var EDR_movementMode = {};
 	class DnD5eSpeedProvider extends SpeedProvider {
-		//An array of colors to be used by the movement ranges.
-		get colors() {
-			return [
-				{id: "walk", default: 0x00FF00, "name": "walking"},
-				{id: "walkDash", default: 0xFFFF00, "name": "dash walking"},
-				{id: "fly", default: 0x00FFFF, "name": "flying"},
-				{id: "flyDash", default: 0xFFFF00, "name": "dash flying"},
-				{id: "swim", default: 0x0000FF, "name": "swimming"},
-				{id: "swimDash", default: 0xFFFF00, "name": "dash swimming"},
-				{id: "burrow", default: 0xFFAA00, "name": "burrowing"},
-				{id: "burrowDash", default: 0xFFFF00, "name": "dash burrowing"}
-			]
-		}
-		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
-		getRanges(token) {
-
-			//Gets the module settings.
-			const settingDefaultHovering = this.getSetting('defaultHovering');
-			const settingDefaultFlying = this.getSetting('defaultFlying');
-			const settingDefaultSwimming = this.getSetting('defaultSwimming');
-			const terrainRulerAvailable = game.modules.get("terrain-ruler")?.active;
-			
-			//Gets the token's movement speeds from DnD5e. Also checks if the creature can hover or not.
-			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
-			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
-			const hovering = getProperty(token, "actor.data.data.attributes.movement.hover");
-			const burrowSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.burrow"));
-
-			//Default movement option.
-			var tokenSpeed = walkSpeed;
-			var speedColor = 'walk';
-			var dashColor = 'walkDash'
-			
-			//Gets the token's elevation
-			const elevation = token.data.elevation;
-
-			if (terrainRulerAvailable) {
-				var swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
-				//Checks if the token doesn't have other useful movement for traversing water terrain. If true the token will swim even at elevation 0.
-				const shouldSwim = (((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed)) || swimSpeed == 0) && settingDefaultSwimming;
-				//If the token's swimSpeed is 0, set it to the highest between their walkSpeed and flySpeed.
-				if (swimSpeed == 0)
-					swimSpeed = Math.max(walkSpeed, flySpeed);
-
-				const terrains = canvas.terrain.terrainFromPixels(token.x, token.y);
-				var environments = [];
-				if (terrains.length > 0)
-					terrains.forEach(terrain => environments.push(terrain.data.environment));
-				if (!environments.includes('urban')) {
-					if (elevation < 0 && !environments.includes('water')) {
-						tokenSpeed = burrowSpeed;
-						speedColor = 'burrow';
-						dashColor = 'burrowDash';
-					}
-					if (elevation < 0 && environments.includes('water')) {
-						tokenSpeed = swimSpeed;
-						speedColor = 'swim';
-						dashColor = 'swimDash';
-					}
-					if (elevation > 0) {
-						tokenSpeed = flySpeed;
-						speedColor = 'fly';
-						dashColor = 'flyDash';
-					}
-					//is shouldSwim is true, the token will use its swimSpeed in water even at elevation 0.
-					if (elevation == 0 && environments.includes('water') && shouldSwim) {
-						tokenSpeed = swimSpeed;
-						speedColor = 'swim';
-						dashColor = 'swimDash';
-					}
-					//Depending on module settings, make the token use its flySpeed.
-					if (elevation == 0 && ((settingDefaultHovering && hovering) || (settingDefaultFlying && flySpeed >= walkSpeed))) {
-						tokenSpeed = flySpeed;
-						speedColor = 'fly';
-						dashColor = 'flyDash';
-					}
-				}
-				//If the terrain is urban, disable any elevation checks and instead use the token's walkSpeed or flySpeed, whichever is larger.
-				if (environments.includes('urban') && (flySpeed >= walkSpeed || (settingDefaultHovering && hovering))) {
-					tokenSpeed = flySpeed;
-					speedColor = 'fly';
-					dashColor = 'flyDash';
-				}
-			}
-			else {
-				if (elevation < 0) {
-					tokenSpeed = burrowSpeed;
-					speedColor = 'burrow';
-					dashColor = 'burrowDash';
-				}
-				if (elevation > 0) {
-					tokenSpeed = flySpeed;
-					speedColor = 'fly';
-					dashColor = 'flyDash';
-				}
-				//Depending on module settings, make the token use its flySpeed.
-				if (elevation == 0 && ((settingDefaultHovering && hovering) || (settingDefaultFlying && flySpeed >= walkSpeed))) {
-					tokenSpeed = flySpeed;
-					speedColor = 'fly';
-					dashColor = 'flyDash';
-				}
-			}
-			//pass the picked movementSpeed to the global variable, to be used in the getCostForStep function from Drag Ruler.
-			EDR_movementMode[token.id] = speedColor;
-			return [{range: tokenSpeed, color: speedColor}, {range: tokenSpeed * 2, color: dashColor}];
-		}
-		
 		//This function is called by Drag Ruler and implements these speedruler settings.
 		get settings() {
 			return [
 				{
-					id: "defaultHovering",
-					name: "Force Hovering",
-					hint: "Forces hovering creatures to use their flying speed instead of their walking speed at elevation 0.",
-					scope: "world",
+					id: 'elevationSwitching',
+					name: 'Use Elevation',
+					hint: 'Tokens with their movement speed set to automatic will take into account their elevation. When disabled it will use their highest movement speed instead.',
+					scope: 'world',
 					config: true,
 					type: Boolean,
 					default: true,
 				},
 				{
-					id: "defaultFlying",
-					name: "Force Flying",
-					hint: "Forces creatures with a greater flying than walking speed to use their flying speed at elevation 0.",
-					scope: "world",
+					id: 'forceFlying',
+					name: 'Force Flying',
+					hint: 'Force tokens at elevation 0 to use their flying speed if it is bigger than their walking speed.',
+					scope: 'world',
 					config: true,
 					type: Boolean,
 					default: true,
 				},
 				{
-					id: "defaultSwimming",
-					name: "Force Swimming",
-					hint: "Forces creatures with a greater swimming than walking or flying speed to use their swimming speed in water at elevation 0.",
-					scope: "world",
+					id: 'forceSwimming',
+					name: 'Force Swimming',
+					hint: 'Force tokens at elevation 0 and in water terrain to use their swimming speed if it is bigger than their walking and flying speed.',
+					scope: 'world',
+					config: true,
+					type: Boolean,
+					default: true,
+				},
+				{
+					id: 'forceBurrowing',
+					name: 'Force Burrowing',
+					hint: 'Force tokens at elevation 0 but not in water terrain to use their burrowing speed if it is bigger than their walking and flying speed.',
+					scope: 'world',
 					config: true,
 					type: Boolean,
 					default: true,
 				}
 			]
 		}
-		//Called by Drag Ruler when a token is moved around. Does not take the grid into account, it is called for every tiny movement.
+		
+		//An array of colors to be used by the movement ranges.
+		get colors() {
+			return [
+				{id: 'walk', default: 0x00FF00, 'name': 'walking'},
+				{id: 'walkDash', default: 0xFFFF00, 'name': 'dash walking'},
+				{id: 'fly', default: 0x00FFFF, 'name': 'flying'},
+				{id: 'flyDash', default: 0xFFFF00, 'name': 'dash flying'},
+				{id: 'swim', default: 0x0000FF, 'name': 'swimming'},
+				{id: 'swimDash', default: 0xFFFF00, 'name': 'dash swimming'},
+				{id: 'burrow', default: 0xFFAA00, 'name': 'burrowing'},
+				{id: 'burrowDash', default: 0xFFFF00, 'name': 'dash burrowing'}
+			]
+		}
+		
+		getHighestSpeed(movementSpeeds) {
+			var highestSpeed = 0;
+			var highestMovement = 'walk';
+			for (const [key, value] of Object.entries(movementSpeeds)) {
+				if (value > highestSpeed && key != 'hover' && key != 'climb') {
+					highestSpeed = value;
+					highestMovement = key;
+				}
+			}
+			return highestMovement;
+		}
+
+		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
+		getRanges(token) {
+			//Gets the module settings.
+			const settingElevationSwitching = this.getSetting('elevationSwitching');
+			const settingForceFlying = this.getSetting('forceFlying');
+			const settingForceSwimming = this.getSetting('forceSwimming');
+			const settingForceBurrowing = this.getSetting('forceBurrowing');
+			const terrainRulerAvailable = game.modules.get('terrain-ruler')?.active;
+			
+			//Gets the token's movement speeds from DnD5e. Also checks if the creature can hover or not.
+			const walkSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.walk'));
+			const flySpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.fly'));
+			const hovering = getProperty(token, 'actor.data.data.attributes.movement.hover');
+			const burrowSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.burrow'));
+			const swimSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.swim'));
+			const movementSpeeds = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed};
+
+			const elevation = token.data.elevation;
+			var terrains = [];
+			var environments = [];
+			if (terrainRulerAvailable) {
+				terrains = canvas.terrain.terrainFromPixels(token.x, token.y);
+				if (terrains.length > 0)
+					terrains.forEach(terrain => environments.push(terrain.data.environment));
+			}
+
+			//Default movement option.
+			var selectedSpeed = 'walk';
+			//If a token has a speed selected use that.
+			if (EDR_selectedSpeed[token.id] && EDR_selectedSpeed[token.id] != 'auto') {
+				selectedSpeed = EDR_selectedSpeed[token.id];
+			}
+			//If the token has no speed selected and the 'Use Elevation' setting is off, use their swimming speed if they're in water or else their highest speed.
+			else if (!settingElevationSwitching) {
+				if (environments.includes('water') && swimSpeed > 0) {
+					selectedSpeed = 'swim';
+				}
+				else {
+					selectedSpeed = this.getHighestSpeed(movementSpeeds);
+				}
+			}
+			//If the token has no speed selected and the 'Use Elevation' setting is on, base speed on elevation and terrain (if available)
+			else if (terrainRulerAvailable) {
+				if (elevation < 0 && !environments.includes('water'))
+					selectedSpeed = 'burrow';
+				if (elevation < 0 && environments.includes('water'))
+					selectedSpeed = 'swim';
+				if (elevation > 0)
+					selectedSpeed = 'fly';
+				if (elevation == 0 && settingForceFlying && (flySpeed > walkSpeed))
+					selectedSpeed = 'fly';
+				if (elevation == 0 && settingForceSwimming && environments.includes('water') && (swimSpeed > walkSpeed) && (swimSpeed > flySpeed))
+					selectedSpeed = 'swim';
+				if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (burrowSpeed > walkSpeed) && (burrowSpeed > flySpeed))
+					selectedSpeed = 'burrow';
+			}
+			else {
+				if (elevation < 0)
+					selectedSpeed = 'burrow';
+				if (elevation > 0)
+					selectedSpeed = 'fly';
+				if (elevation == 0 && settingForceBurrowing && (burrowSpeed > walkSpeed) && (burrowSpeed > flySpeed))
+					selectedSpeed = 'burrow';
+				if (elevation == 0 && settingForceFlying && (flySpeed > walkSpeed))
+					selectedSpeed = 'fly';
+			}
+			//pass the picked movementSpeed to the global variable, to be used in the getCostForStep function from Drag Ruler.
+			EDR_movementMode[token.id] = selectedSpeed;
+
+			const tokenSpeed = selectedSpeed;
+			const speedColor = selectedSpeed;
+			const dashColor = selectedSpeed + 'Dash';
+			return [{range: movementSpeeds[tokenSpeed], color: speedColor}, {range: movementSpeeds[tokenSpeed] * 2, color: dashColor}];
+		}
+		
+		//Returns the movement cost of an area.
 		getCostForStep(token, area, options={}) {
-			options.token = token;
-			const settingDefaultSwimming = this.getSetting('defaultSwimming');
-
-			const walkSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.walk"));
-			const flySpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.fly"));
-			const swimSpeed = parseFloat(getProperty(token, "actor.data.data.attributes.movement.swim"));
-			const shouldSwim = ((swimSpeed >= walkSpeed) && (swimSpeed >= flySpeed) && settingDefaultSwimming) || (EDR_movementMode[token.id] == 'swim' && swimSpeed > 0);
-
+			//Gather a list of the terrain in the area.
 			const terrains = area.map(space => canvas.terrain.terrainFromGrid(space.x, space.y))[0];
 			var environments = [];
 			if (terrains.length > 0)
 				terrains.forEach(terrain => environments.push(terrain.data.environment));
-
-			//Ignore all difficult terrain in urban terrain or if the token is flying.
-			if ((environments.includes('urban')) || 
-				(EDR_movementMode[token.id] == 'fly')) 
-			{
+			
+			//When flying or burrowing, ignore all difficult terrain.
+			if (EDR_movementMode[token.id] == 'fly' || (EDR_movementMode[token.id] == 'burrow' && !environments.includes('water'))) {
 				return 1;
 			}
-			if (environments.includes('water')) {
-				//If the terrain is water and the creature is able to swim it will look for any non-water difficult terrain.
-				if (shouldSwim) {
-					var terrainCost = 1;
-					terrains.forEach(function(terrain) {
-						if (terrain.data.environment != 'water') {
-							terrainCost = Math.max(terrainCost, terrain.data.multiple);
-						}
-					});
-					return terrainCost;
-				}
-				//If the terrain is water and the creature is unable to swim, it will increase the movement cost based on other difficult terrain according to dnd5e rules.
-				else {
-					var terrainCost = 1;
-					var waterCost = 1;
-					terrains.forEach(function(terrain) {
-						if (terrain.data.environment != 'water') {
-							terrainCost = Math.max(terrainCost, terrain.data.multiple);
-						}
-						else {
-							waterCost = Math.max(waterCost, terrain.data.multiple);
-						}
-					});
-					const cost = terrainCost + waterCost - 1;
-					return cost;
-				}
+			//Calculate the movement cost, cost from water terrain is handled separately and stacked on top of other movement costs unless the token is swimming.
+			else {	
+				const settingForceSwimming = this.getSetting('forceSwimming');
+				const walkSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.walk'));
+				const flySpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.fly'));
+				const swimSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.swim'));
+				var terrainCost = 1;
+				var waterCost = 1;
+				terrains.forEach(function(terrain) {
+					if (terrain.data.environment == 'water') {
+						waterCost = Math.max(waterCost, terrain.data.multiple);
+					}
+					else {
+						terrainCost = Math.max(terrainCost, terrain.data.multiple);
+					}
+				});
+				if (EDR_movementMode[token.id] == 'swim' || ((!EDR_selectedSpeed[token.id] || EDR_selectedSpeed[token.id] == 'auto') && settingForceSwimming && (swimSpeed > walkSpeed) && (swimSpeed > flySpeed)))
+					waterCost = 1;
+				const cost = terrainCost + waterCost - 1;
+				return cost;
 			}
-			
-			const costs = area.map(space => terrainRuler.getCost(space.x, space.y, options));
-			return costs.reduce((max, current) => Math.max(max, current));
 		}
 	}
 
-	dragRuler.registerModule("elevation-drag-ruler", DnD5eSpeedProvider)
+	dragRuler.registerModule('elevation-drag-ruler', DnD5eSpeedProvider)
 })
+
+Hooks.on('renderTokenHUD', (app, html, data) => {
+	const id = canvas.tokens.get(data._id).actor.parent.data._id
+	if (!EDR_selectedSpeed[id]) EDR_selectedSpeed[id] = 'auto';
+	SpeedButton.addTokenButton(app, html, data);
+});

@@ -22,9 +22,8 @@ When a creature's movement speed is set to automatic, the module uses the token'
 ### Difficult Terrain
 When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain. Flying creatures ignore all movement cost penalties, burrowing creatures ignore all movement cost penalties except for water, and swimming creatures ignore ignore movement cost penalties from water terrain.
 
-## Known Issues
+## Issues
 Please report issues <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.
-- When you have a swimming speed but it's smaller than your walking/flying speed, entering water will not negate difficult terrain. The module does not know how far you have already moved during your combat turn and thus can't know if you still have swimming speed left to use.
 
 ## Future Plans
 These are features currently in the work, vague ideas, and anything in between.

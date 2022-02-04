@@ -7,48 +7,41 @@ class SpeedButton {
 		const defaultSpeeds = actor.data.data.attributes.movement;
 		var tokenSpeeds = ['auto'] 
 		for (const [key, value] of Object.entries(defaultSpeeds)) {
-			if (value > 0 && key != 'hover'&& key != 'climb') tokenSpeeds.push(key);
+			if (value > 0 && key != 'hover' && key != 'climb') tokenSpeeds.push(key);
 		}
 		return tokenSpeeds;
 	}
 
 	//Called when the 'Switch Speed' button is clicked.
-	static buttonEventHandler(actor, app, html, data) {
-		const id = actor.parent.data._id;
-		const speeds = this.getTokenSpeeds(actor);
+	static buttonEventHandler(tokenId, app, html, data) {
+		const speeds = this.getTokenSpeeds(game.actors.get(data.actorId));
 
 		//Cycles through the available speeds.
 		var indexSpeed = 0
-		if (speeds.includes(EDR_selectedSpeed[id])) {
-			indexSpeed = speeds.indexOf(EDR_selectedSpeed[id]) + 1;
+		if (speeds.includes(EDR_selectedSpeed[tokenId])) {
+			indexSpeed = speeds.indexOf(EDR_selectedSpeed[tokenId]) + 1;
 			if (indexSpeed >= speeds.length) {
 				indexSpeed = 0;
 			}
 		}
-		EDR_selectedSpeed[id] = speeds[indexSpeed]
+		EDR_selectedSpeed[tokenId] = speeds[indexSpeed]
 
 		//Re-add the button to update its icon to the new selected speed.
 		this.addTokenButton(app, html, data)
 	}
 
-	static getTokenActor(data) {
-		return canvas.tokens.get(data._id).actor;; 
-	}
-
 	//Returns a basic button based on the currently selected speed.
-	static createButton(actor) {
-		const id = actor.parent.data._id;
-
+	static createButton(tokenId) {
 		let button = document.createElement('div');
 		button.classList.add('control-icon');
 		button.classList.add('switch-speed');
 		//The icon depends on the currently selected speed.
 		button.innerHTML = '<i class="fas fa-arrows-alt-v fa-fw"></i>'
-		if (EDR_selectedSpeed[id]) {
-			if (EDR_selectedSpeed[id] == 'walk') button.innerHTML = '<i class="fas fa-walking fa-fw"></i>';
-			if (EDR_selectedSpeed[id] == 'swim') button.innerHTML = '<i class="fas fa-swimmer fa-fw"></i>';
-			if (EDR_selectedSpeed[id] == 'fly') button.innerHTML = '<i class="fas fa-crow fa-fw"></i>';
-			if (EDR_selectedSpeed[id] == 'burrow') button.innerHTML = '<i class="fas fa-mountain fa-fw"></i>';
+		if (EDR_selectedSpeed[tokenId]) {
+			if (EDR_selectedSpeed[tokenId] == 'walk') button.innerHTML = '<i class="fas fa-walking fa-fw"></i>';
+			if (EDR_selectedSpeed[tokenId] == 'swim') button.innerHTML = '<i class="fas fa-swimmer fa-fw"></i>';
+			if (EDR_selectedSpeed[tokenId] == 'fly') button.innerHTML = '<i class="fas fa-crow fa-fw"></i>';
+			if (EDR_selectedSpeed[tokenId] == 'burrow') button.innerHTML = '<i class="fas fa-mountain fa-fw"></i>';
 		}
 		button.title = 'Switch Speed';
 
@@ -56,19 +49,19 @@ class SpeedButton {
 	}
 
 	//Removes the old button.
-	static removeTokenButton(app, html, data) {
+	static removeTokenButton(html) {
 		html.find('.switch-speed').remove();
 	}
 
 	//Creates a clickable button and adds it to the Token HUD.
 	static addTokenButton(app, html, data) {
-		this.removeTokenButton(app, html, data);
-		const actor = this.getTokenActor(data);
-		const speedButton = this.createButton(actor);
+		this.removeTokenButton(html);
+		const tokenId = data._id;
+		const speedButton = this.createButton(tokenId);
 
 		$(speedButton)
 			.click((event) =>
-				this.buttonEventHandler(actor,app, html, data)
+				this.buttonEventHandler(tokenId,app, html, data)
 			)
 
 		html.find('div.left').append(speedButton);
@@ -263,7 +256,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 })
 
 Hooks.on('renderTokenHUD', (app, html, data) => {
-	const id = canvas.tokens.get(data._id).actor.parent.data._id
+	const id = data._id
 	if (!EDR_selectedSpeed[id]) EDR_selectedSpeed[id] = 'auto';
 	SpeedButton.addTokenButton(app, html, data);
 });

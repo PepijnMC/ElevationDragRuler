@@ -2,7 +2,7 @@
 ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2FPepijnMC%2FElevationDragRuler%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge) <br><a href='https://ko-fi.com/pepijn' target='_blank'><img height='35' style='border:0px;height:45px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 # DnD5e Drag Ruler Integration
-A Foundry VTT module which adds a DnD5e speedprovider for Drag Ruler to manually or automatically pick between different movement speeds based on elevation and/or terrain from Enhanced Terrain Layer.
+A Foundry VTT module that adds a DnD5e speedprovider for Drag Ruler to manually or automatically pick between different movement speeds based on elevation and/or terrain from Enhanced Terrain Layer.
 
 ## Requirements
 - <a href="https://foundryvtt.com/packages/dnd5e" target="_blank">DnD5e</a> system by Atropos

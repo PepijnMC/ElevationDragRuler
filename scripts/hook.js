@@ -84,9 +84,18 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					default: true,
 				},
 				{
+					id: 'flyingElevation',
+					name: 'Elevate Flying',
+					hint: 'Flying tokens at 0 elevation will be treated as if they were at elevation 1 for the purpose of ignoring difficult terrain.',
+					scope: 'world',
+					config: true,
+					type: Boolean,
+					default: true,
+				},
+				{
 					id: 'forceFlying',
 					name: 'Force Flying',
-					hint: 'Force tokens at elevation 0 to use their flying speed if it is bigger than their walking speed.',
+					hint: 'Tokens at elevation 0 will default to their flying speed if it is bigger than their walking speed',
 					scope: 'world',
 					config: true,
 					type: Boolean,
@@ -95,7 +104,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{
 					id: 'forceSwimming',
 					name: 'Force Swimming',
-					hint: 'Force tokens at elevation 0 and in water terrain to use their swimming speed if it is bigger than their walking and flying speed.',
+					hint: 'Tokens at elevation 0 and in water terrain will default to their swimming speed if it is bigger than their walking and flying speed.',
 					scope: 'world',
 					config: true,
 					type: Boolean,
@@ -104,7 +113,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{
 					id: 'forceBurrowing',
 					name: 'Force Burrowing',
-					hint: 'Force tokens at elevation 0 but not in water terrain to use their burrowing speed if it is bigger than their walking and flying speed.',
+					hint: 'Tokens at elevation 0 but not in water terrain will default to their burrowing speed if it is bigger than their walking and flying speed.',
 					scope: 'world',
 					config: true,
 					type: Boolean,
@@ -212,6 +221,8 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		//Returns the movement cost of an area.
 		getCostForStep(token, area, options={}) {
 			const movementSpeed = EDR_movementMode[token.id];
+			const settingFlyingElevation = this.getSetting('flyingElevation');
+			if (movementSpeed == 'fly' && settingFlyingElevation && token.data.elevation == 0) token.data.elevation = 1;
 			options.token = token;
 			//Defines a custom calculate function to be used by Enhanced Terrain Layer.
 			options.calculate = function calculate(cost, total, object) {

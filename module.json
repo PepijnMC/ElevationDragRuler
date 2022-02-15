@@ -2,7 +2,7 @@
 	"name": "elevation-drag-ruler",
 	"title": "DnD5e Drag Ruler Integration",
 	"description": "Adds a DnD5e speedprovider for Drag Ruler to manually or automatically pick between different movement speeds based on elevation and/or terrain from Enhanced Terrain Layer.",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"minimumCoreVersion": "9.238",
 	"compatibleCoreVersion": "9",
 	"author": "Pepijn Sietsema",

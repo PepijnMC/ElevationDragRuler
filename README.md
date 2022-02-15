@@ -14,17 +14,11 @@ A Foundry VTT module that adds a DnD5e speedprovider for Drag Ruler to manually 
 ## Movement Options
 A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use.
   
-**Note**: Currently, manually selected movement speeds are client-side and don't sync between players. This will likely be solved in a future update but for now don't get too confused when players or monsters seem to move further than they should.
-  
 ### Elevation
-When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will be forced to fly and below ground the creature will be forced to burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
+When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will fly and below ground the creature will burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
  
 ### Difficult Terrain
-When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain. Flying creatures ignore all movement cost penalties, burrowing creatures ignore all movement cost penalties except for water, and swimming creatures ignore ignore movement cost penalties from water terrain.
+When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain. Swimming will automatically ignore movement costs from water terrain. Please note that flying or burrowing does not automatically ignore difficult terrain, Enhanced Terrain Layer supports the use of elevation already to achieve this.
 
-## Issues
-Please report issues <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.
-
-## Future Plans
-These are features currently in the work, vague ideas, and anything in between.
-- Add settings to ignore movement costs from certain terrains depending on your movement speed.
+## Issues and Requests
+Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.

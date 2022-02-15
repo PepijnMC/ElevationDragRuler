@@ -18,7 +18,9 @@ A creature's movement speed can be picked by clicking a button in the Token HUD.
 When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will fly and below ground the creature will burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
  
 ### Difficult Terrain
-When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain. Swimming will automatically ignore movement costs from water terrain. Please note that flying or burrowing does not automatically ignore difficult terrain, Enhanced Terrain Layer supports the use of elevation already to achieve this.
+When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain. Swimming tokens will automatically ignore movement costs from water terrain.
+
+To streamline the use of flying creatures, flying tokens at elevation 0 will be treated as if they were at elevation 1 for the purpose of ignoring difficult terrain. This eliminates the cumbersome manual changing of a token's elevation to make it ignore ground based difficult terrain before landing back on the ground. This behavior can be disabled in the settings.
 
 ## Issues and Requests
 Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.

@@ -222,7 +222,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		getCostForStep(token, area, options={}) {
 			const movementSpeed = EDR_movementMode[token.id];
 			const settingFlyingElevation = this.getSetting('flyingElevation');
-			if (movementSpeed == 'fly' && settingFlyingElevation && token.data.elevation == 0) token.data.elevation = 1;
+			if (movementSpeed == 'fly' && settingFlyingElevation && token.data.elevation == 0) options.elevation = 1;
 			options.token = token;
 			//Defines a custom calculate function to be used by Enhanced Terrain Layer.
 			options.calculate = function calculate(cost, total, object) {

@@ -4,7 +4,7 @@
 # DnD5e Drag Ruler Integration
 A Foundry VTT module that adds a DnD5e speedprovider for Drag Ruler to manually or automatically pick between different movement speeds based on elevation and/or terrain from Enhanced Terrain Layer.
 
-![Creatures can more easily use their different movement speeds.](https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/dnd5e_dragruler_integration.webp)
+![Creatures can more easily use their different movement speeds.](https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/switching_speeds.webp)
 ## Requirements
 - <a href="https://foundryvtt.com/packages/dnd5e" target="_blank">DnD5e</a> system by Atropos
 - <a href="https://github.com/manuelVo/foundryvtt-drag-ruler" target="_blank">Drag Ruler</a> module by Manuel Vögele

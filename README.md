@@ -15,13 +15,23 @@ A Foundry VTT module that adds a DnD5e speedprovider for Drag Ruler to manually 
 ## Movement Options
 A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use.
   
+<img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Switch%20Speed.png" width="200">
+  
 ### Elevation
 When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will fly and below ground the creature will burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
  
 ### Difficult Terrain
-When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain. Swimming tokens will automatically ignore movement costs from water terrain.
+When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain.
+  
+A token can be configured to ignore certain or all terrain for a certain or any movement speed. This works for individual tokens but also for prototype tokens from actors and for the default token configuration in the core settings. By default swimming will ignore water terrain and burrowing/climbing will ignore mountain terrain.
 
-To streamline the use of flying creatures, flying tokens at elevation 0 will be treated as if they were at elevation 1 for the purpose of ignoring difficult terrain. This eliminates the cumbersome manual changing of a token's elevation to make it ignore ground based difficult terrain before landing back on the ground. This behavior can be disabled in the settings.
+<img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20Terrain%20Configuration.png" width="400">
+  
+The Token HUD also contains a button to quickly toggle all difficult terrain for any movement speed for that token.
+  
+<img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Toggle%20Terrain.png" width="200">
+
+To help streamline the use of flying creatures, flying tokens will be treated as if they were 1 elevation higher for the purpose of ignoring difficult terrain. This eliminates the cumbersome manual changing of a token's elevation to make it ignore ground based difficult terrain before landing back on the ground. This behavior can be disabled in the settings.
 
 ## Issues and Requests
 Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.

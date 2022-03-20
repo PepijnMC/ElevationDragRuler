@@ -1,5 +1,35 @@
-//Handles adding the 'Switch Speed' button to the Token HUD.
-class SpeedButton {
+class TerrainConfig {
+	static getConfiguredEnvironments(tokenDocument) {
+		const defaultConfiguredEnvironments = {'all': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'arctic': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'coast': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'desert': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'forest': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'grassland': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'jungle': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'mountain': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": true, "climb": true}, 'swamp': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'underdark': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'urban': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'water': {"any": false, "walk": false, "swim": true, "fly": false, "burrow": false, "climb": false}}
+		var configuredEnvironments = tokenDocument.getFlag('elevation-drag-ruler', 'ignoredEnvironments');
+		return configuredEnvironments || defaultConfiguredEnvironments;
+	}
+
+	static addConfigTab(config, html) {
+		const configuredEnvironments = TerrainConfig.getConfiguredEnvironments(config.token);
+		//Expand the window's width
+		config.position.width += 40;
+		config.setPosition(config.position);
+
+		const configTabs = html.find('nav.sheet-tabs.tabs[data-group="main"]');
+		configTabs.append('<a class="item" data-tab="terrain"><i class="fas fa-mountain"></i>Terrain</a>');
+
+		configTabs.parent().find('footer').before(`<div class="tab" data-group="main" data-tab="terrain"></div>`);
+		const terrainTab = html.find('div.tab[data-tab="terrain"]');
+		terrainTab.append('<div class="form-group" style="text-align:center;"><b>Terrain</b><b>Any</b><b>Walking</b><b>Swimming</b><b>Flying</b><b>Burrowing</b><b>Climbing</b></div>');
+		//terrainTab.append('<div style="text-align:right;"><i class="fas fa-hiking" style="text-align:right;"></i></div>');
+		for (const environment in configuredEnvironments) {
+			terrainTab.append(`<div class="form-group" id="${environment}" style="text-align:center;"><label>${environment.charAt(0).toUpperCase() + environment.slice(1)}</label></div>`);
+			const environmentRow = terrainTab.find(`div.form-group#${environment}`);
+			for (const speed in configuredEnvironments[environment]) {
+				environmentRow.append(`<label><input type="checkbox" title="Ignore ${environment} terrain for ${speed} speed" name="flags.elevation-drag-ruler.ignoredEnvironments.${environment}.${speed}" ${configuredEnvironments[environment][speed] ? 'checked=""' : '""'}></label>`);
+			}
+		};
+	}
+}
+
+//Handles adding the button to the Token HUD.
+class TokenHudButtons {
 	//Returns a list of the actor's available and relevant movement options.
 	static getTokenSpeeds(tokenDocument) {
 		const defaultSpeeds = tokenDocument._actor.data.data.attributes.movement;
@@ -11,7 +41,7 @@ class SpeedButton {
 	}
 
 	//Called when the 'Switch Speed' button is clicked.
-	static async buttonEventHandler(tokenId, html) {
+	static async onSpeedButtonClick(tokenId, html) {
 		const tokenDocument = canvas.tokens.get(tokenId).document;
 		const speeds = this.getTokenSpeeds(tokenDocument);
 		const oldSelectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
@@ -25,44 +55,86 @@ class SpeedButton {
 		}
 		await tokenDocument.setFlag('elevation-drag-ruler', 'selectedSpeed', speeds[indexSpeed]);
 		//Re-add the button to update its icon to the new selected speed.
-		this.addTokenButton(tokenId, html);
+		this.addSpeedButton(tokenId, html);
 	}
 
-	//Returns a basic button based on the currently selected speed.
-	static createButton(tokenId) {
+	static async onTerrainButtonClick(tokenId, html) {
 		const tokenDocument = canvas.tokens.get(tokenId).document;
+		const oldTerrainConfig = TerrainConfig.getConfiguredEnvironments(tokenDocument).all.any;
+
+		var terrainConfig = false;
+		if (!oldTerrainConfig) terrainConfig = true;
+		await tokenDocument.setFlag('elevation-drag-ruler', 'ignoredEnvironments.all.any', terrainConfig);
+		this.addTerrainButton(tokenId, html);
+	}
+
+	//Returns a button based on the currently selected speed.
+	static createSpeedButton(tokenId) {
+		const tokenDocument = canvas.tokens.get(tokenId).document;
+
 		let button = document.createElement('div');
 		button.classList.add('control-icon');
-		//The icon depends on the currently selected speed.
-		button.innerHTML = '<i class="fas fa-arrows-alt-v fa-fw"></i>'
+		button.title = 'Switch Speed';
+		button.id = 'switch-speed';
 
+		//The icon depends on the currently selected speed.
+		button.innerHTML = '<i class="fas fa-arrows-alt-v fa-fw"></i>';
 		const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
 		if (selectedSpeed == 'walk') button.innerHTML = '<i class="fas fa-walking fa-fw"></i>';
 		if (selectedSpeed == 'swim') button.innerHTML = '<i class="fas fa-swimmer fa-fw"></i>';
 		if (selectedSpeed == 'fly') button.innerHTML = '<i class="fas fa-crow fa-fw"></i>';
 		if (selectedSpeed == 'burrow') button.innerHTML = '<i class="fas fa-mountain fa-fw"></i>';
 		if (selectedSpeed == 'climb') button.innerHTML = '<i class="fas fa-grip-lines fa-fw"></i>';
-		button.title = 'Switch Speed';
-		button.id = 'switch-speed';
+		
+		return button;
+	}
+
+	static createTerrainButton(tokenId) {
+		const tokenDocument = canvas.tokens.get(tokenId).document;
+		const terrainConfig = TerrainConfig.getConfiguredEnvironments(tokenDocument).all.any;
+		const button = document.createElement('div');
+		button.classList.add('control-icon');
+		if (!terrainConfig) button.classList.add('active');
+		button.title = 'Toggle Terrain';
+		button.id = 'toggle-terrain';
+
+		button.innerHTML = '<i class="fas fa-hiking fa-fw"></i>';
+		
 		return button;
 	}
 
 	//Removes the old button.
-	static removeTokenButton(html) {
+	static removeSpeedButton(html) {
 		html.find('#switch-speed').remove();
 	}
 
+	static removeTerrainButton(html) {
+		html.find('#toggle-terrain').remove();
+	}
+
 	//Creates a clickable button and adds it to the Token HUD.
-	static addTokenButton(tokenId, html) {
-		this.removeTokenButton(html);
-		const speedButton = this.createButton(tokenId);
+	static addSpeedButton(tokenId, html) {
+		this.removeSpeedButton(html);
+		const speedButton = this.createSpeedButton(tokenId);
 
 		$(speedButton)
 			.click((event) =>
-				this.buttonEventHandler(tokenId, html)
+				this.onSpeedButtonClick(tokenId, html)
 			)
 
 		html.find('div.left').append(speedButton);
+	}
+
+	static addTerrainButton(tokenId, html) {
+		this.removeTerrainButton(html);
+		const terrainButton = this.createTerrainButton(tokenId);
+
+		$(terrainButton)
+			.click((event) =>
+				this.onTerrainButtonClick(tokenId, html)
+			)
+
+		html.find('div.right').append(terrainButton);
 	}
 }
 
@@ -86,7 +158,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{
 					id: 'flyingElevation',
 					name: 'Elevate Flying',
-					hint: 'Flying tokens at 0 elevation will be treated as if they were at elevation 1 for the purpose of ignoring difficult terrain.',
+					hint: 'Flying tokens will be treated as if they were 1 elevation higher for the purpose of ignoring difficult terrain.',
 					scope: 'world',
 					config: true,
 					type: Boolean,
@@ -209,7 +281,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (burrowSpeed > walkSpeed) && (burrowSpeed > flySpeed))
 					movementSpeed = 'burrow';
 			}
-			//pass the picked movementSpeed to the global variable, to be used in the getCostForStep function from Drag Ruler.
+			//Pass the picked movementSpeed to the global variable, to be used in the getCostForStep function from Drag Ruler.
 			EDR_movementMode[token.id] = movementSpeed;
 
 			const tokenSpeed = movementSpeed;
@@ -222,17 +294,43 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		getCostForStep(token, area, options={}) {
 			const movementSpeed = EDR_movementMode[token.id];
 			const settingFlyingElevation = this.getSetting('flyingElevation');
-			if (movementSpeed == 'fly' && settingFlyingElevation && token.data.elevation == 0) options.elevation = 1;
+			const tokenDocument = token.data.document;
+
+			//Grabs a token's configured options for ignoring difficult terrain.
+			const configuredEnvironments = TerrainConfig.getConfiguredEnvironments(tokenDocument)
+			var ignoredEnvironments = {};
+			for (const [configuredEnvironment, speeds] of Object.entries(configuredEnvironments)) {
+				var ignoredEnvironment = [];
+				for (const [speed, state] of Object.entries(speeds)) {
+					if (state) ignoredEnvironment.push(speed);
+				}
+				ignoredEnvironments[configuredEnvironment] = ignoredEnvironment;
+			}
+			//If a token is set to ignore all difficult terrain simply return 1 as the cost.
+			if (ignoredEnvironments['all']['any']) return 1;
+
+			if (movementSpeed == 'fly' && settingFlyingElevation) options.elevation = token.data.elevation + 1;
 			options.token = token;
 			//Defines a custom calculate function to be used by Enhanced Terrain Layer.
 			options.calculate = function calculate(cost, total, object) {
 				//The movement cost from water can stack with difficult terrain. Due to limitations with the API these 2 different movement costs have to be encoded into one number. This will break in the unlikely event someone uses costs over 99.
 				var terrainCost = Math.floor(total/100);
 				var waterCost = total % 100;
-				if (object?.environment?.id == 'water')
+				const environment = object?.environment?.id;
+				//Check the configured token settings for any terrain that should be ignored.
+				if (ignoredEnvironments['all']) {
+					if ((ignoredEnvironments['all'].includes('any') || ignoredEnvironments['all'].includes(movementSpeed)))
+						return total;
+				}
+				if (ignoredEnvironments[environment]) {
+					if (ignoredEnvironments[environment].includes('any') || ignoredEnvironments[environment].includes(movementSpeed))
+						return total;
+				}
+				if (environment == 'water')
 					waterCost = Math.max(waterCost, cost);
 				else
 					terrainCost = Math.max(terrainCost, cost);
+				
 				total = terrainCost*100+waterCost;
 				return total;
 			}
@@ -243,7 +341,6 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			rawCosts.forEach(cost => {
 				const terrainCost = Math.max(Math.floor(cost/100), 1);
 				var waterCost = Math.max(cost % 100, 1);
-				if (movementSpeed == 'swim') waterCost = 1;
 				const totalCost = terrainCost + waterCost - 1;
 				costs.push(totalCost);
 			})
@@ -257,5 +354,8 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 })
 
 Hooks.on('renderTokenHUD', (app, html, data) => {
-	SpeedButton.addTokenButton(data._id, html);
+	TokenHudButtons.addSpeedButton(data._id, html);
+	TokenHudButtons.addTerrainButton(data._id, html);
 });
+
+Hooks.on('renderTokenConfig', TerrainConfig.addConfigTab)

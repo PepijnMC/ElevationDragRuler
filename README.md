@@ -37,3 +37,19 @@ To help streamline the use of flying creatures, flying tokens will be treated as
 
 ## Issues and Requests
 Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.
+  
+## API Flags
+This section is for those who might want to make their own module interact with this one. Calling this an API is too generous but most of the data this module uses is saved to flags on the Token Document under `elevation-drag-ruler` (the old module's name).
+  
+- `selectedSpeed`
+  - This flag when set contains a string of the token's currently selected movement speed, either `auto`, `walk`, `swim`, `fly`, `burrow`, or `climb`.
+  - This flag is not set by default, in which case it can be safely assumed the token is in `auto` mode.
+  - Although untested it should be safe to write to this flag in another module. The token HUD button will not update when it is already rendered but it should never desync as it always checks the current value of the flag before doing anything. I might expose a function in the future to force an update to the button.
+  - I do not recommend setting this flag to a value different from the ones above.
+- `ignoredEnvironments`
+  - This flag when set contains the data of the terrain configuration in the form of an object of objects. The object contains all terrain ids from Enhanced Terrain Layer and an `all`, each of which has its value set to another object of all movement speeds and an `any` which are set to `true`/`false` (`true` meaning to ignore this terrain for this movement speed).
+  - The "Toggle Terrain" button added to the token HUD also uses this flag, specifically `ignoredEnvironments.all.any`.
+  - The object can be navigated like normal, for example `ignoredEnvironments.desert.fly`.
+  - This flag is not set by default, in which case the default array found in the `getConfiguredEnvironments()` function is used.
+  - Although untested it should be safe to write to this flag in another module. The button and config will not update while they're rendered but they should never descync.
+  - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will simply not be recognized by the cost function.

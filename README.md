@@ -53,3 +53,5 @@ This section is for those who might want to make their own module interact with 
   - This flag is not set by default, in which case the default array found in the `getConfiguredEnvironments()` function is used.
   - Although untested it should be safe to write to this flag in another module. The button and config will not update while they're rendered but they should never descync.
   - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will simply not be recognized by the cost function.
+  
+As the MIT license suggests, feel free (and encouraged) to copy and adapt my code to work with any other rpg system.

@@ -8,7 +8,7 @@ class TerrainConfig {
 	static addConfigTab(config, html) {
 		const configuredEnvironments = TerrainConfig.getConfiguredEnvironments(config.token);
 		//Expand the window's width
-		config.position.width += 40;
+		config.position.width = 540;
 		config.setPosition(config.position);
 
 		const configTabs = html.find('nav.sheet-tabs.tabs[data-group="main"]');

@@ -5,10 +5,10 @@ class TerrainConfig {
 		return configuredEnvironments || defaultConfiguredEnvironments;
 	}
 
-	static addConfigTab(config, html) {
+	static addConfigTerrainTab(config, html) {
 		const configuredEnvironments = TerrainConfig.getConfiguredEnvironments(config.token);
 		//Expand the window's width
-		config.position.width = 540;
+		config.position.width += 40;
 		config.setPosition(config.position);
 
 		const configTabs = html.find('nav.sheet-tabs.tabs[data-group="main"]');
@@ -25,6 +25,32 @@ class TerrainConfig {
 				environmentRow.append(`<label><input type="checkbox" title="Ignore ${environment} terrain for ${speed} speed" name="flags.elevation-drag-ruler.ignoredEnvironments.${environment}.${speed}" ${configuredEnvironments[environment][speed] ? 'checked=""' : '""'}></label>`);
 			}
 		};
+	}
+
+	static addConfigResourceField(config, html) {
+		const tokenDocument = config.token;
+		const tokenSpeeds = TokenHudButtons.getTokenSpeeds(tokenDocument);
+		const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
+		const hideSpeedButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideSpeedButton');
+		const resourceTab = html.find('div.tab[data-tab="resources"]')
+
+		resourceTab.append(`<div class='form-group'><label>Selected Movement Speed</label><div class='form-fields'><select name='flags.elevation-drag-ruler.selectedSpeed'></select></div></div>`)
+		const speedField = html.find('select[name="flags.elevation-drag-ruler.selectedSpeed"]')
+		for (const tokenSpeed of tokenSpeeds) {
+			speedField.append(`<option value=${tokenSpeed} ${tokenSpeed == selectedSpeed ? "selected" : ""}>${tokenSpeed.charAt(0).toUpperCase() + tokenSpeed.slice(1)}</option>`);
+		}
+		resourceTab.append(`<div class='form-group'><label>Hide Speed Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideSpeedButton' ${hideSpeedButton ? 'checked=""' : '""'}></div>`);
+		
+		if (game.modules.get('terrain-ruler')?.active) {
+			const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
+			resourceTab.append(`<div class='form-group'><label>Hide Terrain Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideTerrainButton' ${hideTerrainButton ? 'checked=""' : '""'}></div>`);
+		}
+	}
+
+	static addConfig(config, html) {
+		if (game.modules.get('terrain-ruler')?.active)
+			TerrainConfig.addConfigTerrainTab(config, html);
+		TerrainConfig.addConfigResourceField(config, html);
 	}
 }
 
@@ -153,7 +179,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					scope: 'world',
 					config: true,
 					type: Boolean,
-					default: true,
+					default: true
 				},
 				{
 					id: 'flyingElevation',
@@ -162,7 +188,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					scope: 'world',
 					config: true,
 					type: Boolean,
-					default: true,
+					default: true
 				},
 				{
 					id: 'forceFlying',
@@ -171,7 +197,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					scope: 'world',
 					config: true,
 					type: Boolean,
-					default: true,
+					default: true
 				},
 				{
 					id: 'forceSwimming',
@@ -180,7 +206,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					scope: 'world',
 					config: true,
 					type: Boolean,
-					default: true,
+					default: true
 				},
 				{
 					id: 'forceBurrowing',
@@ -189,7 +215,45 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					scope: 'world',
 					config: true,
 					type: Boolean,
-					default: true,
+					default: true
+				},
+				{
+					id: 'hideSpeedButton',
+					name: 'Hide "Switch Speed" Button',
+					hint: 'Hides the "Switch Speed" button from the Token HUD for the current user.',
+					scope: 'client',
+					config: true,
+					type: Boolean,
+					default: false
+				},
+				{
+					id: 'restrictSpeedButton',
+					name: 'Restrict the "Switch Speed" Button',
+					hint: 'Restricts the "Switch Speed" button to a minimal permission level.',
+					scope: "world",
+					config: true,
+					default: "1",
+					choices: {1: "Player", 2: "Trusted", 3: "Assistant", 4: "Game Master"},
+					type: String
+				},
+				{
+					id: 'hideTerrainButton',
+					name: 'Hide "Toggle Terrain" Button',
+					hint: 'Hides the "Toggle Terrain" button from the Token HUD for the current user.',
+					scope: 'client',
+					config: true,
+					type: Boolean,
+					default: false
+				},
+				{
+					id: 'restrictTerrainButton',
+					name: 'Restrict the "Toggle Terrain" Button',
+					hint: 'Restricts the "Toggle Terrain" button to a minimal permission level.',
+					scope: "world",
+					config: true,
+					default: "1",
+					choices: {1: "Player", 2: "Trusted", 3: "Assistant", 4: "Game Master"},
+					type: String
 				}
 			]
 		}
@@ -287,6 +351,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			const tokenSpeed = movementSpeed;
 			const speedColor = movementSpeed;
 			const dashColor = movementSpeed + 'Dash';
+			
 			return [{range: movementSpeeds[tokenSpeed], color: speedColor}, {range: movementSpeeds[tokenSpeed] * 2, color: dashColor}];
 		}
 		
@@ -354,8 +419,10 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 })
 
 Hooks.on('renderTokenHUD', (app, html, data) => {
-	TokenHudButtons.addSpeedButton(data._id, html);
-	TokenHudButtons.addTerrainButton(data._id, html);
+	if (!game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.hideSpeedButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideSpeedButton') && game.user.role >= game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.restrictSpeedButton'))
+		TokenHudButtons.addSpeedButton(data._id, html);
+	if (!game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.hideTerrainButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideTerrainButton') && game.modules.get('terrain-ruler')?.active && game.user.role >= game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.restrictTerrainButton'))
+		TokenHudButtons.addTerrainButton(data._id, html);
 });
 
-Hooks.on('renderTokenConfig', TerrainConfig.addConfigTab)
+Hooks.on('renderTokenConfig', TerrainConfig.addConfig)

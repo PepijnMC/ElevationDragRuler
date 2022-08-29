@@ -58,7 +58,8 @@ class TerrainConfig {
 class TokenHudButtons {
 	//Returns a list of the actor's available and relevant movement options.
 	static getTokenSpeeds(tokenDocument) {
-		const defaultSpeeds = tokenDocument._actor.data.data.attributes.movement;
+		const defaultSpeeds = tokenDocument._actor.system.attributes.movement;
+		console.log(defaultSpeeds);
 		var tokenSpeeds = ['auto'] ;
 		for (const [key, value] of Object.entries(defaultSpeeds)) {
 			if (value > 0 && key != 'hover') tokenSpeeds.push(key);
@@ -117,6 +118,7 @@ class TokenHudButtons {
 
 	static createTerrainButton(tokenId) {
 		const tokenDocument = canvas.tokens.get(tokenId).document;
+		console.log(tokenDocument)
 		const terrainConfig = TerrainConfig.getConfiguredEnvironments(tokenDocument).all.any;
 		const button = document.createElement('div');
 		button.classList.add('control-icon');
@@ -297,20 +299,20 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			const terrainRulerAvailable = game.modules.get('terrain-ruler')?.active;
 			
 			//Gets the token's movement speeds from DnD5e. Also checks if the creature can hover or not.
-			const walkSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.walk'));
-			const flySpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.fly'));
-			const burrowSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.burrow'));
-			const climbSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.climb'));
-			const swimSpeed = parseFloat(getProperty(token, 'actor.data.data.attributes.movement.swim'));
+			const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
+			const flySpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.fly'));
+			const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
+			const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
+			const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
 			const movementSpeeds = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed};
 
-			const elevation = token.data.elevation;
+			const elevation = token.elevation;
 			var terrains = [];
 			var environments = [];
 			if (terrainRulerAvailable) {
 				terrains = canvas.terrain.terrainFromPixels(token.x, token.y);
 				if (terrains.length > 0)
-					terrains.forEach(terrain => environments.push(terrain.data.environment));
+					terrains.forEach(terrain => environments.push(terrain.environment));
 			}
 
 			//Default movement option.
@@ -359,7 +361,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		getCostForStep(token, area, options={}) {
 			const movementSpeed = EDR_movementMode[token.id];
 			const settingFlyingElevation = this.getSetting('flyingElevation');
-			const tokenDocument = token.data.document;
+			const tokenDocument = token.document;
 
 			//Grabs a token's configured options for ignoring difficult terrain.
 			const configuredEnvironments = TerrainConfig.getConfiguredEnvironments(tokenDocument)
@@ -374,7 +376,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			//If a token is set to ignore all difficult terrain simply return 1 as the cost.
 			if (ignoredEnvironments['all']['any']) return 1;
 
-			if (movementSpeed == 'fly' && settingFlyingElevation) options.elevation = token.data.elevation + 1;
+			if (movementSpeed == 'fly' && settingFlyingElevation) options.elevation = token.elevation + 1;
 			options.token = token;
 			//Defines a custom calculate function to be used by Enhanced Terrain Layer.
 			options.calculate = function calculate(cost, total, object) {

@@ -12,7 +12,9 @@ In addition this module fully supports the use of the Enhanced Terrain Layer + T
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
 
 ## Installation
-Copy the following manifest link into the module installation window: 
+Copy the following manifest link into the module installation window to install this patch branch: https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/v10-patch/module.json
+
+I do not officially support this temporary patch and any non-breaking issues will likely be ignored. Once an official release for Drag Ruler is released, I will release a proper update for this module. **If you plan on using this temporary patch in the meantime please be aware that it will likely not automatically update to any new official releases, you will have to uninstall this branch and redownload this module from within the Foundry module listing!**
 
 ## Movement Options
 A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use.

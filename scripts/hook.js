@@ -59,7 +59,6 @@ class TokenHudButtons {
 	//Returns a list of the actor's available and relevant movement options.
 	static getTokenSpeeds(tokenDocument) {
 		const defaultSpeeds = tokenDocument._actor.system.attributes.movement;
-		console.log(defaultSpeeds);
 		var tokenSpeeds = ['auto'] ;
 		for (const [key, value] of Object.entries(defaultSpeeds)) {
 			if (value > 0 && key != 'hover') tokenSpeeds.push(key);
@@ -118,7 +117,6 @@ class TokenHudButtons {
 
 	static createTerrainButton(tokenId) {
 		const tokenDocument = canvas.tokens.get(tokenId).document;
-		console.log(tokenDocument)
 		const terrainConfig = TerrainConfig.getConfiguredEnvironments(tokenDocument).all.any;
 		const button = document.createElement('div');
 		button.classList.add('control-icon');
@@ -306,11 +304,11 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
 			const movementSpeeds = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed};
 
-			const elevation = token.elevation;
+			const elevation = tokenDocument.elevation;
 			var terrains = [];
 			var environments = [];
 			if (terrainRulerAvailable) {
-				terrains = canvas.terrain.terrainFromPixels(token.x, token.y);
+				terrains = canvas.terrain.terrainFromPixels(tokenDocument.x, tokenDocument.y);
 				if (terrains.length > 0)
 					terrains.forEach(terrain => environments.push(terrain.environment));
 			}
@@ -340,8 +338,9 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					movementSpeed = 'swim';
 				if (elevation > 0)
 					movementSpeed = 'fly';
-				if (elevation == 0 && settingForceFlying && (flySpeed > walkSpeed))
+				if (elevation == 0 && settingForceFlying && (flySpeed > walkSpeed)) {
 					movementSpeed = 'fly';
+				}
 				if (elevation == 0 && settingForceSwimming && environments.includes('water') && (swimSpeed > walkSpeed) && (swimSpeed > flySpeed))
 					movementSpeed = 'swim';
 				if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (burrowSpeed > walkSpeed) && (burrowSpeed > flySpeed))
@@ -375,15 +374,14 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			}
 			//If a token is set to ignore all difficult terrain simply return 1 as the cost.
 			if (ignoredEnvironments['all']['any']) return 1;
-
-			if (movementSpeed == 'fly' && settingFlyingElevation) options.elevation = token.elevation + 1;
+			if (movementSpeed == 'fly' && settingFlyingElevation) options.elevation = tokenDocument.elevation + 1;
 			options.token = token;
 			//Defines a custom calculate function to be used by Enhanced Terrain Layer.
 			options.calculate = function calculate(cost, total, object) {
 				//The movement cost from water can stack with difficult terrain. Due to limitations with the API these 2 different movement costs have to be encoded into one number. This will break in the unlikely event someone uses costs over 99.
 				var terrainCost = Math.floor(total/100);
 				var waterCost = total % 100;
-				const environment = object?.environment?.id;
+				const environment = object.document.environment;
 				//Check the configured token settings for any terrain that should be ignored.
 				if (ignoredEnvironments['all']) {
 					if ((ignoredEnvironments['all'].includes('any') || ignoredEnvironments['all'].includes(movementSpeed)))

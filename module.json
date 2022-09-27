@@ -1,21 +1,21 @@
 {
 	"id": "elevation-drag-ruler",
-	"title": "DnD5e Drag Ruler Integration",
+	"title": "DnD5e Drag Ruler Integration (Patched)",
 	"description": "An enhancement of Drag Ruler for the DnD5e system.",
-	"version": "1.7.0",
+	"version": "1.6.4",
 	"author": "Pepijn Sietsema",
 	"compatibility": {
-		"minimum": 10,
-		"verified": "10.279"
+		"minimum": "10",
+		"verified": "10.286"
 	},
 	"relationships": {
 		"systems": [
 			{
 				"id": "dnd5e",
 				"type": "system",
-				"manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/v10-dev/system.json",
+				"manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
 				"compatibility": {
-					"verified": "2.0.0-alpha3"
+					"verified": "2.0.3"
 				}
 			}
 		],
@@ -23,9 +23,9 @@
 			{
 				"id": "drag-ruler",
 				"type": "module",
-				"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-drag-ruler/master/module.json",
+				"manifest": "https://raw.githubusercontent.com/Traumi/foundryvtt-drag-ruler/master/module.json",
 				"compatibility": {
-					"verified": "1.12.8"
+					"verified": "1.12.13"
 				}
 			}
 		]

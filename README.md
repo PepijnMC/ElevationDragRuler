@@ -11,6 +11,9 @@ In addition this module fully supports the use of the Enhanced Terrain Layer + T
 - <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
 
+## Installation
+Copy the following manifest link into the module installation window: 
+
 ## Movement Options
 A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use.
   

@@ -202,7 +202,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{
 					id: 'forceSwimming',
 					name: 'Force Swimming',
-					hint: 'Tokens at elevation 0 and in water terrain will default to their swimming speed if it is bigger than their walking and flying speed.',
+					hint: 'Tokens at elevation 0 and in water terrain will default to their swimming speed if they have one.',
 					scope: 'world',
 					config: true,
 					type: Boolean,
@@ -340,7 +340,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 					movementSpeed = 'fly';
 				if (elevation == 0 && settingForceFlying && (flySpeed > walkSpeed))
 					movementSpeed = 'fly';
-				if (elevation == 0 && settingForceSwimming && environments.includes('water') && (swimSpeed > walkSpeed) && (swimSpeed > flySpeed))
+				if (elevation == 0 && settingForceSwimming && environments.includes('water') && (swimSpeed > 0))
 					movementSpeed = 'swim';
 				if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (burrowSpeed > walkSpeed) && (burrowSpeed > flySpeed))
 					movementSpeed = 'burrow';

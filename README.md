@@ -1,4 +1,4 @@
-# DnD5e Drag Ruler Integration (v10 Patch)
+# DnD5e Drag Ruler Integration
 A Foundry VTT module that aims to enhance the Drag Ruler module for use with the DnD5e system. This includes tokens being able to easily and quickly change between their different types of movement speed (swimming, flying, burrowing, and climbing) and an 'automatic' movement setting to streamline your encounter setups. You will no longer have to struggle with Wisps only showing their 0 feet walking speed, or with Dragons and their multitude of different movement speeds.
   
 In addition this module fully supports the use of the Enhanced Terrain Layer + Terrain Ruler modules, actors and tokens can be configured to ignore certain types of terrain based on the movement speed they are currently using. Swimming in water terrain or climbing in mountain terrain is no longer a problem for your characters and creatures, even your Ranger can be configured to ignore movement penalties in their favored terrain. 

@@ -1,12 +1,12 @@
 import {addConfig} from "./token_config.js";
 import {addSpeedButton, addTerrainButton} from "./token_hud.js";
+import {dnd5eCost} from "./cost_function.js";
+import {getDnd5eEnvironments} from "./environments.js"
 
 export function getTokenSpeeds(tokenDocument) {
 	const defaultSpeeds = tokenDocument._actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
-	for (const [key, value] of Object.entries(defaultSpeeds)) {
-		if (value > 0 && key != 'hover') tokenSpeeds.push(key);
-	}
+	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
 	return tokenSpeeds;
 }
 
@@ -74,13 +74,6 @@ function getMovementMode(token) {
 			movementMode = 'burrow';
 	}
 	return movementMode;
-}
-
-function dnd5eCost(terrain, options={}) {
-	const token = options.token;
-	const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
-	console.log(movementMode)
-	return 1
 }
 
 let onDragLeftStart = async function (wrapped, ...args) {
@@ -187,16 +180,13 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		//An array of colors to be used by the movement ranges.
 		get colors() {
 			return [
-				{id: 'walk', default: 0x00FF00, 'name': 'walking'},
-				{id: 'walkDash', default: 0xFFFF00, 'name': 'dash walking'},
-				{id: 'fly', default: 0x00FFFF, 'name': 'flying'},
-				{id: 'flyDash', default: 0xFFFF00, 'name': 'dash flying'},
-				{id: 'swim', default: 0x0000FF, 'name': 'swimming'},
-				{id: 'swimDash', default: 0xFFFF00, 'name': 'dash swimming'},
-				{id: 'burrow', default: 0xFFAA00, 'name': 'burrowing'},
-				{id: 'burrowDash', default: 0xFFFF00, 'name': 'dash burrowing'},
-				{id: 'climb', default: 0xAA6600, 'name': 'climbing'},
-				{id: 'climbDash', default: 0xFFFF00, 'name': 'dash climbing'}
+				{id: 'walk', default: 0x00FF00, 'name': 'Walking'},
+				{id: 'fly', default: 0x00FFFF, 'name': 'Flying'},
+				{id: 'swim', default: 0x0000FF, 'name': 'Swimming'},
+				{id: 'burrow', default: 0xFFAA00, 'name': 'Burrowing'},
+				{id: 'climb', default: 0xAA6600, 'name': 'Climbing'},
+				{id: 'dash', default: 0xFFFF00, 'name': 'Dashing'},
+				{id: 'bonusDash', default: 0xFF6600, 'name': 'Bonus Dashing'},
 			]
 		}
 		
@@ -222,10 +212,24 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 
 			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed};
 			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
-			const speedColor = movementMode;
-			const dashColor = movementMode + 'Dash';
+			 
+			var movementRestricted = false;
+			const movementRestrictions = ['dead', 'grappled', 'incapacitated', 'paralysis', 'petrified', 'restrain', 'sleep', 'stun', 'unconscious'];
+			movementRestrictions.forEach(condition => {
+				if (token.document.hasStatusEffect(condition)) movementRestricted = true;
+			});
+			const movementSlowed = token.document.hasStatusEffect('slowed') ? 2 : 1;
 
-			return [{range: movementModes[movementMode], color: speedColor}, {range: movementModes[movementMode] * 2, color: dashColor}];
+			var bonusDashMultiplier = 2;
+			const items = getProperty(token, 'actor._source.items');
+			items.forEach(item => {
+				if (item.name == 'Cunning Action') bonusDashMultiplier = 3;
+			})
+
+			const movementRange = movementRestricted ? 0 : (movementModes[movementMode] / movementSlowed);
+			const speedColor = movementMode;
+
+			return [{range: movementRange, color: speedColor}, {range: movementRange * 2, color: 'dash'}, {range: movementRange * bonusDashMultiplier, color: 'bonusDash'}];
 		}
 	}
 
@@ -244,4 +248,5 @@ Hooks.on('renderTokenConfig', addConfig)
 Hooks.once("canvasInit", () => {
     libWrapper.register("elevation-drag-ruler", "canvas.terrain.__proto__.calculateCombinedCost", dnd5eCost, libWrapper.OVERRIDE); 
 	libWrapper.register("elevation-drag-ruler", "Token.prototype._onDragLeftStart", onDragLeftStart, "WRAPPER");
+	libWrapper.register("elevation-drag-ruler", "canvas.terrain.getEnvironments", getDnd5eEnvironments, libWrapper.OVERRIDE);
 });

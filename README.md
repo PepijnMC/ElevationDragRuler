@@ -39,7 +39,7 @@ Please report issues and propose requests <a href="https://github.com/PepijnMC/E
 This section is for those who might want to make their own module interact with this one. Calling this an API is too generous but most of the data this module uses is saved to flags on the Token Document under `elevation-drag-ruler` (the old module's name).
 
 - `movementMode`
-  - This flag when set contains a string of the token's last used movement mode, either ``walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
+  - This flag when set contains a string of the token's last used movement mode, either `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
   - This flag is set during the `onDragLeftStart` function. It's ill-advised to write to this flag as it will either be overwritten or cause issues in the pipeline.
 - `selectedSpeed`
   - This flag when set contains a string of the token's currently selected movement speed, either `auto`, `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.

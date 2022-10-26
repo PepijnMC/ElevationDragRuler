@@ -49,6 +49,7 @@ This section is for those who might want to make their own module interact with 
 - `teleportRange`
   - This flag contains a number related to the optional teleport movement option.
   - This flag is controlled by the token configuration menu.
+  - A token will be able to select the teleport movement option when this number is greater than zero.
   - Although untested it should be safe to write to this flag in another module.
 - `teleportCost`
   - This flag contains a number related to the optional teleport movement option.

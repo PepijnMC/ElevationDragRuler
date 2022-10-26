@@ -44,6 +44,7 @@ function createSpeedButton(tokenId) {
 	if (selectedSpeed == 'fly') button.innerHTML = '<i class="fas fa-crow fa-fw"></i>';
 	if (selectedSpeed == 'burrow') button.innerHTML = '<i class="fas fa-mountain fa-fw"></i>';
 	if (selectedSpeed == 'climb') button.innerHTML = '<i class="fas fa-grip-lines fa-fw"></i>';
+	if (selectedSpeed == 'teleport') button.innerHTML = '<i class="fas fa-transporter-1 fa-fw"></i>';
 	
 	return button;
 }

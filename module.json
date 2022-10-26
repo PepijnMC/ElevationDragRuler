@@ -41,5 +41,6 @@
   ],
   "url": "https://github.com/PepijnMC/ElevationDragRuler",
   "manifest": "https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/v10-patch/module.json",
-  "download": "https://github.com/PepijnMC/ElevationDragRuler/raw/v10-patch/module.zip"
+  "download": "https://github.com/PepijnMC/ElevationDragRuler/raw/v10-patch/module.zip",
+  "socket": true
 }

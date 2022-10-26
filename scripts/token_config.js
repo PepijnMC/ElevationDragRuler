@@ -27,6 +27,9 @@ function addConfigResourceField(config, html) {
 	const tokenSpeeds = getTokenSpeeds(tokenDocument);
 	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
 	const hideSpeedButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideSpeedButton');
+	const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
+	const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
+	const teleportCost = tokenDocument.getFlag('elevation-drag-ruler', 'teleportCost') || 0;
 	const resourceTab = html.find('div.tab[data-tab="resources"]')
 
 	resourceTab.append(`<div class='form-group'><label>Selected Movement Speed</label><div class='form-fields'><select name='flags.elevation-drag-ruler.selectedSpeed'></select></div></div>`)
@@ -34,10 +37,11 @@ function addConfigResourceField(config, html) {
 	for (const tokenSpeed of tokenSpeeds) {
 		speedField.append(`<option value=${tokenSpeed} ${tokenSpeed == selectedSpeed ? "selected" : ""}>${tokenSpeed.charAt(0).toUpperCase() + tokenSpeed.slice(1)}</option>`);
 	}
+	resourceTab.append(`<div class='form-group'><label>Teleport Range</label><input type='number' name='flags.elevation-drag-ruler.teleportRange' value='${teleportRange}'></div>`)
+	resourceTab.append(`<div class='form-group'><label>Teleport Cost</label><input type='number' name='flags.elevation-drag-ruler.teleportCost' value='${teleportCost}'></div>`)
 	resourceTab.append(`<div class='form-group'><label>Hide Speed Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideSpeedButton' ${hideSpeedButton ? 'checked=""' : '""'}></div>`);
 	
 	if (game.modules.get('terrain-ruler')?.active) {
-		const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
 		resourceTab.append(`<div class='form-group'><label>Hide Terrain Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideTerrainButton' ${hideTerrainButton ? 'checked=""' : '""'}></div>`);
 	}
 }

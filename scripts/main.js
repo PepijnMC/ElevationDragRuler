@@ -1,12 +1,15 @@
-import {addConfig} from "./token_config.js";
-import {addSpeedButton, addTerrainButton} from "./token_hud.js";
-import {dnd5eCost} from "./cost_function.js";
-import {getDnd5eEnvironments} from "./environments.js"
+import { addConfig } from "./token_config.js";
+import { addSpeedButton, addTerrainButton } from "./token_hud.js";
+import { dnd5eCost } from "./cost_function.js";
+import { getDnd5eEnvironments } from "./environments.js"
+import { modifyPreviousMovementCost } from "./movement_tracking.js"
+import { getMovementTotal } from "./movement_tracking.js";
 
 export function getTokenSpeeds(tokenDocument) {
 	const defaultSpeeds = tokenDocument._actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
 	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
+	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
 	return tokenSpeeds;
 }
 
@@ -14,6 +17,15 @@ export function getConfiguredEnvironments(tokenDocument) {
 	const defaultConfiguredEnvironments = {'all': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'arctic': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'coast': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'desert': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'forest': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'grassland': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'jungle': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'mountain': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": true, "climb": true}, 'swamp': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'underdark': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'urban': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'water': {"any": false, "walk": false, "swim": true, "fly": false, "burrow": false, "climb": false}}
 	var configuredEnvironments = tokenDocument.getFlag('elevation-drag-ruler', 'ignoredEnvironments');
 	return configuredEnvironments || defaultConfiguredEnvironments;
+}
+
+function getBonusDashMultiplier(token) {
+	var multiplier = 1;
+	const items = getProperty(token, 'actor.items');
+	items.forEach((value) => {
+		if (value.name == 'Cunning Action') multiplier = 3;
+	})
+	return multiplier;
 }
 
 function getMovementMode(token) {
@@ -24,7 +36,7 @@ function getMovementMode(token) {
 	const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
 	const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
 	const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
-	const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed};
+	const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': 30};
 
 	const settingElevationSwitching = game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.elevationSwitching');
 	const settingForceFlying = game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.forceFlying');
@@ -80,11 +92,19 @@ let onDragLeftStart = async function (wrapped, ...args) {
 	wrapped(...args);
 	if (canvas != null) {
 		const token = args[0].data.clones[0];
-
+		const previousMovementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
+		if (previousMovementMode == 'teleport' && game.combat) {
+			const teleportRange = token.document.getFlag('elevation-drag-ruler', 'teleportRange');
+			if (teleportRange > 0) {
+				const teleportCost = token.document.getFlag('elevation-drag-ruler', 'teleportCost');
+				modifyPreviousMovementCost(token, teleportCost);
+			};
+		}
 		const movementMode = getMovementMode(token);
 		token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
 	}
 }
+
 //Hooking into Drag Ruler when it's ready.
 Hooks.once('dragRuler.ready', (SpeedProvider) => {
 	class DnD5eSpeedProvider extends SpeedProvider {
@@ -185,6 +205,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{id: 'swim', default: 0x0000FF, 'name': 'Swimming'},
 				{id: 'burrow', default: 0xFFAA00, 'name': 'Burrowing'},
 				{id: 'climb', default: 0xAA6600, 'name': 'Climbing'},
+				{id: 'teleport', default: 0xAA00AA, 'name': 'Teleporting'},
 				{id: 'dash', default: 0xFFFF00, 'name': 'Dashing'},
 				{id: 'bonusDash', default: 0xFF6600, 'name': 'Bonus Dashing'},
 			]
@@ -194,7 +215,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			var highestSpeed = 0;
 			var highestMovement = 'walk';
 			for (const [key, value] of Object.entries(movementModes)) {
-				if (value > highestSpeed && key != 'hover') {
+				if (value > highestSpeed && key != 'teleport') {
 					highestSpeed = value;
 					highestMovement = key;
 				}
@@ -204,32 +225,33 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 
 		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
 		getRanges(token) {
+			const movementTotal = getMovementTotal(token);
 			const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
 			const flySpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.fly'));
 			const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
 			const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
 			const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
-
-			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed};
+			const teleportRange = token.document.getFlag('elevation-drag-ruler', 'teleportRange');
+			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': movementTotal + teleportRange};
 			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
-			 
-			var movementRestricted = false;
-			const movementRestrictions = ['dead', 'grappled', 'incapacitated', 'paralysis', 'petrified', 'restrain', 'sleep', 'stun', 'unconscious'];
-			movementRestrictions.forEach(condition => {
-				if (token.document.hasStatusEffect(condition)) movementRestricted = true;
-			});
-			const movementSlowed = token.document.hasStatusEffect('slowed') ? 2 : 1;
+			
+			if (movementMode == 'teleport') {
+				return [{range: movementModes['teleport'], color: 'teleport'}]
+			}
+			else {
+				var movementRestricted = false;
+				const movementRestrictions = ['dead', 'grappled', 'incapacitated', 'paralysis', 'petrified', 'restrain', 'sleep', 'stun', 'unconscious'];
+				movementRestrictions.forEach(condition => {
+					if (token.document.hasStatusEffect(condition)) movementRestricted = true;
+				});
+				const movementMultiplier = (token.document.hasStatusEffect('slowed') ? 0.5 : 1) * (token.document.hasStatusEffect('hasted') ? 2 : 1);
 
-			var bonusDashMultiplier = 2;
-			const items = getProperty(token, 'actor._source.items');
-			items.forEach(item => {
-				if (item.name == 'Cunning Action') bonusDashMultiplier = 3;
-			})
+				const bonusDashMultiplier = getBonusDashMultiplier(token);
+				const movementRange = movementRestricted ? 0 : (movementModes[movementMode] * movementMultiplier);
+				const speedColor = movementMode;
 
-			const movementRange = movementRestricted ? 0 : (movementModes[movementMode] / movementSlowed);
-			const speedColor = movementMode;
-
-			return [{range: movementRange, color: speedColor}, {range: movementRange * 2, color: 'dash'}, {range: movementRange * bonusDashMultiplier, color: 'bonusDash'}];
+				return [{range: movementRange, color: speedColor}, {range: movementRange * 2, color: 'dash'}, {range: movementRange * bonusDashMultiplier, color: 'bonusDash'}];
+			}
 		}
 	}
 

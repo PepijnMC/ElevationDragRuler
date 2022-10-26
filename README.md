@@ -37,12 +37,23 @@ Please report issues and propose requests <a href="https://github.com/PepijnMC/E
   
 ## API Flags
 This section is for those who might want to make their own module interact with this one. Calling this an API is too generous but most of the data this module uses is saved to flags on the Token Document under `elevation-drag-ruler` (the old module's name).
-  
+
+- `movementMode`
+  - This flag when set contains a string of the token's last used movement mode, either ``walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
+  - This flag is set during the `onDragLeftStart` function. It's ill-advised to write to this flag as it will either be overwritten or cause issues in the pipeline.
 - `selectedSpeed`
-  - This flag when set contains a string of the token's currently selected movement speed, either `auto`, `walk`, `swim`, `fly`, `burrow`, or `climb`.
+  - This flag when set contains a string of the token's currently selected movement speed, either `auto`, `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
   - This flag is not set by default, in which case it can be safely assumed the token is in `auto` mode.
-  - Although untested it should be safe to write to this flag in another module. The token HUD button will not update when it is already rendered but it should never desync as it always checks the current value of the flag before doing anything. I might expose a function in the future to force an update to the button.
+  - Although untested it should be safe to write to this flag in another module.
   - I do not recommend setting this flag to a value different from the ones above.
+- `teleportRange`
+  - This flag contains a number related to the optional teleport movement option.
+  - This flag is controlled by the token configuration menu.
+  - Although untested it should be safe to write to this flag in another module.
+- `teleportCost`
+  - This flag contains a number related to the optional teleport movement option.
+  - This flag is controlled by the token configuration menu.
+  - Although untested it should be safe to write to this flag in another module.
 - `ignoredEnvironments`
   - This flag when set contains the data of the terrain configuration in the form of an object of objects. The object contains all terrain ids from Enhanced Terrain Layer and an `all`, each of which has its value set to another object of all movement speeds and an `any` which are set to `true`/`false` (`true` meaning to ignore this terrain for this movement speed).
   - The "Toggle Terrain" button added to the token HUD also uses this flag, specifically `ignoredEnvironments.all.any`.

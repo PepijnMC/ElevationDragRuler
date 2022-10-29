@@ -45,15 +45,15 @@ This section is for those who might want to make their own module interact with 
   - This flag when set contains a string of the token's currently selected movement speed, either `auto`, `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
   - This flag is not set by default, in which case it can be safely assumed the token is in `auto` mode.
   - Although untested it should be safe to write to this flag.
-- `teleportRange`
-  - This flag contains a number related to the optional teleport movement option.
-  - This flag is set in the token configuration menu (default `0`).
-  - A token will be able to select the teleport movement option when this number is greater than zero.
-  - Although untested it should be safe to write to this flag.
 - `hasBonusDash`
   - This flag when set (true/false) indicates whether or not a token should have a bonus dash range.
   - This flag is set in the token configuration menu.
   - This flag is not set by default, in which case the module will fall back to looking for the Cunning Action feature. This does not update the flag itself!
+  - Although untested it should be safe to write to this flag.
+- `teleportRange`
+  - This flag contains a number related to the optional teleport movement option.
+  - This flag is set in the token configuration menu (default `0`).
+  - A token will be able to select the teleport movement option when this number is greater than zero.
   - Although untested it should be safe to write to this flag.
 - `teleportCost`
   - This flag contains a number related to the optional teleport movement option.

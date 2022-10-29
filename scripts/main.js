@@ -20,7 +20,7 @@ let onDragLeftStart = async function (wrapped, ...args) {
 			modifyPreviousMovementCost(token, teleportCost);
 		};
 		const movementMode = getMovementMode(token);
-		token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
+		await token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
 	}
 }
 

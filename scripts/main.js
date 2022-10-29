@@ -31,9 +31,11 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('canvasInit', () => {
-    libWrapper.register('elevation-drag-ruler', 'canvas.terrain.__proto__.calculateCombinedCost', dnd5eCost, libWrapper.OVERRIDE); 
+	if (game.modules.get('enhanced-terrain-layer')?.active) {
+    	libWrapper.register('elevation-drag-ruler', 'canvas.terrain.__proto__.calculateCombinedCost', dnd5eCost, libWrapper.OVERRIDE); 
+		libWrapper.register('elevation-drag-ruler', 'canvas.terrain.getEnvironments', getDnd5eEnvironments, libWrapper.OVERRIDE);
+	};
 	libWrapper.register('elevation-drag-ruler', 'Token.prototype._onDragLeftStart', onDragLeftStart, 'WRAPPER');
-	libWrapper.register('elevation-drag-ruler', 'canvas.terrain.getEnvironments', getDnd5eEnvironments, libWrapper.OVERRIDE);
 });
 
 

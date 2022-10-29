@@ -1,4 +1,4 @@
-import {getConfiguredEnvironments, getTokenSpeeds} from "./main.js"
+import {getConfiguredEnvironments, getTokenSpeeds} from "./util.js"
 
 //Called when the 'Switch Speed' button is clicked.
 async function onSpeedButtonClick(tokenId, html) {

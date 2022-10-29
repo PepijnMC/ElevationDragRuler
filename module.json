@@ -1,46 +1,47 @@
 {
-  "id": "elevation-drag-ruler",
-  "title": "DnD5e Drag Ruler Integration",
-  "description": "An enhancement of Drag Ruler for the DnD5e system.",
-  "version": "1.8.0",
-  "authors": [
-    "Pepijn Sietsema"
-  ],
-  "compatibility": {
-    "minimum": "10",
-    "verified": "10"
-  },
-  "relationships": {
-    "systems": [
-      {
-        "id": "dnd5e",
-        "type": "system",
-        "manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
-        "compatibility": {
-          "verified": "2.0.3"
-        }
-      }
-    ],
-    "requires": [
-      {
-        "id": "drag-ruler",
-        "type": "module",
-        "manifest": "https://raw.githubusercontent.com/Traumi/foundryvtt-drag-ruler/master/module.json",
-        "compatibility": {
-          "verified": "1.13.0"
-        }
-      },
-      {
-        "id": "lib-wrapper",
-        "type": "module"
-      }
-    ]
-  },
-  "esmodules": [
-    "scripts/main.js"
-  ],
-  "url": "https://github.com/PepijnMC/ElevationDragRuler",
-  "manifest": "https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/v10-patch/module.json",
-  "download": "https://github.com/PepijnMC/ElevationDragRuler/raw/v10-patch/module.zip",
-  "socket": true
+	"id": "elevation-drag-ruler",
+	"title": "DnD5e Drag Ruler Integration",
+	"description": "An enhancement of Drag Ruler for the DnD5e system.",
+	"version": "1.8.0",
+	"authors": [
+		"Pepijn Sietsema"
+	],
+	"compatibility": {
+		"minimum": "10",
+		"verified": "10"
+	},
+	"relationships": {
+		"systems": [
+			{
+				"id": "dnd5e",
+				"type": "system",
+				"manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
+				"compatibility": {
+					"verified": "2.0.3"
+				}
+			}
+		],
+		"requires": [
+			{
+				"id": "drag-ruler",
+				"type": "module",
+				"manifest": "https://raw.githubusercontent.com/Traumi/foundryvtt-drag-ruler/master/module.json",
+				"compatibility": {
+					"verified": "1.13.0"
+				}
+			},
+			{
+				"id": "lib-wrapper",
+				"type": "module"
+			}
+		]
+	},
+	"esmodules": [
+		"scripts/main.js",
+		"scripts/socket.js"
+	],
+	"url": "https://github.com/PepijnMC/ElevationDragRuler",
+	"manifest": "https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/v10-patch/module.json",
+	"download": "https://github.com/PepijnMC/ElevationDragRuler/raw/v10-patch/module.zip",
+	"socket": true
 }

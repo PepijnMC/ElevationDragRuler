@@ -1,202 +1,74 @@
-import { addConfig } from "./token_config.js";
-import { addSpeedButton, addTerrainButton } from "./token_hud.js";
-import { dnd5eCost } from "./cost_function.js";
-import { getDnd5eEnvironments } from "./environments.js"
-import { modifyPreviousMovementCost } from "./movement_tracking.js"
-import { getMovementTotal } from "./movement_tracking.js";
+// TO DO:
+// - Make sure the keybindForceTeleport flag gets reset properly at the start of loading a new scene.
+// - Make sure hex grids and gridless maps work properly.
 
-export function getTokenSpeeds(tokenDocument) {
-	const defaultSpeeds = tokenDocument._actor.system.attributes.movement;
-	var tokenSpeeds = ['auto'] ;
-	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
-	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
-	return tokenSpeeds;
-}
+import { registerSettings } from './settings.js';
+import { registerKeybindings } from './keybindings.js';
+import { isTokenInCombat, getBonusDashMultiplier, getConfiguredEnvironments, getHighestMovementSpeed, getMovementMode, getMovementTotal, setProneStatus } from './util.js';
+import { addConfig } from './token_config.js';
+import { addSpeedButton, addTerrainButton } from './token_hud.js';
+import { dnd5eCost } from './cost_function.js';
+import { getDnd5eEnvironments } from './environments.js';
+import { modifyPreviousMovementCost } from './movement_tracking.js';
 
-export function getConfiguredEnvironments(tokenDocument) {
-	const defaultConfiguredEnvironments = {'all': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'arctic': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'coast': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'desert': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'forest': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'grassland': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'jungle': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'mountain': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": true, "climb": true}, 'swamp': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'underdark': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'urban': {"any": false, "walk": false, "swim": false, "fly": false, "burrow": false, "climb": false}, 'water': {"any": false, "walk": false, "swim": true, "fly": false, "burrow": false, "climb": false}}
-	var configuredEnvironments = tokenDocument.getFlag('elevation-drag-ruler', 'ignoredEnvironments');
-	return configuredEnvironments || defaultConfiguredEnvironments;
-}
-
-function getBonusDashMultiplier(token) {
-	var multiplier = 1;
-	const items = getProperty(token, 'actor.items');
-	items.forEach((value) => {
-		if (value.name == 'Cunning Action') multiplier = 3;
-	})
-	return multiplier;
-}
-
-function getMovementMode(token) {
-	const tokenDocument = token.document;
-
-	const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
-	const flySpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.fly'));
-	const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
-	const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
-	const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
-	const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': 30};
-
-	const settingElevationSwitching = game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.elevationSwitching');
-	const settingForceFlying = game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.forceFlying');
-	const settingForceSwimming = game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.forceSwimming');
-	const settingForceBurrowing = game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.forceBurrowing');
-
-	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
-	const terrainRulerAvailable = game.modules.get('terrain-ruler')?.active;
-	const elevation = tokenDocument.elevation;
-	var environments = [];
-
-	// if (terrainRulerAvailable) {
-	// 	const terrains = canvas.terrain.terrainFromPixels(tokenDocument.x, tokenDocument.y);
-	// 	if (terrains.length > 0)
-	// 		terrains.forEach(terrain => environments.push(terrain.environment));
-	// }
-
-	//Default movement mode.
-	var movementMode = 'walk';
-	
-	//If a token has a speed selected use that.
-	if (selectedSpeed && selectedSpeed != 'auto') {
-		movementMode = selectedSpeed;
-	}
-	//If the token has no speed selected and the 'Use Elevation' setting is off, use their swimming speed if they're in water or else their highest speed.
-	else if (!settingElevationSwitching) {
-		if (environments.includes('water') && movementModes.swim > 0) {
-			movementMode = 'swim';
-		}
-		else {
-			movementMode = this.getHighestSpeed(movementModes);
-		}
-	}
-	//If the token has no speed selected and the 'Use Elevation' setting is on, base speed on elevation and terrain (if available)
-	else {
-		if (elevation < 0 && !environments.includes('water'))
-			movementMode = 'burrow';
-		if (elevation < 0 && environments.includes('water'))
-			movementMode = 'swim';
-		if (elevation > 0)
-			movementMode = 'fly';
-		if (elevation == 0 && settingForceFlying && (movementModes.fly > movementModes.walk))
-			movementMode = 'fly';
-		if (elevation == 0 && settingForceSwimming && environments.includes('water') && (movementModes.swim > 0))
-			movementMode = 'swim';
-		if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (movementModes.burrow > movementModes.walk) && (movementModes.burrow > movementModes.fly))
-			movementMode = 'burrow';
-	}
-	return movementMode;
-}
-
+//This function wraps Foundry's onDragLeftStart function.
+//This function saves the appropriate movement mode to the token to be used later by the getRanges function.
+//This function also tracks if the last used movement option was teleportation to modify the movement history to the appropriate values.
 let onDragLeftStart = async function (wrapped, ...args) {
 	wrapped(...args);
 	if (canvas != null) {
 		const token = args[0].data.clones[0];
 		const previousMovementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
-		if (previousMovementMode == 'teleport' && game.combat) {
+		if (previousMovementMode == 'teleport' && isTokenInCombat(token.document) && game.settings.get('drag-ruler', 'enableMovementHistory')) {
 			const teleportRange = token.document.getFlag('elevation-drag-ruler', 'teleportRange');
 			if (teleportRange > 0) {
 				const teleportCost = token.document.getFlag('elevation-drag-ruler', 'teleportCost');
 				modifyPreviousMovementCost(token, teleportCost);
 			};
-		}
+		};
 		const movementMode = getMovementMode(token);
 		token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
 	}
 }
 
-//Hooking into Drag Ruler when it's ready.
+//Register this module's settings to Foundry
+Hooks.once('init', () => {
+	registerSettings();
+	registerKeybindings();
+});
+
+Hooks.once('canvasInit', () => {
+    libWrapper.register('elevation-drag-ruler', 'canvas.terrain.__proto__.calculateCombinedCost', dnd5eCost, libWrapper.OVERRIDE); 
+	libWrapper.register('elevation-drag-ruler', 'Token.prototype._onDragLeftStart', onDragLeftStart, 'WRAPPER');
+	libWrapper.register('elevation-drag-ruler', 'canvas.terrain.getEnvironments', getDnd5eEnvironments, libWrapper.OVERRIDE);
+});
+
+Hooks.on('renderTokenHUD', (app, html, data) => {
+	if (!game.settings.get('elevation-drag-ruler', 'hideSpeedButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideSpeedButton') && game.user.role >= game.settings.get('elevation-drag-ruler', 'restrictSpeedButton'))
+		addSpeedButton(data._id, html);
+	if (!game.settings.get('elevation-drag-ruler', 'hideTerrainButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideTerrainButton') && game.modules.get('terrain-ruler')?.active && game.user.role >= game.settings.get('elevation-drag-ruler', 'restrictTerrainButton'))
+		addTerrainButton(data._id, html);
+});
+
+Hooks.on('renderTokenConfig', (config, html) => {
+	addConfig(config, html);
+});
+
+Hooks.on('combatStart', (combat, updateData) => {
+	setProneStatus();
+});
+
+Hooks.on('combatRound', (combat, updateData, updateOptions) => {
+	setProneStatus();
+});
+
+Hooks.on('combatTurn', (combat, updateData, updateOptions) => {
+	setProneStatus();
+});
+
+//Hooking into Drag Ruler.
 Hooks.once('dragRuler.ready', (SpeedProvider) => {
 	class DnD5eSpeedProvider extends SpeedProvider {
-		//This function is called by Drag Ruler and implements these speedruler settings.
-		get settings() {
-			return [
-				{
-					id: 'elevationSwitching',
-					name: 'Use Elevation',
-					hint: 'Tokens with their movement speed set to automatic will take into account their elevation. When disabled it will use their highest movement speed instead.',
-					scope: 'world',
-					config: true,
-					type: Boolean,
-					default: true
-				},
-				{
-					id: 'flyingElevation',
-					name: 'Elevate Flying',
-					hint: 'Flying tokens will be treated as if they were 1 elevation higher for the purpose of ignoring difficult terrain.',
-					scope: 'world',
-					config: true,
-					type: Boolean,
-					default: true
-				},
-				{
-					id: 'forceFlying',
-					name: 'Force Flying',
-					hint: 'Tokens at elevation 0 will default to their flying speed if it is bigger than their walking speed',
-					scope: 'world',
-					config: true,
-					type: Boolean,
-					default: true
-				},
-				{
-					id: 'forceSwimming',
-					name: 'Force Swimming',
-					hint: 'Tokens at elevation 0 and in water terrain will default to their swimming speed if it is bigger than their walking and flying speed.',
-					scope: 'world',
-					config: true,
-					type: Boolean,
-					default: true
-				},
-				{
-					id: 'forceBurrowing',
-					name: 'Force Burrowing',
-					hint: 'Tokens at elevation 0 but not in water terrain will default to their burrowing speed if it is bigger than their walking and flying speed.',
-					scope: 'world',
-					config: true,
-					type: Boolean,
-					default: true
-				},
-				{
-					id: 'hideSpeedButton',
-					name: 'Hide "Switch Speed" Button',
-					hint: 'Hides the "Switch Speed" button from the Token HUD for the current user.',
-					scope: 'client',
-					config: true,
-					type: Boolean,
-					default: false
-				},
-				{
-					id: 'restrictSpeedButton',
-					name: 'Restrict the "Switch Speed" Button',
-					hint: 'Restricts the "Switch Speed" button to a minimal permission level.',
-					scope: "world",
-					config: true,
-					default: "1",
-					choices: {1: "Player", 2: "Trusted", 3: "Assistant", 4: "Game Master"},
-					type: String
-				},
-				{
-					id: 'hideTerrainButton',
-					name: 'Hide "Toggle Terrain" Button',
-					hint: 'Hides the "Toggle Terrain" button from the Token HUD for the current user.',
-					scope: 'client',
-					config: true,
-					type: Boolean,
-					default: false
-				},
-				{
-					id: 'restrictTerrainButton',
-					name: 'Restrict the "Toggle Terrain" Button',
-					hint: 'Restricts the "Toggle Terrain" button to a minimal permission level.',
-					scope: "world",
-					config: true,
-					default: "1",
-					choices: {1: "Player", 2: "Trusted", 3: "Assistant", 4: "Game Master"},
-					type: String
-				}
-			]
-		}
-		
 		//An array of colors to be used by the movement ranges.
 		get colors() {
 			return [
@@ -210,22 +82,14 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{id: 'bonusDash', default: 0xFF6600, 'name': 'Bonus Dashing'},
 			]
 		}
-		
-		getHighestSpeed(movementModes) {
-			var highestSpeed = 0;
-			var highestMovement = 'walk';
-			for (const [key, value] of Object.entries(movementModes)) {
-				if (value > highestSpeed && key != 'teleport') {
-					highestSpeed = value;
-					highestMovement = key;
-				}
-			}
-			return highestMovement;
-		}
 
 		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
 		getRanges(token) {
-			const movementTotal = getMovementTotal(token);
+			//Retrieves the total movement in the token's movement history to be used by the teleportation range.
+			var movementTotal = 0;
+			if (isTokenInCombat(token.document) && game.settings.get('drag-ruler', 'enableMovementHistory')) movementTotal = getMovementTotal(token) || 0;
+
+			//Retrieves and compiles relevant movement data of the token.
 			const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
 			const flySpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.fly'));
 			const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
@@ -235,40 +99,84 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': movementTotal + teleportRange};
 			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
 			
+			//Teleportation does not require speed modifiers or dash ranges.
 			if (movementMode == 'teleport') {
 				return [{range: movementModes['teleport'], color: 'teleport'}]
 			}
+			//Applies various modifiers to the movement speeds of the token depending on its conditions and features.
 			else {
+				//Any of these conditions set a creature's speed to 0.
 				var movementRestricted = false;
 				const movementRestrictions = ['dead', 'grappled', 'incapacitated', 'paralysis', 'petrified', 'restrain', 'sleep', 'stun', 'unconscious'];
 				movementRestrictions.forEach(condition => {
 					if (token.document.hasStatusEffect(condition)) movementRestricted = true;
 				});
+				//Creatures can be slowed or hasted to half or double their available movement speeds respectively.
 				const movementMultiplier = (token.document.hasStatusEffect('slowed') ? 0.5 : 1) * (token.document.hasStatusEffect('hasted') ? 2 : 1);
-
+				//
+				const wasProne = token.document.getFlag('elevation-drag-ruler', 'wasProne');
+				var movementModifier = 0;
+				if (wasProne && !token.document.hasStatusEffect('prone') && isTokenInCombat(token.document)) {
+					movementModifier = token.document.getFlag('elevation-drag-ruler', 'proneCost') || getHighestMovementSpeed(token.document) / 2;
+				}
+				
+				//Retrieves if the token has a bonus action dash available.
 				const bonusDashMultiplier = getBonusDashMultiplier(token);
-				const movementRange = movementRestricted ? 0 : (movementModes[movementMode] * movementMultiplier);
-				const speedColor = movementMode;
 
-				return [{range: movementRange, color: speedColor}, {range: movementRange * 2, color: 'dash'}, {range: movementRange * bonusDashMultiplier, color: 'bonusDash'}];
+				const movementRange = movementRestricted ? 0 : (movementModes[movementMode] * movementMultiplier);
+				const modifiedMovementRange = movementRestricted ? 0 : (movementRange - movementModifier);
+				return [{range: modifiedMovementRange, color: movementMode}, {range: modifiedMovementRange + movementRange, color: 'dash'}, {range: modifiedMovementRange + (movementRange * bonusDashMultiplier), color: 'bonusDash'}];
 			}
 		}
 	}
-
+	//Registers the speed provider to be used by Drag Ruler's API.
 	dragRuler.registerModule('elevation-drag-ruler', DnD5eSpeedProvider)
-})
-
-Hooks.on('renderTokenHUD', (app, html, data) => {
-	if (!game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.hideSpeedButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideSpeedButton') && game.user.role >= game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.restrictSpeedButton'))
-		addSpeedButton(data._id, html);
-	if (!game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.hideTerrainButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideTerrainButton') && game.modules.get('terrain-ruler')?.active && game.user.role >= game.settings.get('drag-ruler', 'speedProviders.module.elevation-drag-ruler.setting.restrictTerrainButton'))
-		addTerrainButton(data._id, html);
 });
 
-Hooks.on('renderTokenConfig', addConfig)
-
-Hooks.once("canvasInit", () => {
-    libWrapper.register("elevation-drag-ruler", "canvas.terrain.__proto__.calculateCombinedCost", dnd5eCost, libWrapper.OVERRIDE); 
-	libWrapper.register("elevation-drag-ruler", "Token.prototype._onDragLeftStart", onDragLeftStart, "WRAPPER");
-	libWrapper.register("elevation-drag-ruler", "canvas.terrain.getEnvironments", getDnd5eEnvironments, libWrapper.OVERRIDE);
-});
+// Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
+// 	class DnD5eRuleProvider extends RuleProvider {
+// 		calculateCombinedCost(terrain, options) {
+// 			const token = options.token;
+// 			const tokenDocument = token.document;
+// 			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
+// 			const settingFlyingElevation = game.settings.get('elevation-drag-ruler', 'flyingElevation');
+// 			const waterTerrain = ['water'];
+// 			const spellTerrain = ['controlWinds', 'gustOfWind', 'plantGrowth', 'wallOfSand', 'wallOfThorns'];
+		
+// 			//Grabs a token's configured options for ignoring difficult terrain.
+// 			const configuredEnvironments = getConfiguredEnvironments(tokenDocument);
+// 			var difficultTerrainCost = 1;
+// 			var waterCost = 1;
+// 			var otherCost = 1;
+// 			var crawlingCost = tokenDocument.hasStatusEffect("prone") ? 2 : 1;
+			
+// 			var terrainDocuments = [];
+// 			if (!configuredEnvironments['all'][movementMode] && !configuredEnvironments['all']['any']) {
+// 				terrain.forEach(x => {
+// 					if ('terrain' in x) {
+// 						const terrainDocument = x.terrain.document;
+// 						const terrainEnvironment = terrainDocument.environment;
+		
+// 						var ignoreTerrain = (settingFlyingElevation && movementMode == 'fly' && tokenDocument.elevation == terrainDocument.elevation + terrainDocument.depth);
+// 						if (terrainEnvironment != '') ignoreTerrain = (configuredEnvironments[terrainEnvironment][movementMode] || configuredEnvironments[terrainEnvironment]['any']);
+						
+// 						if (!ignoreTerrain) terrainDocuments.push(terrainDocument);
+// 					}
+// 					else difficultTerrainCost = 2;
+// 				});
+// 				terrainDocuments.forEach(terrainDocument => {
+// 					const terrainEnvironment = terrainDocument.environment;
+// 					const terrainObstacle = terrainDocument.obstacle;
+// 					const terrainCost = terrainDocument.multiple;
+// 					if (waterTerrain.includes(terrainEnvironment)) waterCost = Math.max(waterCost, terrainCost);
+// 					else if (spellTerrain.includes(terrainEnvironment) || spellTerrain.includes(terrainObstacle)) otherCost = Math.max(otherCost, terrainCost);
+// 					else difficultTerrainCost = Math.max(difficultTerrainCost, terrainCost);
+// 				});
+// 			}
+		
+// 			const movementCost = Math.max(1 + (waterCost - 1) + (difficultTerrainCost - 1) + (crawlingCost - 1), otherCost);
+// 			return movementCost;
+// 		}
+// 	}
+// 	enhancedTerrainLayer.registerModule("elevation-drag-ruler", DnD5eRuleProvider);
+// });

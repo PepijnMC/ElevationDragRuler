@@ -1,4 +1,4 @@
-import {getConfiguredEnvironments, getTokenSpeeds} from "./main.js"
+import {getConfiguredEnvironments, getHighestMovementSpeed, getTokenSpeeds} from "./util.js"
 
 function addConfigTerrainTab(config, html) {
 	const configuredEnvironments = getConfiguredEnvironments(config.token);
@@ -30,6 +30,7 @@ function addConfigResourceField(config, html) {
 	const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
 	const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
 	const teleportCost = tokenDocument.getFlag('elevation-drag-ruler', 'teleportCost') || 0;
+	const proneCost = tokenDocument.getFlag('elevation-drag-ruler', 'proneCost') || (getHighestMovementSpeed(tokenDocument) / 2) 
 	const resourceTab = html.find('div.tab[data-tab="resources"]')
 
 	resourceTab.append(`<div class='form-group'><label>Selected Movement Speed</label><div class='form-fields'><select name='flags.elevation-drag-ruler.selectedSpeed'></select></div></div>`)
@@ -39,6 +40,9 @@ function addConfigResourceField(config, html) {
 	}
 	resourceTab.append(`<div class='form-group'><label>Teleport Range</label><input type='number' name='flags.elevation-drag-ruler.teleportRange' value='${teleportRange}'></div>`)
 	resourceTab.append(`<div class='form-group'><label>Teleport Cost</label><input type='number' name='flags.elevation-drag-ruler.teleportCost' value='${teleportCost}'></div>`)
+
+	resourceTab.append(`<div class='form-group'><label>Prone Cost</label><input type='number' name='flags.elevation-drag-ruler.proneCost' value='${proneCost}'></div>`)
+
 	resourceTab.append(`<div class='form-group'><label>Hide Speed Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideSpeedButton' ${hideSpeedButton ? 'checked=""' : '""'}></div>`);
 	
 	if (game.modules.get('terrain-ruler')?.active) {

@@ -80,7 +80,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				{id: 'climb', default: 0xAA6600, 'name': 'Climbing'},
 				{id: 'teleport', default: 0xAA00AA, 'name': 'Teleporting'},
 				{id: 'dash', default: 0xFFFF00, 'name': 'Dashing'},
-				{id: 'bonusDash', default: 0xFF6600, 'name': 'Bonus Dashing'},
+				{id: 'bonusDash', default: 0xFF6600, 'name': 'Bonus Dashing'}
 			]
 		}
 
@@ -97,8 +97,8 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
 			const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
 			const teleportRange = token.document.getFlag('elevation-drag-ruler', 'teleportRange');
-			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': movementTotal + teleportRange};
-			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
+			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed, 'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': movementTotal + teleportRange};
+			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode') || 'walk';
 			
 			//Teleportation does not require speed modifiers or dash ranges.
 			if (movementMode == 'teleport') {

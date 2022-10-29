@@ -6,7 +6,7 @@ export async function modifyPreviousMovementCost(token, cost) {
 	if (!dragRulerFlags) return;
 	if (!dragRulerFlags.passedWaypoints) return;
 	if (dragRulerFlags.passedWaypoints.length === 0) return;
-	console.log(dragRulerFlags.passedWaypoints)
+  
 	var visitedSpaces = dragRulerFlags.passedWaypoints[dragRulerFlags.passedWaypoints.length - 1].dragRulerVisitedSpaces;
 	for (var i = 0; i < visitedSpaces.length; i++) {
 		visitedSpaces[i].distance = (i == visitedSpaces.length - 1) ? cost : 0;

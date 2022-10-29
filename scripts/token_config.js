@@ -3,6 +3,7 @@ import { getConfiguredEnvironments, getHighestMovementSpeed, getTokenSpeeds, has
 function addConfigTerrainTab(config, html) {
 	const tokenDocument = config.token
 	const configuredEnvironments = getConfiguredEnvironments(tokenDocument);
+  
 	//Expand the window's width
 	config.position.width = 540;
 	config.setPosition(config.position);
@@ -28,7 +29,6 @@ function addConfigResourceField(config, html) {
 	const tokenSpeeds = getTokenSpeeds(tokenDocument);
 	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
 	const bonusDash = hasBonusDash(tokenDocument._object);
-	console.log(bonusDash)
 	const hideSpeedButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideSpeedButton');
 	const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
 	const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
@@ -41,6 +41,7 @@ function addConfigResourceField(config, html) {
 	for (const tokenSpeed of tokenSpeeds) {
 		speedField.append(`<option value=${tokenSpeed} ${tokenSpeed == selectedSpeed ? "selected" : ""}>${tokenSpeed.charAt(0).toUpperCase() + tokenSpeed.slice(1)}</option>`);
 	};
+  
 	resourceTab.append(`<div class='form-group'><label>Has Bonus Dash</label><input type='checkbox' name='flags.elevation-drag-ruler.hasBonusDash' ${bonusDash ? 'checked=""' : '""'}></div>`);
 
 	resourceTab.append(`<div class='form-group'><label>Teleport Range</label><input type='number' name='flags.elevation-drag-ruler.teleportRange' value='${teleportRange}'></div>`);

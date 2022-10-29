@@ -1,14 +1,3 @@
-//Returns a multiplier of 3 if the token has the Cunning Action feature, otherwise returns 1 which will hide the bonus action dash from the token's movement ranges.
-//This should become manually configurable too, with only the default value depending on the Cunning Action feature.
-export function getBonusDashMultiplier(token) {
-	var multiplier = 1;
-	const items = getProperty(token, 'actor.items');
-	items.forEach((value) => {
-		if (value.name == 'Cunning Action') multiplier = 2;
-	})
-	return multiplier;
-}
-
 //Returns the environment configuration of a token, which sets which environments a token should ignore. 
 export function getConfiguredEnvironments(tokenDocument) {
 	const defaultConfiguredEnvironments = {'all': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'arctic': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'coast': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'desert': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'forest': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'grassland': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'jungle': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'mountain': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': true, 'climb': true}, 'swamp': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'underdark': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'urban': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'water': {'any': false, 'walk': false, 'swim': true, 'fly': false, 'burrow': false, 'climb': false}};
@@ -16,7 +5,7 @@ export function getConfiguredEnvironments(tokenDocument) {
 	return configuredEnvironments || defaultConfiguredEnvironments;
 }
 
-//Returns the highest movement speed of a given object of movement modes.
+//Returns the highest movement mode of a given object of movement modes.
 export function getHighestMovementMode(movementModes) {
 	var highestSpeed = 0;
 	var highestMovement = 'walk';
@@ -29,6 +18,7 @@ export function getHighestMovementMode(movementModes) {
 	return highestMovement;
 }
 
+//Returns the highest movement speed of a token.
 export function getHighestMovementSpeed(tokenDocument) {
 	const actor = tokenDocument._actor
 	const walkSpeed = actor.system.attributes.movement.walk;
@@ -71,7 +61,8 @@ export function getMovementMode(token) {
 	const elevation = tokenDocument.elevation;
 	var environments = [];
 
-	// Currently broken
+	// Currently broken, see https://github.com/ironmonk88/enhanced-terrain-layer/issues/111
+	// Module will no longer automatically select movement based on terrain.
 	// if (terrainRulerAvailable) {
 	// 	const terrains = canvas.terrain.terrainFromPixels(tokenDocument.x, tokenDocument.y);
 	// 	if (terrains.length > 0)
@@ -110,6 +101,7 @@ export function getMovementMode(token) {
 	return defaultMovementMode;
 }
 
+//Returns the total movement already spent from Drag Ruler's movement history.
 export function getMovementTotal(token) {
 	const combatant = game.combat.getCombatantByToken(token.id);
 	const dragRulerFlags = combatant.flags.dragRuler;
@@ -125,10 +117,27 @@ export function getMovementTotal(token) {
 	return movementTotal;
 }
 
+//Returns true if the token should have a bonus dash.
+//This first checks the hasBonusDash flag but if undefined it will look for relevant features that permanently grant bonus dashes.
+export function hasBonusDash(token) {
+	const hasBonusDash = token.document.getFlag('elevation-drag-ruler', 'hasBonusDash')
+	if (hasBonusDash === undefined) {
+		const dashFeatures = ['Cunning Action', 'Escape', 'LightFooted', 'Rapid Movement']
+		var hasDashFeature = false;
+		const items = getProperty(token, 'actor.items');
+		items.forEach((value) => {
+			if (dashFeatures.includes(value.name)) hasDashFeature = true;
+		});
+	};
+	return hasBonusDash || hasDashFeature;
+}
+
+//Returns true if the token is in combat.
 export function isTokenInCombat(tokenDocument) {
 	return (game.combat && game.combat.getCombatantByToken(tokenDocument._id))
 }
 
+//Resets and sets the 'wasProne' flag for all tokens on the canvas.
 export function setProneStatus() {
 	const tokenDocuments = canvas.tokens.documentCollection
 	tokenDocuments.forEach((tokenDocument) => {

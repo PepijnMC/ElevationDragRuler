@@ -1,5 +1,6 @@
 import {getConfiguredEnvironments} from "./util.js";
 
+//Returns a movement cost depending on conditions, terrain, movement mode, settings, and configurations.
 export function dnd5eCost(terrain, options={}) {
 	const token = options.token;
 	
@@ -33,7 +34,7 @@ export function dnd5eCost(terrain, options={}) {
 				const terrainEnvironment = terrainDocument.environment;
 
 				var ignoreTerrain = (settingFlyingElevation && movementMode == 'fly' && tokenElevation == terrainDocument.elevation + terrainDocument.depth);
-				if (terrainEnvironment != '') ignoreTerrain = (configuredEnvironments[terrainEnvironment][movementMode] || configuredEnvironments[terrainEnvironment]['any']);
+				if (!ignoreTerrain && terrainEnvironment != '') ignoreTerrain = (configuredEnvironments[terrainEnvironment][movementMode] || configuredEnvironments[terrainEnvironment]['any']);
 				
 				if (!ignoreTerrain) terrainDocuments.push(terrainDocument);
 			}

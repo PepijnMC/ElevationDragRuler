@@ -1,7 +1,9 @@
-import {getConfiguredEnvironments, getHighestMovementSpeed, getTokenSpeeds} from "./util.js"
+import { getConfiguredEnvironments, getHighestMovementSpeed, getTokenSpeeds, hasBonusDash } from "./util.js"
 
 function addConfigTerrainTab(config, html) {
-	const configuredEnvironments = getConfiguredEnvironments(config.token);
+	const tokenDocument = config.token
+	const configuredEnvironments = getConfiguredEnvironments(tokenDocument);
+  
 	//Expand the window's width
 	config.position.width = 540;
 	config.setPosition(config.position);
@@ -26,28 +28,32 @@ function addConfigResourceField(config, html) {
 	const tokenDocument = config.token;
 	const tokenSpeeds = getTokenSpeeds(tokenDocument);
 	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
+	const bonusDash = hasBonusDash(tokenDocument._object);
 	const hideSpeedButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideSpeedButton');
 	const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
 	const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
 	const teleportCost = tokenDocument.getFlag('elevation-drag-ruler', 'teleportCost') || 0;
-	const proneCost = tokenDocument.getFlag('elevation-drag-ruler', 'proneCost') || (getHighestMovementSpeed(tokenDocument) / 2) 
-	const resourceTab = html.find('div.tab[data-tab="resources"]')
+	const proneCost = tokenDocument.getFlag('elevation-drag-ruler', 'proneCost') || (getHighestMovementSpeed(tokenDocument) / 2) ;
+	const resourceTab = html.find('div.tab[data-tab="resources"]');
 
-	resourceTab.append(`<div class='form-group'><label>Selected Movement Speed</label><div class='form-fields'><select name='flags.elevation-drag-ruler.selectedSpeed'></select></div></div>`)
-	const speedField = html.find('select[name="flags.elevation-drag-ruler.selectedSpeed"]')
+	resourceTab.append(`<div class='form-group'><label>Selected Movement Speed</label><div class='form-fields'><select name='flags.elevation-drag-ruler.selectedSpeed'></select></div></div>`);
+	const speedField = html.find('select[name="flags.elevation-drag-ruler.selectedSpeed"]');
 	for (const tokenSpeed of tokenSpeeds) {
 		speedField.append(`<option value=${tokenSpeed} ${tokenSpeed == selectedSpeed ? "selected" : ""}>${tokenSpeed.charAt(0).toUpperCase() + tokenSpeed.slice(1)}</option>`);
-	}
-	resourceTab.append(`<div class='form-group'><label>Teleport Range</label><input type='number' name='flags.elevation-drag-ruler.teleportRange' value='${teleportRange}'></div>`)
-	resourceTab.append(`<div class='form-group'><label>Teleport Cost</label><input type='number' name='flags.elevation-drag-ruler.teleportCost' value='${teleportCost}'></div>`)
+	};
+  
+	resourceTab.append(`<div class='form-group'><label>Has Bonus Dash</label><input type='checkbox' name='flags.elevation-drag-ruler.hasBonusDash' ${bonusDash ? 'checked=""' : '""'}></div>`);
 
-	resourceTab.append(`<div class='form-group'><label>Prone Cost</label><input type='number' name='flags.elevation-drag-ruler.proneCost' value='${proneCost}'></div>`)
+	resourceTab.append(`<div class='form-group'><label>Teleport Range</label><input type='number' name='flags.elevation-drag-ruler.teleportRange' value='${teleportRange}'></div>`);
+	resourceTab.append(`<div class='form-group'><label>Teleport Cost</label><input type='number' name='flags.elevation-drag-ruler.teleportCost' value='${teleportCost}'></div>`);
+
+	resourceTab.append(`<div class='form-group'><label>Prone Cost</label><input type='number' name='flags.elevation-drag-ruler.proneCost' value='${proneCost}'></div>`);
 
 	resourceTab.append(`<div class='form-group'><label>Hide Speed Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideSpeedButton' ${hideSpeedButton ? 'checked=""' : '""'}></div>`);
 	
 	if (game.modules.get('terrain-ruler')?.active) {
 		resourceTab.append(`<div class='form-group'><label>Hide Terrain Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideTerrainButton' ${hideTerrainButton ? 'checked=""' : '""'}></div>`);
-	}
+	};
 }
 
 export function addConfig(config, html) {

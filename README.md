@@ -12,7 +12,7 @@ In addition this module fully supports the use of the Enhanced Terrain Layer + T
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
 
 ## Movement Options
-A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use.
+A creature's movement speed can be picked by clicking a button in the Token HUD. By default this is set to automatic, which lets the module figure out what movement speed to use. There are also two keybindings (default `[` and `]`) to cycle through the movement modes of selected tokens.
   
 <img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Switch%20Speed.png" width="200">
   
@@ -31,7 +31,7 @@ A token can be configured to ignore certain or all terrain for a certain or any 
 
 <img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20Terrain%20Configuration.png" width="400">
   
-The Token HUD also contains a button to quickly toggle all difficult terrain for any movement speed for that token.
+The Token HUD also contains a button to quickly toggle all difficult terrain for any movement speed for that token. A keybinding (default `E`) is also provided to toggle difficult terrain for selected tokens.
   
 <img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Toggle%20Terrain.png" width="200">
 
@@ -40,7 +40,7 @@ To help streamline the use of flying creatures, flying tokens will be treated as
 ## Teleportation
 In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation options. When teleporting, a token will spent only the specified cost (zero by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
 
-A keybind (default Q) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
+A keybinding (default `Q`) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
 
 ## Conditions
 Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement, and during combat removing the prone condition will automatically spent the appropriate amount of movement (the exact cost of standing up from prone can also be specified in the resource tab of the token configuration menu).\*

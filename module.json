@@ -33,6 +33,11 @@
 			{
 				"id": "lib-wrapper",
 				"type": "module"
+			},
+			{
+				"id": "socketlib",
+				"type": "module",
+				"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/master/module.json"
 			}
 		]
 	},

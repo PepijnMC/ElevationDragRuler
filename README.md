@@ -6,7 +6,7 @@ In addition this module fully supports the use of the Enhanced Terrain Layer + T
 ![Creatures can more easily use their different movement speeds.](https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/switching_speeds.webp)
 ## Requirements
 - <a href="https://foundryvtt.com/packages/dnd5e" target="_blank">DnD5e</a> system by Atropos
-- <a href="https://github.com/Traumi/foundryvtt-drag-ruler" target="_blank">Drag Ruler (v10 Patch)</a> module by Manuel Vögele and Traumi
+- <a href="https://github.com/manuelVo/foundryvtt-drag-ruler" target="_blank">Drag Ruler</a> module by Manuel Vögele
 ### Recommended
 - <a href="https://github.com/manuelVo/foundryvtt-terrain-ruler" target="_blank">Terrain Ruler</a> module by Manuel Vögele
 - <a href="https://github.com/ironmonk88/enhanced-terrain-layer" target="_blank">Enhanced Terrain Layer</a> module by IronMonk
@@ -17,8 +17,13 @@ A creature's movement speed can be picked by clicking a button in the Token HUD.
 <img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Switch%20Speed.png" width="200">
   
 ### Elevation
+**Due to a bug with enhanced terrain layer, terrain currently does not dictate what movement speed is used in automatic mode!**
+
 When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will fly and below ground the creature will burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
- 
+
+## Bonus Dashes
+In the resource tab of the token configuration a token can be set to have access to bonus dashes, which when enabled will include an additional range band. This setting is enabled by default for creatures with features that permanently grant a bonus action dash, like Cunning Action.
+
 ## Difficult Terrain
 When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain.
   
@@ -31,6 +36,16 @@ The Token HUD also contains a button to quickly toggle all difficult terrain for
 <img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Toggle%20Terrain.png" width="200">
 
 To help streamline the use of flying creatures, flying tokens will be treated as if they were 1 elevation higher for the purpose of ignoring difficult terrain. This eliminates the cumbersome manual changing of a token's elevation to make it ignore ground based difficult terrain before landing back on the ground. This behavior can be disabled in the settings.
+
+## Teleportation
+In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation options. When teleporting, a token will spent only the specified cost (zero by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
+
+A keybind (default Q) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
+
+## Conditions
+Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement, and during combat removing the prone condition will automatically spent the appropriate amount of movement (the exact cost of standing up from prone can also be specified in the resource tab of the token configuration menu).\*
+
+\*To avoid complications when accidentally adding the prone condition during a creature's turn, the condition can be safely removed during the same turn without it spending any movement.
 
 ## Issues and Requests
 Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.

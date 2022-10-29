@@ -73,7 +73,7 @@ This section is for those who might want to make their own module interact with 
   - Although untested it should be safe to write to this flag.
   - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will not behave well.
 
-### Examples
+### Example Code
 **Teleport Toggle**
 ```js
 //Retrieve the controlled tokens.

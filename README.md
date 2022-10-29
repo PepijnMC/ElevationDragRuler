@@ -72,5 +72,19 @@ This section is for those who might want to make their own module interact with 
   - This flag is not set by default, in which case the default array found in the `getConfiguredEnvironments()` function is used.
   - Although untested it should be safe to write to this flag.
   - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will not behave well.
+
+# Examples
+**Teleport Toggle**
+```js
+//Retrieve the controlled tokens.
+const tokens = canvas.tokens.controlled;
+//For each token, check if their forceTeleport flag is true.
+//If so, set it to false otherwise set it to true.
+tokens.forEach((token) => {
+	const forceTeleport = token.document.getFlag('elevation-drag-ruler', 'forceTeleport');
+	if (forceTeleport) token.document.setFlag('elevation-drag-ruler', 'forceTeleport', false);
+	token.document.setFlag('elevation-drag-ruler', 'forceTeleport', true);
+});
+```
   
 As the MIT license suggests, feel free (and encouraged) to copy and adapt my code to work with any other rpg system.

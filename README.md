@@ -38,7 +38,7 @@ The Token HUD also contains a button to quickly toggle all difficult terrain for
 To help streamline the use of flying creatures, flying tokens will be treated as if they were 1 elevation higher for the purpose of ignoring difficult terrain. This eliminates the cumbersome manual changing of a token's elevation to make it ignore ground based difficult terrain before landing back on the ground. This behavior can be disabled in the settings.
 
 ## Teleportation
-In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation options. When teleporting, a token will spent only the specified cost (zero by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
+In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation option. When teleporting, a token will spent only the specified cost (`0` by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
 
 A keybinding (default `Q`) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
 

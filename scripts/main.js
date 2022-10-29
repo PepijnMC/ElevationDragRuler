@@ -1,9 +1,5 @@
 import { registerSettings } from './settings.js';
 import { registerKeybindings } from './keybindings.js';
-import { isTokenInCombat, getBonusDashMultiplier, getConfiguredEnvironments, getHighestMovementSpeed, getMovementMode, getMovementTotal, setProneStatus } from './util.js';
-
-import { registerSettings } from './settings.js';
-import { registerKeybindings } from './keybindings.js';
 import { isTokenInCombat, hasBonusDash, getConfiguredEnvironments, getHighestMovementSpeed, getMovementMode, getMovementTotal, setProneStatus } from './util.js';
 import { addConfig } from './token_config.js';
 import { addSpeedButton, addTerrainButton } from './token_hud.js';

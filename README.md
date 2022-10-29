@@ -38,29 +38,34 @@ Please report issues and propose requests <a href="https://github.com/PepijnMC/E
 ## API Flags
 This section is for those who might want to make their own module interact with this one. Calling this an API is too generous but most of the data this module uses is saved to flags on the Token Document under `elevation-drag-ruler` (the old module's name).
 
-- `movementMode`
+- `movementMode` (READ-ONLY)
   - This flag when set contains a string of the token's last used movement mode, either `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
-  - This flag is set during the `onDragLeftStart` function. It's ill-advised to write to this flag as it will either be overwritten or cause issues in the pipeline.
+  - This flag is not continiously updated and is only set during the `onDragLeftStart` function. It's ill-advised to write to this flag as it will either be overwritten or cause issues in the pipeline. Use `selectedSpeed` instead.
 - `selectedSpeed`
   - This flag when set contains a string of the token's currently selected movement speed, either `auto`, `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
   - This flag is not set by default, in which case it can be safely assumed the token is in `auto` mode.
-  - Although untested it should be safe to write to this flag in another module.
-  - I do not recommend setting this flag to a value different from the ones above.
+  - Although untested it should be safe to write to this flag.
 - `teleportRange`
   - This flag contains a number related to the optional teleport movement option.
-  - This flag is controlled by the token configuration menu.
+  - This flag is set in the token configuration menu (default `0`).
   - A token will be able to select the teleport movement option when this number is greater than zero.
-  - Although untested it should be safe to write to this flag in another module.
+  - Although untested it should be safe to write to this flag.
 - `teleportCost`
   - This flag contains a number related to the optional teleport movement option.
-  - This flag is controlled by the token configuration menu.
-  - Although untested it should be safe to write to this flag in another module.
+  - This flag is controlled by the token configuration menu (default `0`).
+  - Although untested it should be safe to write to this flag.
+- `keybindForceTeleport` (READ-ONLY)
+  - This flag returns true for controlled tokens when holding down the `Force Teleport` keybind (default `Q`).
+  - This flag should not be written to manually, as it will likely be overwritten before it can be used. Use `forceTeleport` instead.
+- `forceTeleport` (WRITE-ONLY)
+  - This flag when true will force the token to use its teleport movement mode, regardless of its `selectedSpeed`.
+  - This flag is not set at all by this module and is only meant to provide a means for macros and other modules to force a teleportation. Make sure to manually reset the flag too!
 - `ignoredEnvironments`
   - This flag when set contains the data of the terrain configuration in the form of an object of objects. The object contains all terrain ids from Enhanced Terrain Layer and an `all`, each of which has its value set to another object of all movement speeds and an `any` which are set to `true`/`false` (`true` meaning to ignore this terrain for this movement speed).
   - The "Toggle Terrain" button added to the token HUD also uses this flag, specifically `ignoredEnvironments.all.any`.
   - The object can be navigated like normal, for example `ignoredEnvironments.desert.fly`.
   - This flag is not set by default, in which case the default array found in the `getConfiguredEnvironments()` function is used.
-  - Although untested it should be safe to write to this flag in another module. The button and config will not update while they're rendered but they should never descync.
-  - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will simply not be recognized by the cost function.
+  - Although untested it should be safe to write to this flag.
+  - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will not behave well.
   
 As the MIT license suggests, feel free (and encouraged) to copy and adapt my code to work with any other rpg system.

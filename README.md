@@ -47,9 +47,7 @@ In the resource tab of the token configuration menu a teleportation range and co
 A keybinding (default `Q`) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
 
 ## Conditions
-Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement, and during combat removing the prone condition will automatically spent the appropriate amount of movement (the exact cost of standing up from prone can also be specified in the resource tab of the token configuration menu).\*
-
-\*To avoid complications when accidentally adding the prone condition during a creature's turn, the condition can be safely removed during the same turn without it spending any movement.
+Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement.
 
 ## Issues and Requests
 Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.

@@ -28,7 +28,7 @@ export function registerKeybindings() {
 	game.keybindings.register('elevation-drag-ruler', 'toggleTerrain', {
 		name: 'Toggle Terrain',
 		hint: 'Toggles all movement costs for the selected tokens.',
-		onDown: handletoggleTerrain,
+		onDown: handleToggleTerrain,
 		editable: [
 			{
 				key: 'KeyE',
@@ -85,7 +85,7 @@ function handleCycleMovementReverse(event) {
 	});
 };
 
-function handletoggleTerrain(event) {
+function handleToggleTerrain(event) {
 	const tokens = canvas.tokens.controlled;
 	tokens.forEach(token => {
 		var configuredEnvironments = getConfiguredEnvironments(token.document);

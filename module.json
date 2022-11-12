@@ -2,10 +2,11 @@
 	"id": "elevation-drag-ruler",
 	"title": "DnD5e Drag Ruler Integration",
 	"description": "An enhancement of Drag Ruler for the DnD5e system.",
-	"version": "1.8.4",
+	"version": "1.8.5",
 	"authors": [
 		{
-			"name": "Pepijn Sietsema"
+			"name": "Pepijn Sietsema",
+			"url": "https://github.com/PepijnMC/ElevationDragRuler"
 		}
 	],
 	"compatibility": {
@@ -47,7 +48,9 @@
 	},
 	"esmodules": [
 		"scripts/main.js",
-		"scripts/socket.js"
+		"scripts/socket.js",
+		"scripts/speed_provider.js",
+		"scripts/rule_provider.js"
 	],
 	"url": "https://github.com/PepijnMC/ElevationDragRuler",
 	"manifest": "https://github.com/PepijnMC/ElevationDragRuler/releases/latest/download/module.json",

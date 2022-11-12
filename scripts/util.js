@@ -20,7 +20,7 @@ export function getHighestMovementMode(movementModes) {
 
 //Returns the highest movement speed of a token.
 export function getHighestMovementSpeed(tokenDocument) {
-	const actor = tokenDocument._actor
+	const actor = tokenDocument._actor || tokenDocument.parent;
 	const walkSpeed = actor.system.attributes.movement.walk;
 	const flySpeed = actor.system.attributes.movement.fly
 	const burrowSpeed = actor.system.attributes.movement.burrow
@@ -31,7 +31,9 @@ export function getHighestMovementSpeed(tokenDocument) {
 
 //Returns the non-zero movement speeds of a token, including the module's automatic mode and an optional teleportation mode.
 export function getTokenSpeeds(tokenDocument) {
-	const defaultSpeeds = tokenDocument._actor.system.attributes.movement;
+	const actor = tokenDocument._actor || tokenDocument.parent;
+	if (!actor) return false;
+	const defaultSpeeds = actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
 	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
 	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
@@ -119,12 +121,14 @@ export function getMovementTotal(token) {
 
 //Returns true if the token should have a bonus dash.
 //This first checks the hasBonusDash flag but if undefined it will look for relevant features that permanently grant bonus dashes.
-export function hasBonusDash(token) {
-	const hasBonusDash = token.document.getFlag('elevation-drag-ruler', 'hasBonusDash')
+export function hasBonusDash(tokenDocument) {
+	const hasBonusDash = tokenDocument.getFlag('elevation-drag-ruler', 'hasBonusDash')
 	if (hasBonusDash === undefined) {
+		const actor = tokenDocument._actor || tokenDocument.parent;
+		if (!actor) return false;
 		const dashFeatures = ['Cunning Action', 'Escape', 'LightFooted', 'Rapid Movement']
 		var hasDashFeature = false;
-		const items = getProperty(token, 'actor.items');
+		const items = actor.items;
 		items.forEach((value) => {
 			if (dashFeatures.includes(value.name)) hasDashFeature = true;
 		});
@@ -135,13 +139,4 @@ export function hasBonusDash(token) {
 //Returns true if the token is in combat.
 export function isTokenInCombat(tokenDocument) {
 	return (game.combat && game.combat.getCombatantByToken(tokenDocument._id))
-}
-
-//Resets and sets the 'wasProne' flag for all tokens on the canvas.
-export function setProneStatus() {
-	const tokenDocuments = canvas.tokens.documentCollection
-	tokenDocuments.forEach((tokenDocument) => {
-		tokenDocument.setFlag('elevation-drag-ruler', 'wasProne', false);
-		if (tokenDocument.hasStatusEffect('prone')) tokenDocument.setFlag('elevation-drag-ruler', 'wasProne', true);
-	});
 }

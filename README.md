@@ -21,8 +21,6 @@ A creature's movement speed can be picked by clicking a button in the Token HUD.
 <img src="https://raw.githubusercontent.com/PepijnMC/ElevationDragRuler/main/media/Token%20HUD%20Switch%20Speed.png" width="200">
   
 ### Elevation
-**Due to a bug with enhanced terrain layer, terrain currently does not dictate what movement speed is used in automatic mode!**
-
 When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will fly and below ground the creature will burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
 
 ## Bonus Dashes
@@ -67,10 +65,6 @@ This section is for those who might want to make their own module interact with 
   - This flag is set in the token configuration menu.
   - This flag is not set by default, in which case the module will fall back to looking for the Cunning Action feature. This does not update the flag itself!
   - Although untested it should be safe to write to this flag.
-- `wasProne`
-  - This flag when set (`true`/`false`) indicates whether or not a token was prone at the start of a combat turn.
-  - This flag is reset and set every combat turn.
-  - When true during a token's turn, removing the prone condition during said turn will spend the appropriate amount of movement to stand up.
 - `teleportRange`
   - This flag contains a number related to the optional teleport movement option.
   - This flag is set in the token configuration menu (default `0`).

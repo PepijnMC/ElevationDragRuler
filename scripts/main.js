@@ -7,19 +7,16 @@ import { getDnd5eEnvironments } from './environments.js';
 import { modifyPreviousMovementCost } from './movement_tracking.js';
 
 //This function wraps Foundry's onDragLeftStart function.
-//This function saves the appropriate movement mode to the token to be used later by the getRanges function.
-//This function also tracks if the last used movement option was teleportation to modify the movement history to the appropriate values.
+//This function tracks if the last used movement option was teleportation to modify the movement history to the appropriate values.
 let onDragLeftStart = async function (wrapped, ...args) {
 	wrapped(...args);
 	if (canvas != null) {
 		const token = args[0].data.clones[0];
 		const previousMovementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode');
-		if (previousMovementMode == 'teleport' && isTokenInCombat(token.document) && game.settings.get('drag-ruler', 'enableMovementHistory')) {
+		if (previousMovementMode == 'teleport' && isTokenInCombat(token.document) && game.settings.get('drag-ruler', 'enableMovementHistory') && game.modules.get('terrain-ruler')?.active) {
 			const teleportCost = token.document.getFlag('elevation-drag-ruler', 'teleportCost') || 0;
 			modifyPreviousMovementCost(token, teleportCost);
 		};
-		const movementMode = getMovementMode(token);
-		await token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
 	}
 }
 
@@ -51,8 +48,4 @@ Hooks.on('renderTokenHUD', (app, html, data) => {
 
 Hooks.on('renderTokenConfig', (config, html) => {
 	addConfig(config, html);
-});
-
-Hooks.on("getCombatTrackerEntryContext", function (html, menu) {
-	menu[1].callback = li => resetMovementHistory(ui.combat.viewed, li.data("combatant-id"));
 });

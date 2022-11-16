@@ -36,12 +36,13 @@ export function getTokenSpeeds(tokenDocument) {
 	const defaultSpeeds = actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
 	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
-	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
+	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0 && game.modules.get('terrain-ruler')?.active) tokenSpeeds.push('teleport');
 	return tokenSpeeds;
 }
 
 //Returns the movement a token should used based on settings, terrain, and/or elevation.
 export function getMovementMode(token) {
+	
 	const tokenDocument = token.document;
 
 	const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
@@ -59,26 +60,25 @@ export function getMovementMode(token) {
 	const keybindForceTeleport = tokenDocument.getFlag('elevation-drag-ruler', 'keybindForceTeleport');
 
 	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
-	// const terrainRulerAvailable = game.modules.get('terrain-ruler')?.active;
 	const elevation = tokenDocument.elevation;
 	var environments = [];
 
-	// Currently broken, see https://github.com/ironmonk88/enhanced-terrain-layer/issues/111
-	// Module will no longer automatically select movement based on terrain.
-	// if (terrainRulerAvailable) {
-	// 	const terrains = canvas.terrain.terrainFromPixels(tokenDocument.x, tokenDocument.y);
-	// 	if (terrains.length > 0)
-	// 		terrains.forEach(terrain => environments.push(terrain.environment));
-	// }
+	const terrainRulerAvailable = game.modules.get('terrain-ruler')?.active;
+	if (terrainRulerAvailable) {
+		const options = {};
+		options.token = token;
+		const terrains = canvas.terrain.terrainFromPixels(tokenDocument.x, tokenDocument.y, options);
+		if (terrains.length > 0)
+			terrains.forEach(terrain => environments.push(terrain.document.environment));
+	}
 
 	//Default movement mode.
 	const defaultMovementMode = 'walk';
 	
-	//
-	if (forceTeleport || keybindForceTeleport)
+	if (game.modules.get('terrain-ruler')?.active && (forceTeleport || keybindForceTeleport || selectedSpeed == 'teleport'))
 		return 'teleport';
 	//If a token has a speed selected use that.
-	if (selectedSpeed && selectedSpeed != 'auto')
+	if (selectedSpeed && selectedSpeed != 'auto' && selectedSpeed != 'teleport')
 		return selectedSpeed;
 	//If the token has no speed selected and the 'Use Elevation' setting is off, use their swimming speed if they're in water or else their highest speed.
 	if (!settingElevationSwitching) {
@@ -87,11 +87,11 @@ export function getMovementMode(token) {
 		return getHighestMovementMode(movementModes);
 	}
 	//If the token has no speed selected and the 'Use Elevation' setting is on, base speed on elevation and terrain (if available).
-	if (elevation < 0 && !environments.includes('water'))
+	if (elevation < 0 && !environments.includes('water') && movementModes.burrow > 0)
 	return 'burrow';
-	if (elevation < 0 && environments.includes('water'))
+	if (elevation < 0 && environments.includes('water') && movementModes.swim > 0)
 	return 'swim';
-	if (elevation > 0)
+	if (elevation > 0 && movementModes.fly > 0)
 	return 'fly';
 	if (elevation == 0 && settingForceFlying && (movementModes.fly > movementModes.walk))
 	return 'fly';
@@ -112,10 +112,13 @@ export function getMovementTotal(token) {
 	if (dragRulerFlags.passedWaypoints.length === 0) return;
 
 	var movementTotal = 0;
+	var incompatible = false;
 	dragRulerFlags.passedWaypoints.forEach(waypoint => {
 		const visitedSpaces = waypoint.dragRulerVisitedSpaces;
-		movementTotal += visitedSpaces[visitedSpaces.length - 1].distance;
-	})
+		if (visitedSpaces) movementTotal += visitedSpaces[visitedSpaces.length - 1].distance;
+		else incompatible = true;
+	});
+	if (incompatible) return dragRuler.getMovedDistanceFromToken(token);
 	return movementTotal;
 }
 

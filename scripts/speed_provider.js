@@ -1,4 +1,4 @@
-import { isTokenInCombat, hasBonusDash, getMovementTotal } from './util.js';
+import { isTokenInCombat, hasBonusDash, getMovementMode, getMovementTotal } from './util.js';
 
 //Hooking into Drag Ruler.
 Hooks.once('dragRuler.ready', (SpeedProvider) => {
@@ -21,7 +21,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		getRanges(token) {
 			//Retrieves the total movement in the token's movement history to be used by the teleportation range.
 			var movementTotal = 0;
-			if (isTokenInCombat(token.document) && game.settings.get('drag-ruler', 'enableMovementHistory')) movementTotal = getMovementTotal(token) || 0;
+			if (isTokenInCombat(token.document) && game.settings.get('drag-ruler', 'enableMovementHistory') && game.modules.get('terrain-ruler')?.active) movementTotal = getMovementTotal(token) || 0;
 
 			//Retrieves and compiles relevant movement data of the token.
 			const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
@@ -29,10 +29,13 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
 			const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
 			const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
-			const teleportRange = token.document.getFlag('elevation-drag-ruler', 'teleportRange');
+			const teleportRange = token.document.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
 			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed, 'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': movementTotal + teleportRange};
-			const movementMode = token.document.getFlag('elevation-drag-ruler', 'movementMode') || 'walk';
 			
+			
+			const movementMode = getMovementMode(token) || 'walk';
+			token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
+
 			//Teleportation does not require speed modifiers or dash ranges.
 			if (movementMode == 'teleport') {
 				return [{range: movementModes['teleport'], color: 'teleport'}]

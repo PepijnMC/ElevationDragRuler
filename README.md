@@ -119,4 +119,18 @@ tokens.forEach((token) => {
 	token.document.setFlag('elevation-drag-ruler', 'ignoredEnvironments', configuredEnvironments);
 });
 ```
+**Disable Difficult Terrain**
+```js
+//Retrieve the controlled tokens.
+const tokens = canvas.tokens.controlled;
+//Iterate over each token.
+tokens.forEach((token) => {
+        //Grab the current configured terrain settings, or if they don't exist provide a default configuration.
+	const configuredEnvironments = token.document.getFlag('elevation-drag-ruler', 'ignoredEnvironments') || {'all': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'arctic': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'coast': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'desert': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'forest': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'grassland': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'jungle': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'mountain': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': true, 'climb': true}, 'swamp': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'underdark': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'urban': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'water': {'any': false, 'walk': false, 'swim': true, 'fly': false, 'burrow': false, 'climb': false}};
+	//Configure the setting to ignore extra movement costs for ALL terrain for ANY movement speed.
+	configuredEnvironments.all.any = true;
+	//Update the token flag.
+	token.document.setFlag('elevation-drag-ruler', 'ignoredEnvironments', configuredEnvironments);
+});
+```
 As the MIT license suggests, feel free (and encouraged) to copy and adapt my code to work with any other rpg system.

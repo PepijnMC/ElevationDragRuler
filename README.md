@@ -101,7 +101,7 @@ const tokens = canvas.tokens.controlled;
 tokens.forEach((token) => {
 	const forceTeleport = token.document.getFlag('elevation-drag-ruler', 'forceTeleport');
 	if (forceTeleport) token.document.setFlag('elevation-drag-ruler', 'forceTeleport', false);
-	token.document.setFlag('elevation-drag-ruler', 'forceTeleport', true);
+	else token.document.setFlag('elevation-drag-ruler', 'forceTeleport', true);
 });
 ```
 **Difficult Terrain Toggle**

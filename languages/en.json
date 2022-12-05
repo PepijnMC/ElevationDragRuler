@@ -1,0 +1,71 @@
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"tokenTerrain": {
+				"name": "Token Difficult Terrain",
+				"hint": "Implements Dnd5e rules for moving through tokens (requires Include Live/Dead Tokens from Enhanced Terrain Layer)."
+			},
+			"elevationSwitching": {
+				"name": "Use Elevation",
+				"hint": "Tokens with their movement speed set to automatic will take into account their elevation. When disabled it will use their highest movement speed instead."
+			},
+			"flyingElevation": {
+				"name": "Elevate Flying",
+				"hint": "Flying tokens will ignore terrain they are at the upper edge of."
+			},
+			"forceFlying": {
+				"name": "Force Flying",
+				"hint": "Tokens at elevation 0 will default to their flying speed if it is bigger than their walking speed."
+			},
+			"forceBurrowing": {
+				"name": "Force Burrowing",
+				"hint": "Tokens at elevation 0 but not in water terrain will default to their burrowing speed if it is bigger than their walking and flying speed."
+			},
+			"hideSpeedButton": {
+				"name": "Hide \"Switch Speed\" Button",
+				"hint": "Hides the \"Switch Speed\" button from the Token HUD for the current user."
+			},
+			"restrictSpeedButton": {
+				"name": "Restrict \"Switch Speed\" Button",
+				"hint": "Restricts the \"Switch Speed\" button to a minimal permission level."
+			},
+			"hideTerrainButton": {
+				"name": "Hide \"Toggle Terrain\" Button",
+				"hint": "Hides the \"Toggle Terrain\" button from the Token HUD for the current user."
+			},
+			"restrictTerrainButton": {
+				"name": "Restrict \"Toggle Terrain\" Button",
+				"hint": "Restricts the \"Toggle Terrain\" button to a minimal permission level."
+			},
+			"oneDnd": {
+				"name": "Enable OneDnD Playtest Rules",
+				"hint": "Implements alternative movement rules from the latest OneDnD playtest."
+			}
+		},
+		"keybindings": {
+			"cycleMovement": {
+				"name": "Cycle Movement Modes",
+				"hint": "Cycles through the selected tokens' movement modes."
+			},
+			"cycleMovementReverse": {
+				"name": "Cycle Movement Modes (Reverse)",
+				"hint": "Cycles backward through the selected tokens' movement modes."
+			},
+			"toggleTerrain": {
+				"name": "Toggle Terrain",
+				"hint": "Toggles all additional movement costs for the selected tokens."
+			},
+			"forceTeleport": {
+				"name": "Force Teleport Movement",
+				"hint": "When held makes tokens teleport regardless of their selected movement mode."
+			}
+		},
+		"environment": {
+			"controlwinds": "Control Winds Spell",
+			"gustofwind": "Gust of Wind Spell",
+			"plantgrowth": "Plant Growth Spell",
+			"wallofsand": "Wall of Sand Spell",
+			"wallofthorns": "Wall of Thorns Spell"
+		}
+	}
+}

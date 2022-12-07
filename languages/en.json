@@ -17,6 +17,10 @@
 				"name": "Force Flying",
 				"hint": "Tokens at elevation 0 will default to their flying speed if it is bigger than their walking speed."
 			},
+			"forceSwimming": {
+				"name": "Force Swimming",
+				"hint": "Tokens at elevation 0 and in water terrain will default to their swimming speed if it is bigger than their walking speed."
+			},
 			"forceBurrowing": {
 				"name": "Force Burrowing",
 				"hint": "Tokens at elevation 0 but not in water terrain will default to their burrowing speed if it is bigger than their walking and flying speed."

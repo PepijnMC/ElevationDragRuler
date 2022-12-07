@@ -1,4 +1,4 @@
-import { isTokenInCombat, hasBonusDash, getMovementMode, getMovementTotal } from './util.js';
+import { isTokenInCombat, hasFeature, getMovementMode, getMovementTotal } from './util.js';
 
 //Hooking into Drag Ruler.
 Hooks.once('dragRuler.ready', (SpeedProvider) => {
@@ -34,6 +34,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			
 			
 			const movementMode = getMovementMode(token) || 'walk';
+			console.log(`getRanges movementMode: ${movementMode}`)
 			token.document.setFlag('elevation-drag-ruler', 'movementMode', movementMode);
 
 			//Teleportation does not require speed modifiers or dash ranges.
@@ -53,7 +54,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 				const movementMultiplier = (token.document.hasStatusEffect('slowed') ? 0.5 : 1) * (token.document.hasStatusEffect('hasted') ? 2 : 1);
 
 				//Retrieves if the token has a bonus action dash available.
-				const bonusDashMultiplier = hasBonusDash(token.document) ? 3 : 2;
+				const bonusDashMultiplier = hasFeature(token.document, 'hasBonusDash', ['Cunning Action', 'Escape', 'LightFooted', 'Rapid Movement']) ? 3 : 2;
 
 				const movementRange = movementRestricted ? 0 : (movementModes[movementMode] * movementMultiplier);
 				return [{range: movementRange, color: movementMode}, {range: movementRange * 2, color: 'dash'}, {range: movementRange * bonusDashMultiplier, color: 'bonusDash'}];

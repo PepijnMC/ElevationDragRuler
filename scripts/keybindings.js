@@ -1,9 +1,11 @@
 import { getConfiguredEnvironments, getTokenSpeeds } from './util.js';
 
+export var keybindForceTeleport;
+
 export function registerKeybindings() {
 	game.keybindings.register('elevation-drag-ruler', 'cycleMovement', {
-		name: 'Cycle Movement Modes',
-		hint: 'Cycles through the selected tokens\' movement modes.',
+		name: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.cycleMovement.name'),
+		hint: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.cycleMovement.hint'),
 		onDown: handleCycleMovement,
 		editable: [
 			{
@@ -14,8 +16,8 @@ export function registerKeybindings() {
 	});
 
 	game.keybindings.register('elevation-drag-ruler', 'cycleMovementReverse', {
-		name: 'Cycle Movement Modes (Reverse)',
-		hint: 'Cycles backward through the selected tokens\' movement modes.',
+		name: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.cycleMovementReverse.name'),
+		hint: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.cycleMovementReverse.hint'),
 		onDown: handleCycleMovementReverse,
 		editable: [
 			{
@@ -26,8 +28,8 @@ export function registerKeybindings() {
 	});
 
 	game.keybindings.register('elevation-drag-ruler', 'toggleTerrain', {
-		name: 'Toggle Terrain',
-		hint: 'Toggles all movement costs for the selected tokens.',
+		name: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.toggleTerrain.name'),
+		hint: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.toggleTerrain.hint'),
 		onDown: handleToggleTerrain,
 		editable: [
 			{
@@ -38,8 +40,8 @@ export function registerKeybindings() {
 	});
 
 	game.keybindings.register('elevation-drag-ruler', 'forceTeleport', {
-		name: 'Force Teleport',
-		hint: 'Makes selected tokens teleport when held regardless of their selected movement mode.',
+		name: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.forceTeleport.name'),
+		hint: game.i18n.localize('Dnd5eDragRulerIntegration.keybindings.forceTeleport.hint'),
 		onDown: handleForceTeleport,
 		onUp: unhandleForceTeleport,
 		editable: [
@@ -96,15 +98,10 @@ function handleToggleTerrain(event) {
 }
 
 function handleForceTeleport(event) {
-	const tokens = canvas.tokens.controlled;
-	tokens.forEach(token => {
-		token.document.setFlag('elevation-drag-ruler', 'keybindForceTeleport', true);
-	});
+	keybindForceTeleport = true;
+	console.log(keybindForceTeleport)
 }
 
 function unhandleForceTeleport(event) {
-	const tokenDocuments = canvas.tokens.documentCollection;
-	tokenDocuments.forEach(tokenDocument => {
-		tokenDocument.setFlag('elevation-drag-ruler', 'keybindForceTeleport', false);
-	});
+	keybindForceTeleport = false;
 }

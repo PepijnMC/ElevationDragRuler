@@ -1,20 +1,32 @@
-import { getConfiguredEnvironments } from "./util.js";
+import { getConfiguredEnvironments, hasFeature } from "./util.js";
 
 Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 	class DnD5eRuleProvider extends RuleProvider {
 		calculateCombinedCost(terrain, options) {
 			const token = options.token;
 	
+			const tokenSizes = {'tiny': 0, 'sm': 1, 'med': 2, 'lg': 3, 'huge': 4, 'grg': 5};
+			const incapacitatedConditions = ['dead', 'incapacitated', 'paralysis', 'petrified', 'sleep', 'stun', 'unconscious'];
+			const settingTokenTerrain = game.settings.get('elevation-drag-ruler', 'tokenTerrain');
+			const settingFlyingElevation = game.settings.get('elevation-drag-ruler', 'flyingElevation');
+			const settingOneDnd = game.settings.get('elevation-drag-ruler', 'oneDnd');
 			const waterTerrain = ['water'];
 			const spellTerrain = ['controlWinds', 'gustOfWind', 'plantGrowth', 'wallOfSand', 'wallOfThorns'];
-			const settingFlyingElevation = game.settings.get('elevation-drag-ruler', 'flyingElevation');
 			
 			//Set default parameters in case the ruler is not attached to a token.
 			var movementMode = 'walk';
 			var tokenElevation = 0;
+			var tokenSize = 'medium';
+			var tokenDisposition = 1;
+			var movementSizeOffset = {smaller: -1, bigger: 1};
+			var hasElementalForm = false;
+			var hasIncorporealMovement = false;
+			var hasFreedomofMovement = false;
+
+			var baseCost = 1;
 			var difficultTerrainCost = 1;
+			var tokenCost = 1;
 			var waterCost = 1;
-			var otherCost = 1;
 			var crawlingCost = 1;
 			var configuredEnvironments = {'all': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'arctic': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'coast': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'desert': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'forest': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'grassland': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'jungle': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'mountain': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': true, 'climb': true}, 'swamp': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'underdark': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'urban': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'water': {'any': false, 'walk': false, 'swim': true, 'fly': false, 'burrow': false, 'climb': false}};
 			
@@ -23,12 +35,19 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 				const tokenDocument = token.document;
 				movementMode = tokenDocument.getFlag('elevation-drag-ruler', 'movementMode');
 				tokenElevation = tokenDocument.elevation;
+				tokenSize = getProperty(token, 'actor.system.traits.size');
+				tokenDisposition = tokenDocument.disposition;
+				movementSizeOffset = {smaller: -1, bigger: hasFeature(tokenDocument, 'hasNimbleness', ['Halfling', 'Halfling Nimbleness']) ? 0 : 1};
+				hasElementalForm = hasFeature(token.document, 'hasElementalForm', ['Air Form', "Fire Form", "Water Form"])
+				hasIncorporealMovement = hasFeature(token.document, 'hasIncorporealMovement', ['Incorporeal Movement']);
+				hasFreedomofMovement = hasFeature(token.document, 'hasFreedomofMovement', ['Freedom of Movement']);
+
 				crawlingCost = tokenDocument.hasStatusEffect("prone") ? 2 : 1;		
 				configuredEnvironments = getConfiguredEnvironments(tokenDocument);	
 			}
 		
 			var terrainList = [];
-			if (!configuredEnvironments['all'][movementMode] && !configuredEnvironments['all']['any'] && movementMode != 'teleport') {
+			if (movementMode != 'teleport' && !configuredEnvironments['all']['any'] && !configuredEnvironments['all'][movementMode]) {
 				terrain.forEach(x => {
 					var terrainInfo = {};
 					if ('terrain' in x) {
@@ -45,19 +64,35 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 						
 						if (!ignoreTerrain) terrainList.push(terrainInfo);
 					}
-					else difficultTerrainCost = 2;
+					else if (settingTokenTerrain && 'token' in x && tokenCost != Infinity) {
+						const terrainTokenDisposition = x.token.document.disposition;
+						const terrainTokenSize = getProperty(x.token, 'actor.system.traits.size');
+						const terrainTokenElevation = x.token.document.elevation;
+						var terrainTokenIncapacitated = false;
+						if (settingOneDnd) {
+							incapacitatedConditions.forEach(condition => {
+								if (x.token.document.hasStatusEffect(condition)) terrainTokenIncapacitated = true;
+							});
+						};
+						if (tokenDisposition + terrainTokenDisposition == 0 && !terrainTokenIncapacitated && !hasIncorporealMovement && !hasElementalForm && (tokenSizes[tokenSize] + movementSizeOffset['smaller'] <= tokenSizes[terrainTokenSize] && tokenSizes[terrainTokenSize] <= tokenSizes[tokenSize] + movementSizeOffset['bigger']))
+							tokenCost = Infinity;
+						else if (tokenElevation == terrainTokenElevation && (!settingOneDnd || terrainTokenSize != 'tiny'))
+							tokenCost = 2;
+					}
 				});
 				terrainList.forEach(terrainInfo => {
 					const terrainEnvironment = terrainInfo.environment;
 					const terrainObstacle = terrainInfo.obstacle;
 					const terrainCost = terrainInfo.multiple;
 					if (waterTerrain.includes(terrainEnvironment)) waterCost = Math.max(waterCost, terrainCost);
-					else if (spellTerrain.includes(terrainEnvironment) || spellTerrain.includes(terrainObstacle)) otherCost = Math.max(otherCost, terrainCost);
+					else if (spellTerrain.includes(terrainEnvironment) || spellTerrain.includes(terrainObstacle)) baseCost = Math.max(baseCost, terrainCost);
 					else difficultTerrainCost = Math.max(difficultTerrainCost, terrainCost);
 				});
 			}
+			difficultTerrainCost = Math.max(difficultTerrainCost, tokenCost);
+			if (hasFreedomofMovement && difficultTerrainCost != Infinity) difficultTerrainCost = 1;
 		
-			const movementCost = Math.max(1 + (waterCost - 1) + (difficultTerrainCost - 1) + (crawlingCost - 1), otherCost);
+			const movementCost = baseCost + (difficultTerrainCost - 1) + (waterCost - 1) + (crawlingCost - 1);
 			return movementCost;
 		}
 	}

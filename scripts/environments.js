@@ -12,11 +12,10 @@ export function getDnd5eEnvironments() {
 		{ id: 'urban', text: 'EnhancedTerrainLayer.environment.urban', icon: 'modules/enhanced-terrain-layer/img/environment/urban.png' },
 		{ id: 'water', text: 'EnhancedTerrainLayer.environment.water', icon: 'modules/enhanced-terrain-layer/img/environment/water.png' },
 
-		{ id: 'controlWinds', text: 'Control Winds Spell', icon: 'modules/enhanced-terrain-layer/img/environment/current.png', obstacle: true },
-		{ id: 'gustOfWind', text: 'Gust of Wind Spell', icon: 'modules/enhanced-terrain-layer/img/environment/current.png', obstacle: true },
-		{ id: 'plantGrowth', text: 'Plant Growth Spell', icon: 'modules/enhanced-terrain-layer/img/environment/plants.png', obstacle: true },
-		{ id: 'wallOfSand', text: 'Wall of Sand Spell', icon: 'modules/enhanced-terrain-layer/img/environment/desert.png', obstacle: true },
-		{ id: 'wallOfThorns', text: 'Wall of Thorns Spell', icon: 'modules/enhanced-terrain-layer/img/environment/plants.png', obstacle: true }
-		
+		{ id: 'controlWinds', text: 'Dnd5eDragRulerIntegration.environment.controlwinds', icon: 'modules/enhanced-terrain-layer/img/environment/current.png', obstacle: true },
+		{ id: 'gustOfWind', text: 'Dnd5eDragRulerIntegration.environment.gustofwind', icon: 'modules/enhanced-terrain-layer/img/environment/current.png', obstacle: true },
+		{ id: 'plantGrowth', text: 'Dnd5eDragRulerIntegration.environment.plantgrowth', icon: 'modules/enhanced-terrain-layer/img/environment/plants.png', obstacle: true },
+		{ id: 'wallOfSand', text: 'Dnd5eDragRulerIntegration.environment.wallofsand', icon: 'modules/enhanced-terrain-layer/img/environment/desert.png', obstacle: true },
+		{ id: 'wallOfThorns', text: 'Dnd5eDragRulerIntegration.environment.wallofthorns', icon: 'modules/enhanced-terrain-layer/img/environment/plants.png', obstacle: true }
 	]
 }

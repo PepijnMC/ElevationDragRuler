@@ -8,7 +8,14 @@ Hooks.once("socketlib.ready", () => {
 
 export function updateCombatantDragRulerFlags(combat, updates) {
 	const combatId = combat.id;
-	return socket.executeAsGM(_socketUpdateCombatantDragRulerFlags, combatId, updates);
+	// TODO Check if canvas.tokens.get is still neccessary in future foundry versions
+	return socket
+		.executeAsGM(_socketUpdateCombatantDragRulerFlags, combatId, updates)
+		.then(() =>
+			currentSpeedProvider.onMovementHistoryUpdate(
+				updates.map(update => canvas.tokens.get(combat.combatants.get(update._id).token.id)),
+			),
+		);
 }
 
 async function _socketUpdateCombatantDragRulerFlags(combatId, updates) {

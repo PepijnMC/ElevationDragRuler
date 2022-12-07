@@ -1,9 +1,11 @@
+import { keybindForceTeleport } from "./keybindings.js";
+
 //Returns the environment configuration of a token, which sets which environments a token should ignore. 
 export function getConfiguredEnvironments(tokenDocument) {
 	const defaultConfiguredEnvironments = {'all': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'arctic': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'coast': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'desert': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'forest': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'grassland': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'jungle': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'mountain': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': true, 'climb': true}, 'swamp': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'underdark': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'urban': {'any': false, 'walk': false, 'swim': false, 'fly': false, 'burrow': false, 'climb': false}, 'water': {'any': false, 'walk': false, 'swim': true, 'fly': false, 'burrow': false, 'climb': false}};
 	var configuredEnvironments = tokenDocument.getFlag('elevation-drag-ruler', 'ignoredEnvironments');
 	return configuredEnvironments || defaultConfiguredEnvironments;
-}
+};
 
 //Returns the highest movement mode of a given object of movement modes.
 export function getHighestMovementMode(movementModes) {
@@ -16,7 +18,7 @@ export function getHighestMovementMode(movementModes) {
 		}
 	}
 	return highestMovement;
-}
+};
 
 //Returns the highest movement speed of a token.
 export function getHighestMovementSpeed(tokenDocument) {
@@ -27,7 +29,7 @@ export function getHighestMovementSpeed(tokenDocument) {
 	const climbSpeed = actor.system.attributes.movement.climb
 	const swimSpeed = actor.system.attributes.movement.swim
 	return Math.max(walkSpeed, flySpeed, burrowSpeed, climbSpeed, swimSpeed);
-}
+};
 
 //Returns the non-zero movement speeds of a token, including the module's automatic mode and an optional teleportation mode.
 export function getTokenSpeeds(tokenDocument) {
@@ -38,7 +40,7 @@ export function getTokenSpeeds(tokenDocument) {
 	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
 	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0 && game.modules.get('terrain-ruler')?.active) tokenSpeeds.push('teleport');
 	return tokenSpeeds;
-}
+};
 
 //Returns the movement a token should used based on settings, terrain, and/or elevation.
 export function getMovementMode(token) {
@@ -57,8 +59,6 @@ export function getMovementMode(token) {
 	const settingForceSwimming = game.settings.get('elevation-drag-ruler', 'forceSwimming');
 	const settingForceBurrowing = game.settings.get('elevation-drag-ruler', 'forceBurrowing');
 	const forceTeleport = tokenDocument.getFlag('elevation-drag-ruler', 'forceTeleport');
-	const keybindForceTeleport = tokenDocument.getFlag('elevation-drag-ruler', 'keybindForceTeleport');
-
 	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
 	const elevation = tokenDocument.elevation;
 	var environments = [];
@@ -75,7 +75,7 @@ export function getMovementMode(token) {
 	//Default movement mode.
 	const defaultMovementMode = 'walk';
 	
-	if (game.modules.get('terrain-ruler')?.active && (forceTeleport || keybindForceTeleport || selectedSpeed == 'teleport'))
+	if (terrainRulerAvailable && (forceTeleport || keybindForceTeleport || selectedSpeed == 'teleport'))
 		return 'teleport';
 	//If a token has a speed selected use that.
 	if (selectedSpeed && selectedSpeed != 'auto' && selectedSpeed != 'teleport')
@@ -101,7 +101,7 @@ export function getMovementMode(token) {
 	return 'burrow';
 
 	return defaultMovementMode;
-}
+};
 
 //Returns the total movement already spent from Drag Ruler's movement history.
 export function getMovementTotal(token) {
@@ -120,26 +120,23 @@ export function getMovementTotal(token) {
 	});
 	if (incompatible) return dragRuler.getMovedDistanceFromToken(token);
 	return movementTotal;
-}
+};
 
-//Returns true if the token should have a bonus dash.
-//This first checks the hasBonusDash flag but if undefined it will look for relevant features that permanently grant bonus dashes.
-export function hasBonusDash(tokenDocument) {
-	const hasBonusDash = tokenDocument.getFlag('elevation-drag-ruler', 'hasBonusDash')
-	if (hasBonusDash === undefined) {
+export function hasFeature(tokenDocument, flag, features) {
+	const hasFlag = tokenDocument.getFlag('elevation-drag-ruler', flag)
+	if (hasFeature === undefined) {
 		const actor = tokenDocument._actor || tokenDocument.parent;
 		if (!actor) return false;
-		const dashFeatures = ['Cunning Action', 'Escape', 'LightFooted', 'Rapid Movement']
-		var hasDashFeature = false;
+		var hasFeature = false;
 		const items = actor.items;
 		items.forEach((value) => {
-			if (dashFeatures.includes(value.name)) hasDashFeature = true;
+			if (features.includes(value.name)) hasFeature = true;
 		});
 	};
-	return hasBonusDash || hasDashFeature;
-}
+	return hasFlag || hasFeature;
+};
 
 //Returns true if the token is in combat.
 export function isTokenInCombat(tokenDocument) {
 	return (game.combat && game.combat.getCombatantByToken(tokenDocument._id))
-}
+};

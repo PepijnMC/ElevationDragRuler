@@ -42,6 +42,8 @@ To help streamline the use of flying creatures, flying tokens will be treated as
 ## Teleportation
 > Requires Terrain Ruler
 
+> Currently affected by a bug, see https://github.com/PepijnMC/ElevationDragRuler/issues/42
+
 In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation option. When teleporting, a token will spent only the specified cost (`0` by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
 
 A keybinding (default `Q`) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.

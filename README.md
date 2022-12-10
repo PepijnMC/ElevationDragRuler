@@ -23,8 +23,20 @@ A creature's movement speed can be picked by clicking a button in the Token HUD.
 ### Elevation
 When a creature's movement speed is set to automatic, the module uses the token's elevation to determine its movement speed. Above ground the creature will fly and below ground the creature will burrow, or swim if water terrain is present. The usage of elevation can be disabled in the speed controller settings, in which case a creature with its movement speed set to automatic will always use its highest movement speed, or water speed if water terrain is present.
 
-## Bonus Dashes
+### Bonus Dashes
 In the resource tab of the token configuration a token can be set to have access to bonus dashes, which when enabled will include an additional range band. This setting is enabled by default for creatures with features that permanently grant a bonus action dash, like Cunning Action.
+
+### Conditions
+Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement.
+
+### Teleportation
+> Requires Terrain Ruler
+
+> Currently affected by a bug, see https://github.com/PepijnMC/ElevationDragRuler/issues/42
+
+In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation option. When teleporting, a token will spent only the specified cost (`0` by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
+
+A keybinding (default `Q`) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
 
 ## Difficult Terrain
 When using Enhanced Terrain Layer and Terrain Ruler, movement costs are calculated according to DnD5e rules. This means movement costs only stack between water terrain and other terrain.
@@ -39,21 +51,12 @@ The Token HUD also contains a button to quickly toggle all difficult terrain for
 
 To help streamline the use of flying creatures, flying tokens will be treated as if they were 1 elevation higher for the purpose of ignoring difficult terrain. This eliminates the cumbersome manual changing of a token's elevation to make it ignore ground based difficult terrain before landing back on the ground. This behavior can be disabled in the settings.
 
-## Teleportation
-> Requires Terrain Ruler
-
-> Currently affected by a bug, see https://github.com/PepijnMC/ElevationDragRuler/issues/42
-
-In the resource tab of the token configuration menu a teleportation range and cost can be specified. If the teleportation range is set to a number greater than zero, cycling through that token's movement modes will include a teleportation option. When teleporting, a token will spent only the specified cost (`0` by default) regardless of the actual distance moved. This allows for more fluid integration of teleportation during combat with drag ruler's movement history turned on.
-
-A keybinding (default `Q`) can be held down to force a token to teleport regardless of its selected speed. Make sure to have the token selected before pressing the hotkey but do not yet start dragging it yet.
-
-## Conditions
-Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement.
-
 ## Issues and Requests
 Please report issues and propose requests <a href="https://github.com/PepijnMC/ElevationDragRuler/issues" target="_blank">here</a>.
-  
+
+## Translations
+You can help translate this module [here](https://weblate.foundryvtt-hub.com/engage/elevation-drag-ruler). There are a handful of languages setup to translate but please feel free to add any other language, it is quick and easy to do.
+
 ## API Flags
 This section is for those who might want to make their own module interact with this one. Calling this an API is too generous but most of the data this module uses is saved to flags on the Token Document under `elevation-drag-ruler` (the old module's name).
 

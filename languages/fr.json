@@ -34,7 +34,7 @@
 				"hint": "Limite le bouton \"Changer de Vitesse\" à un niveau d'autorisation minimal."
 			},
 			"restrictTerrainButton": {
-				"name": "Restreindre le bouton \"Basculer le Terrain\",
+				"name": "Restreindre le bouton \"Basculer le Terrain\"",
 				"hint": "Limite le bouton \"Basculer le Terrain\" à un niveau de permission minimal."
 			},
 			"oneDnd": {

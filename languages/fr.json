@@ -1,1 +1,71 @@
-{}
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"tokenTerrain": {
+				"name": "Jeton Terrain difficile",
+				"hint": "Implémente les règles de Dnd5e pour se déplacer à travers les jetons (nécessite s'inclure les jetons vivants/morts du module Enhanced Terrain Layer)."
+			},
+			"elevationSwitching": {
+				"name": "Utiliser l'élévation",
+				"hint": "Les jetons dont la vitesse de déplacement est réglée sur automatique prendront en compte leur élévation. Lorsqu'il est désactivé, il utilisera sa vitesse de déplacement la plus élevée à la place."
+			},
+			"hideTerrainButton": {
+				"name": "Masquer le bouton \"Toggle Terrain\"(Basculer le terrain)",
+				"hint": "Masque le bouton \"Toggle Terrain\" du Token HUD pour l'utilisateur actuel."
+			},
+			"hideSpeedButton": {
+				"name": "Cacher le bouton \"Switch Speed\"(changer de vitesse)",
+				"hint": "Masque le bouton \"Switch Speed\" du Token HUD pour l'utilisateur actuel."
+			},
+			"flyingElevation": {
+				"name": "Elévation en vol",
+				"hint": "Les jetons volants ignorent le terrain sur lequel ils se trouvent."
+			},
+			"forceFlying": {
+				"name": "Forcer le vol",
+				"hint": "Les jetons à l'élévation 0 utiliseront par défaut leur vitesse de vol si elle est supérieure à leur vitesse de marche."
+			},
+			"forceBurrowing": {
+				"name": "Force le creusement",
+				"hint": "Les jetons à l'altitude 0 mais qui ne sont pas dans un terrain aquatique utiliseront par défaut leur vitesse de creusement si elle est supérieure à leur vitesse de marche et de vol."
+			},
+			"restrictSpeedButton": {
+				"name": "Bouton \"Switch Speed\" restreint",
+				"hint": "Limite le bouton \"Switch Speed\" à un niveau d'autorisation minimal."
+			},
+			"restrictTerrainButton": {
+				"name": "Restreindre le bouton \"Toggle Terrain",
+				"hint": "Limite le bouton \"Toggle Terrain\" à un niveau de permission minimal."
+			},
+			"oneDnd": {
+				"name": "Activer les règles du test du jeu OneDnD",
+				"hint": "Implémente les règles de mouvement alternatives du dernier test du jeu de OneDnD."
+			}
+		},
+		"keybindings": {
+			"forceTeleport": {
+				"name": "Déplacement par téléportation forcée",
+				"hint": "Lorsqu'il est tenu, le jeton se téléporte quel que soit le mode de déplacement choisi."
+			},
+			"cycleMovement": {
+				"name": "Cycle des modes de déplacement",
+				"hint": "Fait défiler les modes de déplacement des jetons sélectionnés."
+			},
+			"cycleMovementReverse": {
+				"name": "Cycles des modes de déplacement (Inverse)",
+				"hint": "Repasse en revue les modes de déplacement des jetons sélectionnés."
+			},
+			"toggleTerrain": {
+				"name": "Basculer le terrain",
+				"hint": "Active tous les coûts de mouvement supplémentaires pour les jetons sélectionnés."
+			}
+		},
+		"environment": {
+			"controlwinds": "Sort de contrôle des vents",
+			"gustofwind": "Sort de rafale de vent",
+			"plantgrowth": "Sort de croissance des plantes",
+			"wallofsand": "Sort de mur de sable",
+			"wallofthorns": "Sort du mur d'épines"
+		}
+	}
+}

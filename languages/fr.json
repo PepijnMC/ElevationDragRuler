@@ -10,12 +10,12 @@
 				"hint": "Les jetons dont la vitesse de déplacement est réglée sur automatique prendront en compte leur élévation. Lorsqu'il est désactivé, il utilisera sa vitesse de déplacement la plus élevée à la place."
 			},
 			"hideTerrainButton": {
-				"name": "Masquer le bouton \"Toggle Terrain\"(Basculer le terrain)",
-				"hint": "Masque le bouton \"Toggle Terrain\" du Token HUD pour l'utilisateur actuel."
+				"name": "Masquer le bouton \"Basculer le Terrain\"",
+				"hint": "Masque le bouton \"Basculer le Terrain\" du Token HUD pour l'utilisateur actuel."
 			},
 			"hideSpeedButton": {
-				"name": "Cacher le bouton \"Switch Speed\"(changer de vitesse)",
-				"hint": "Masque le bouton \"Switch Speed\" du Token HUD pour l'utilisateur actuel."
+				"name": "Cacher le bouton \"Changer de Vitesse\"",
+				"hint": "Masque le bouton \"Changer de Vitesse\" du Token HUD pour l'utilisateur actuel."
 			},
 			"flyingElevation": {
 				"name": "Elévation en vol",
@@ -30,12 +30,12 @@
 				"hint": "Les jetons à l'altitude 0 mais qui ne sont pas dans un terrain aquatique utiliseront par défaut leur vitesse de creusement si elle est supérieure à leur vitesse de marche et de vol."
 			},
 			"restrictSpeedButton": {
-				"name": "Bouton \"Switch Speed\" restreint",
-				"hint": "Limite le bouton \"Switch Speed\" à un niveau d'autorisation minimal."
+				"name": "Bouton \"Changer de Vitesse\" restreint",
+				"hint": "Limite le bouton \"Changer de Vitesse\" à un niveau d'autorisation minimal."
 			},
 			"restrictTerrainButton": {
-				"name": "Restreindre le bouton \"Toggle Terrain",
-				"hint": "Limite le bouton \"Toggle Terrain\" à un niveau de permission minimal."
+				"name": "Restreindre le bouton \"Basculer le Terrain\",
+				"hint": "Limite le bouton \"Basculer le Terrain\" à un niveau de permission minimal."
 			},
 			"oneDnd": {
 				"name": "Activer les règles du test du jeu OneDnD",

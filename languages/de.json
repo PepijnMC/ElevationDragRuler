@@ -1,1 +1,71 @@
-{}
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"tokenTerrain": {
+				"name": "Token Schwieriges Terrain",
+				"hint": "Implementiert die Dnd5e-Regeln für das Bewegen durch Plättchen (erfordert \"Lebende/Tote Plättchen einbeziehen\" aus dem Erweiterten Terrain-Layer)."
+			},
+			"elevationSwitching": {
+				"name": "Höhe verwenden",
+				"hint": "Bei Spielsteinen, deren Bewegungsgeschwindigkeit auf automatisch eingestellt ist, wird die Höhe berücksichtigt. Wenn sie deaktiviert sind, wird stattdessen ihre höchste Bewegungsgeschwindigkeit verwendet."
+			},
+			"forceFlying": {
+				"hint": "Spielsteine auf Höhe 0 nehmen standardmäßig ihre Fluggeschwindigkeit an, wenn diese größer ist als ihre Gehgeschwindigkeit.",
+				"name": "Kraftflug"
+			},
+			"forceBurrowing": {
+				"name": "Erzwingen von Graben",
+				"hint": "Spielsteine, die sich auf Höhe 0, aber nicht in einem Wassergebiet befinden, verwenden standardmäßig ihre Wühlgeschwindigkeit, wenn diese größer ist als ihre Geh- und Fluggeschwindigkeit."
+			},
+			"hideSpeedButton": {
+				"name": "Taste \"Geschwindigkeit wechseln\" ausblenden",
+				"hint": "Blendet die Schaltfläche \"Geschwindigkeit wechseln\" aus dem Token-HUD für den aktuellen Benutzer aus."
+			},
+			"restrictSpeedButton": {
+				"hint": "Schränkt die Schaltfläche \"Geschwindigkeit wechseln\" auf eine minimale Berechtigungsstufe ein.",
+				"name": "Taste \"Geschwindigkeit wechseln\" einschränken"
+			},
+			"hideTerrainButton": {
+				"name": "Schaltfläche \"Terrain umschalten\" ausblenden",
+				"hint": "Blendet die Schaltfläche \"Umschalten des Geländes\" aus dem Token-HUD für den aktuellen Benutzer aus."
+			},
+			"restrictTerrainButton": {
+				"name": "Schaltfläche \"Umschalten des Geländes\" einschränken",
+				"hint": "Schränkt die Schaltfläche \"Umschalten des Geländes\" auf eine minimale Berechtigungsstufe ein."
+			},
+			"oneDnd": {
+				"name": "Ein DnD-Spieltest-Regeln aktivieren",
+				"hint": "Setzt alternative Bewegungsregeln aus dem letzten OneDnD-Spieltest um."
+			},
+			"flyingElevation": {
+				"name": "Flughöhe erhöhen",
+				"hint": "Fliegende Spielsteine ignorieren das Gelände, an dessen oberem Rand sie sich befinden."
+			}
+		},
+		"keybindings": {
+			"cycleMovement": {
+				"name": "Bewegungsmodi des Zyklus",
+				"hint": "Wechselt durch die Bewegungsmodi der ausgewählten Spielsteine."
+			},
+			"cycleMovementReverse": {
+				"name": "Zyklus-Bewegungsmodi (Rückwärts)",
+				"hint": "Durchläuft rückwärts die Bewegungsmodi der ausgewählten Spielsteine."
+			},
+			"toggleTerrain": {
+				"name": "Gelände umschalten",
+				"hint": "Schaltet alle zusätzlichen Bewegungskosten für die ausgewählten Spielsteine aus."
+			},
+			"forceTeleport": {
+				"hint": "Wenn er gehalten wird, teleportieren sich die Spielsteine unabhängig von ihrem gewählten Bewegungsmodus.",
+				"name": "Teleportation erzwingen Bewegung"
+			}
+		},
+		"environment": {
+			"controlwinds": "Zauber Winde kontrollieren",
+			"gustofwind": "Zauberspruch Windstoß",
+			"plantgrowth": "Wachstumszauber für Pflanzen",
+			"wallofthorns": "Wand aus Doner Zauber",
+			"wallofsand": "Wand aus Sand Zauberspruch"
+		}
+	}
+}

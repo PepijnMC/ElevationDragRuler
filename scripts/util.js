@@ -37,22 +37,51 @@ export function getTokenSpeeds(tokenDocument) {
 	if (!actor) return false;
 	const defaultSpeeds = actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
-	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
+	for (var [key, value] of Object.entries(defaultSpeeds)) {
+		if (value > 0 && key != 'hover') 
+			switch (key) {
+				case 'land':
+					key = 'walk';
+					break;
+				case 'water':
+					key = 'swim';
+					break;
+				case 'air':
+					key = 'fly';
+					break;
+			};
+			tokenSpeeds.push(key);
+	}
 	if (game.settings.get('elevation-drag-ruler', 'teleport') && game.modules.get('terrain-ruler')?.active && tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
 	return tokenSpeeds;
 };
 
 //Returns the movement a token should used based on settings, terrain, and/or elevation.
 export function getMovementMode(token) {
-	
 	const tokenDocument = token.document;
+	const tokenType = tokenDocument.actor.type;
+	var tokenMovement = {};
+	var walkSpeed = 0;
+	var swimSpeed = 0;
+	var flySpeed = 0;
+	var burrowSpeed = 0;
+	var climbSpeed = 0;
 
-	const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
-	const flySpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.fly'));
-	const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
-	const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
-	const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
-	const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': 30};
+	if (tokenType == 'group') {
+		tokenMovement = tokenDocument.actorData.system.attributes.movement;
+		walkSpeed = tokenMovement.land;
+		swimSpeed = tokenMovement.water;
+		flySpeed = tokenMovement.air;
+	}
+	else {
+		tokenMovement = tokenDocument.actor.system.attributes.movement;
+		walkSpeed = tokenMovement.walk;
+		swimSpeed = tokenMovement.swim;
+		flySpeed = tokenMovement.fly;
+		burrowSpeed = tokenMovement.burrow;
+		climbSpeed = tokenMovement.climb;
+	}
+	const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed,'burrow': burrowSpeed, 'climb': climbSpeed};
 
 	const settingElevationSwitching = game.settings.get('elevation-drag-ruler', 'elevationSwitching');
 	const settingForceFlying = game.settings.get('elevation-drag-ruler', 'forceFlying');
@@ -74,7 +103,6 @@ export function getMovementMode(token) {
 
 	//Default movement mode.
 	const defaultMovementMode = 'walk';
-	const movementMode = ''
 	
 	if (game.settings.get('elevation-drag-ruler', 'teleport') && terrainRulerAvailable && (forceTeleport || keybindForceTeleport || selectedSpeed == 'teleport'))
 		return 'teleport';
@@ -89,18 +117,18 @@ export function getMovementMode(token) {
 	}
 	//If the token has no speed selected and the 'Use Elevation' setting is on, base speed on elevation and terrain (if available).
 	if (elevation < 0 && !environments.includes('water') && movementModes.burrow > 0)
-	return 'burrow';
+		return 'burrow';
 	if (elevation < 0 && environments.includes('water') && movementModes.swim > 0)
-	return 'swim';
+		return 'swim';
 	if (elevation > 0 && movementModes.fly > 0)
-	return 'fly';
+		return 'fly';
 	
 	if (elevation == 0 && settingForceSwimming && environments.includes('water') && (movementModes.swim > 0))
-	return 'swim';
+		return 'swim';
 	if (elevation == 0 && settingForceFlying && (movementModes.fly > movementModes.walk))
-	return 'fly';
+		return 'fly';
 	if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (movementModes.burrow > movementModes.walk) && (movementModes.burrow > movementModes.fly))
-	return 'burrow';
+		return 'burrow';
 
 	return defaultMovementMode;
 };

@@ -20,16 +20,33 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
 		getRanges(token) {
 			const tokenDocument = token.document
+			const tokenType = tokenDocument.actor.type;
 			//Retrieves the total movement in the token's movement history to be used by the teleportation range.
 			var movementTotal = 0;
 			if (isTokenInCombat(tokenDocument) && game.settings.get('drag-ruler', 'enableMovementHistory') && game.modules.get('terrain-ruler')?.active) movementTotal = getMovementTotal(token) || 0;
 
 			//Retrieves and compiles relevant movement data of the token.
-			const walkSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.walk'));
-			const flySpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.fly'));
-			const burrowSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.burrow'));
-			const climbSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.climb'));
-			const swimSpeed = parseFloat(getProperty(token, 'actor.system.attributes.movement.swim'));
+			var tokenMovement = {};
+			var walkSpeed = 0;
+			var swimSpeed = 0;
+			var flySpeed = 0;
+			var burrowSpeed = 0;
+			var climbSpeed = 0;
+		
+			if (tokenType == 'group') {
+				tokenMovement = tokenDocument.actorData.system.attributes.movement;
+				walkSpeed = tokenMovement.land;
+				swimSpeed = tokenMovement.water;
+				flySpeed = tokenMovement.air;
+			}
+			else {
+				tokenMovement = tokenDocument.actor.system.attributes.movement;
+				walkSpeed = tokenMovement.walk;
+				swimSpeed = tokenMovement.swim;
+				flySpeed = tokenMovement.fly;
+				burrowSpeed = tokenMovement.burrow;
+				climbSpeed = tokenMovement.climb;
+			}
 			const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
 			const movementModes = {'walk': walkSpeed, 'fly': flySpeed, 'swim': swimSpeed, 'burrow': burrowSpeed, 'climb': climbSpeed, 'teleport': movementTotal + teleportRange};
 			

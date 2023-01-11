@@ -1,4 +1,4 @@
-import { getConfiguredEnvironments, getHighestMovementSpeed, getTokenSpeeds, hasBonusDash } from "./util.js"
+import { getConfiguredEnvironments, getTokenSpeeds, hasFeature } from "./util.js"
 
 function addConfigTerrainTab(config, html) {
 	const tokenDocument = config.token;
@@ -23,15 +23,33 @@ function addConfigTerrainTab(config, html) {
 	};
 }
 
+function createConfigOption(label, inputType, flag, value) {
+	var defaultValue = ''
+	switch (inputType) {
+		case 'checkbox':
+			defaultValue = `${value ? 'checked=""' : '""'}`;
+			break;
+		case 'number':
+			defaultValue = value ? `value='${value}' placeholder='0'`: `value placeholder='0'`;
+			break;
+	}
+	
+	return `<div class='form-group'><label>${label}</label><input type='${inputType}' name='flags.elevation-drag-ruler.${flag}' ${defaultValue}></div>`
+}
+
 function addConfigResourceField(config, html) {
 	const tokenDocument = config.token;
 	const tokenSpeeds = getTokenSpeeds(tokenDocument);
 	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
-	const bonusDash = hasBonusDash(tokenDocument);
+	const bonusDash = hasFeature(tokenDocument, 'hasBonusDash', ['Cunning Action', 'Escape', 'LightFooted', 'Rapid Movement']);
+	const nimbleness = hasFeature(tokenDocument, 'hasNimbleness', ['Halfling Nimbleness', 'Halfling']);
+	const elementalForm = hasFeature(tokenDocument, 'hasElementalForm', ['Air Form', "Fire Form", "Water Form"]);
+	const incorporealMovement = hasFeature(tokenDocument, 'hasIncorporealMovement', ['Incorporeal Movement']);
+	const freedomOfMovement = hasFeature(tokenDocument, 'hasFreedomOfMovement', ['Freedom of Movement']);
 	const hideSpeedButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideSpeedButton');
 	const hideTerrainButton = tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton');
-	const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') || 0;
-	const teleportCost = tokenDocument.getFlag('elevation-drag-ruler', 'teleportCost') || 0;
+	const teleportRange = tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange');
+	const teleportCost = tokenDocument.getFlag('elevation-drag-ruler', 'teleportCost');
 	const resourceTab = html.find('div.tab[data-tab="resources"]');
 
 	if (tokenSpeeds) {
@@ -41,18 +59,25 @@ function addConfigResourceField(config, html) {
 			speedField.append(`<option value=${tokenSpeed} ${tokenSpeed == selectedSpeed ? "selected" : ""}>${tokenSpeed.charAt(0).toUpperCase() + tokenSpeed.slice(1)}</option>`);
 		};
 	};
-  
-	resourceTab.append(`<div class='form-group'><label>Has Bonus Dash</label><input type='checkbox' name='flags.elevation-drag-ruler.hasBonusDash' ${bonusDash ? 'checked=""' : '""'}></div>`);
+
+	resourceTab.append(createConfigOption('Has Bonus Dash', 'checkbox', 'hasBonusDash', bonusDash));
 	
 	if (game.modules.get('terrain-ruler')?.active) {
-		resourceTab.append(`<div class='form-group'><label>Teleport Range</label><input type='number' name='flags.elevation-drag-ruler.teleportRange' value='${teleportRange}'></div>`);
-		resourceTab.append(`<div class='form-group'><label>Teleport Cost</label><input type='number' name='flags.elevation-drag-ruler.teleportCost' value='${teleportCost}'></div>`);
+		resourceTab.append(createConfigOption('Has Nimbleness', 'checkbox', 'hasNimbleness', nimbleness));
+		resourceTab.append(createConfigOption('Has Elemental Form', 'checkbox', 'hasElementalForm', elementalForm));
+		resourceTab.append(createConfigOption('Has Freedom of Movement', 'checkbox', 'hasFreedomOfMovement', freedomOfMovement));
+		resourceTab.append(createConfigOption('Has Incorpreal Movement', 'checkbox', 'hasIncorporealMovement', incorporealMovement));
+
+		if (game.settings.get('elevation-drag-ruler', 'teleport')) {
+			resourceTab.append(createConfigOption('Teleport Range', 'number', 'teleportRange', teleportRange));
+			resourceTab.append(createConfigOption('Teleport Cost', 'number', 'teleportCost', teleportCost));
+		};
 	};
 
-	resourceTab.append(`<div class='form-group'><label>Hide Speed Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideSpeedButton' ${hideSpeedButton ? 'checked=""' : '""'}></div>`);
+	resourceTab.append(createConfigOption('Hide Speed Button', 'checkbox', 'hideSpeedButton', hideSpeedButton));
 	
 	if (game.modules.get('terrain-ruler')?.active) {
-		resourceTab.append(`<div class='form-group'><label>Hide Terrain Button</label><input type='checkbox' name='flags.elevation-drag-ruler.hideTerrainButton' ${hideTerrainButton ? 'checked=""' : '""'}></div>`);
+		resourceTab.append(createConfigOption('Hide Terrain Button', 'checkbox', 'hideTerrainButton', hideTerrainButton));
 	};
 }
 

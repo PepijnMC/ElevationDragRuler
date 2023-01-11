@@ -2,7 +2,7 @@
   "id": "elevation-drag-ruler",
   "title": "DnD5e Drag Ruler Integration",
   "description": "An enhancement of Drag Ruler for the DnD5e system.",
-  "version": "1.8.6",
+  "version": "1.8.7",
   "authors": [
     {
       "name": "Pepijn Sietsema",
@@ -14,6 +14,13 @@
     "minimum": "10",
     "verified": "10"
   },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
   "relationships": {
     "systems": [
       {
@@ -29,7 +36,7 @@
       {
         "id": "drag-ruler",
         "type": "module",
-        "manifest": "https://raw.githubusercontent.com/Traumi/foundryvtt-drag-ruler/master/module.json",
+        "manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-drag-ruler/master/module.json",
         "compatibility": {
           "verified": "1.13.0"
         }
@@ -37,6 +44,7 @@
       {
         "id": "lib-wrapper",
         "type": "module",
+        "manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
         "compatibility": {}
       },
       {

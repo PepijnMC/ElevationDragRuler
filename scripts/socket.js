@@ -8,8 +8,15 @@ Hooks.once("socketlib.ready", () => {
 
 export function updateCombatantDragRulerFlags(combat, updates) {
 	const combatId = combat.id;
-	return socket.executeAsGM(_socketUpdateCombatantDragRulerFlags, combatId, updates);
-}
+	// TODO Check if canvas.tokens.get is still neccessary in future foundry versions
+	return socket
+		.executeAsGM(_socketUpdateCombatantDragRulerFlags, combatId, updates)
+		.then(() =>
+			currentSpeedProvider.onMovementHistoryUpdate(
+				updates.map(update => canvas.tokens.get(combat.combatants.get(update._id).token.id)),
+			),
+		);
+};
 
 async function _socketUpdateCombatantDragRulerFlags(combatId, updates) {
 	const user = game.users.get(this.socketdata.userId);
@@ -31,13 +38,13 @@ async function _socketUpdateCombatantDragRulerFlags(combatId, updates) {
 		return {_id: update._id, flags: {dragRuler: update.dragRulerFlags}};
 	});
 	await combat.updateEmbeddedDocuments("Combatant", updates, {diff: false});
-}
+};
 
 export function recalculate(tokens) {
 	socket.executeForEveryone(_socketRecalculate, tokens ? tokens.map(token => token.id) : undefined);
-}
+};
 
 function _socketRecalculate(tokenIds) {
 	const ruler = canvas.controls.ruler;
 	if (ruler.isDragRuler) ruler.dragRulerRecalculate(tokenIds);
-}
+};

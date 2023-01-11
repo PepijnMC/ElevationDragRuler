@@ -1,101 +1,80 @@
 import {getConfiguredEnvironments, getTokenSpeeds} from "./util.js"
 
-//Called when the 'Switch Speed' button is clicked.
-async function onSpeedButtonClick(tokenId, html) {
-	const tokenDocument = canvas.tokens.get(tokenId).document;
+//Cycles through the token's speeds when the 'Switch Speed' button is clicked.
+async function onSpeedButtonClick(tokenDocument, html) {
 	const speeds = getTokenSpeeds(tokenDocument);
 	const oldSelectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
-	//Cycles through the available speeds.
 	var indexSpeed = 1;
-	if (speeds.includes(oldSelectedSpeed)) {
-		indexSpeed = speeds.indexOf(oldSelectedSpeed) + 1;
-	}
-	if (indexSpeed >= speeds.length) {
-		indexSpeed = 0;
-	}
-	await tokenDocument.setFlag('elevation-drag-ruler', 'selectedSpeed', speeds[indexSpeed]);
-	//Re-add the button to update its icon to the new selected speed.
-	addSpeedButton(tokenId, html);
-}
-
-async function onTerrainButtonClick(tokenId, html) {
-	const tokenDocument = canvas.tokens.get(tokenId).document;
-	var terrainConfig = getConfiguredEnvironments(tokenDocument);
-	if (terrainConfig.all.any) terrainConfig.all.any = false;
-	else terrainConfig.all.any = true;
-	await tokenDocument.setFlag('elevation-drag-ruler', 'ignoredEnvironments', terrainConfig);
-	addTerrainButton(tokenId, html);
-}
-
-//Returns a button based on the currently selected speed.
-function createSpeedButton(tokenId) {
-	const tokenDocument = canvas.tokens.get(tokenId).document;
-
-	let button = document.createElement('div');
-	button.classList.add('control-icon');
-	button.title = 'Switch Speed';
-	button.id = 'switch-speed';
-
-	//The icon depends on the currently selected speed.
-	button.innerHTML = '<i class="fas fa-arrows-alt-v fa-fw"></i>';
-	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
-	if (selectedSpeed == 'walk') button.innerHTML = '<i class="fas fa-walking fa-fw"></i>';
-	if (selectedSpeed == 'swim') button.innerHTML = '<i class="fas fa-swimmer fa-fw"></i>';
-	if (selectedSpeed == 'fly') button.innerHTML = '<i class="fas fa-crow fa-fw"></i>';
-	if (selectedSpeed == 'burrow') button.innerHTML = '<i class="fas fa-mountain fa-fw"></i>';
-	if (selectedSpeed == 'climb') button.innerHTML = '<i class="fas fa-grip-lines fa-fw"></i>';
-	if (selectedSpeed == 'teleport') {
-		if (game.modules.get('terrain-ruler')?.active) button.innerHTML = '<i class="fas fa-transporter-1 fa-fw"></i>';
-		else tokenDocument.setFlag('elevation-drag-ruler', 'selectedSpeed', 'auto');
-	};
+	if (speeds.includes(oldSelectedSpeed)) indexSpeed = (speeds.indexOf(oldSelectedSpeed) + 1) % speeds.length;
+	const selectedSpeed = speeds[indexSpeed];
+	await tokenDocument.setFlag('elevation-drag-ruler', 'selectedSpeed', selectedSpeed);
 	
-	return button;
+	html.find('#switch-speed').remove();
+	addSpeedButton(tokenDocument, html);
 }
 
-function createTerrainButton(tokenId) {
-	const tokenDocument = canvas.tokens.get(tokenId).document;
-	const terrainConfig = getConfiguredEnvironments(tokenDocument).all.any;
+// Toggles terrain for the token when the 'Toggle Terrain' button is clicked.
+async function onTerrainButtonClick(tokenDocument, html) {
+	var terrainConfig = getConfiguredEnvironments(tokenDocument);
+	terrainConfig.all.any = !terrainConfig.all.any
+	await tokenDocument.setFlag('elevation-drag-ruler', 'ignoredEnvironments', terrainConfig);
+	html.find('#toggle-terrain').remove();
+	addTerrainButton(tokenDocument, html);
+}
+
+// Basic button factory.
+function createButton(title, id, innerHTML, clickFunction) {
 	const button = document.createElement('div');
 	button.classList.add('control-icon');
-	if (!terrainConfig) button.classList.add('active');
-	button.title = 'Toggle Terrain';
-	button.id = 'toggle-terrain';
-
-	button.innerHTML = '<i class="fas fa-hiking fa-fw"></i>';
-	
+	button.title = title;
+	button.id = id;
+	button.innerHTML = innerHTML;
+	button.addEventListener('click', clickFunction);
 	return button;
 }
 
-//Removes the old button.
-function removeSpeedButton(html) {
-	html.find('#switch-speed').remove();
+// Returns an icon name based on the selected speed.
+function getSpeedButtonIcon(selectedSpeed) {
+	var buttonIcon = 'arrows-up-down-left-right';
+
+	switch (selectedSpeed) {
+		case 'walk':
+			buttonIcon = 'walking';
+			break;
+		case 'swim':
+			buttonIcon = 'swimmer';
+			break;
+		case 'fly':
+			buttonIcon = 'crow';
+			break;
+		case 'burrow':
+			buttonIcon = 'mountain';
+			break;
+		case 'climb':
+			buttonIcon = 'grip-lines';
+			break;
+		case 'teleport':
+			if (game.modules.get('terrain-ruler')?.active && game.settings.get('elevation-drag-ruler', 'teleport')) buttonIcon = 'transporter-1';
+			else tokenDocument.setFlag('elevation-drag-ruler', 'selectedSpeed', 'auto');
+			break;
+	};
+
+	return buttonIcon;
 }
 
-function removeTerrainButton(html) {
-	html.find('#toggle-terrain').remove();
-}
-
-//Creates a clickable button and adds it to the Token HUD.
-export function addSpeedButton(tokenId, html) {
-	removeSpeedButton(html);
-	const speedButton = createSpeedButton(tokenId);
-
-	$(speedButton)
-		.click((event) =>
-			onSpeedButtonClick(tokenId, html)
-		)
+//Creates clickable buttons and adds it to the Token HUD.
+export function addSpeedButton(tokenDocument, html) {
+	const selectedSpeed = tokenDocument.getFlag('elevation-drag-ruler', 'selectedSpeed');
+	const buttonIcon = getSpeedButtonIcon(selectedSpeed);
+	const speedButton = createButton('Switch Speed', 'switch-speed', `<i class="fas fa-${buttonIcon} fa-fw"></i>`, function() {onSpeedButtonClick(tokenDocument, html)});
 
 	html.find('div.left').append(speedButton);
 }
+export function addTerrainButton(tokenDocument, html) {
+	const terrainConfig = getConfiguredEnvironments(tokenDocument).all.any;
 
-export function addTerrainButton(tokenId, html) {
-	removeTerrainButton(html);
-	const terrainButton = createTerrainButton(tokenId);
-
-	$(terrainButton)
-		.click((event) =>
-			onTerrainButtonClick(tokenId, html)
-		)
+	const terrainButton = createButton('Toggle Terrain', 'toggle-terrain', '<i class="fas fa-hiking fa-fw"></i>', function() {onTerrainButtonClick(tokenDocument, html)});
+	if (!terrainConfig) terrainButton.classList.add('active');
 
 	html.find('div.right').append(terrainButton);
 }

@@ -29,7 +29,7 @@ In the resource tab of the token configuration a token can be set to have access
 ### Conditions
 Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement.
 
-### Teleportation (Experimental)
+### Teleportation (Experimental Setting)
 > Requires Terrain Ruler
 
 > Currently affected by a bug, see https://github.com/PepijnMC/ElevationDragRuler/issues/42
@@ -57,8 +57,11 @@ Please report issues and propose requests <a href="https://github.com/PepijnMC/E
 ## Translations
 You can help translate this module [here](https://weblate.foundryvtt-hub.com/engage/elevation-drag-ruler). There are a handful of languages setup to translate but please feel free to add any other language, it is quick and easy to do.
 
-## API Flags
-This section is for those who might want to make their own module interact with this one. Calling this an API is too generous but most of the data this module uses is saved to flags on the Token Document under `elevation-drag-ruler` (the old module's name).
+## API
+This section is for those who might want to make their own module interact with this one.
+
+### Flags
+A lot of data the module uses is saved as flags on the token document under the `elevation-drag-ruler` namespace.
 
 - `movementMode` (READ-ONLY)
   - This flag when set contains a string of the token's last used movement mode, either `walk`, `swim`, `fly`, `burrow`, `climb`, or `teleport`.
@@ -94,6 +97,19 @@ This section is for those who might want to make their own module interact with 
   - This flag is not set by default, in which case the default array found in the `getConfiguredEnvironments()` function is used.
   - Although untested it should be safe to write to this flag.
   - I do not recommend changing the structure of this flag. The configuration menu will reflect any changes but any new terrains or movement speeds will not behave well.
+  
+### Functions
+Various utility functions are exposed under `game.modules.get('elevation-drag-ruler').api`.
+- getConfiguredEnvironments(tokenDocument)
+  - Returns the `ignoredEnviroments` flag of a token, see above. If it does not exist it will instead return the default object.
+- getHighestMovementSpeed(tokenDocument)
+  - Returns the value of the highest movement speed of a token.
+- getTokenSpeeds(tokenDocument)
+  - Returns an array of available movement modes the token might have selected.
+  - Always includes 'auto'.
+- getMovementMode(token)
+  - Returns the movement mode that the module will use if the token starts being dragged.
+  - This does not update the `movementMode` flag of the token.
 
 ### Example Code
 

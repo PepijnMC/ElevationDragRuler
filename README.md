@@ -29,7 +29,7 @@ In the resource tab of the token configuration a token can be set to have access
 ### Conditions
 Various conditions in Dnd5e affect movement and this module handles all of them. Being either dead, grappled, incapacitated, paralysed, petrified, restrained, asleep, stunned, and/or unconscious will set a creature movement range to zero. Additionally, creatures that are hasted or slowed will have their movement speed doubled or halved respectively. Prone creatures will automatically crawl, spending extra movement.
 
-### Teleportation
+### Teleportation (Experimental)
 > Requires Terrain Ruler
 
 > Currently affected by a bug, see https://github.com/PepijnMC/ElevationDragRuler/issues/42

@@ -34,10 +34,10 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			var climbSpeed = 0;
 		
 			if (tokenType == 'group') {
-				tokenMovement = tokenDocument.actorData.system.attributes.movement;
-				walkSpeed = tokenMovement.land;
-				swimSpeed = tokenMovement.water;
-				flySpeed = tokenMovement.air;
+				tokenMovement = tokenDocument.actorData.system?.attributes?.movement;
+				walkSpeed = tokenMovement?.land || 0;
+				swimSpeed = tokenMovement?.water || 0;
+				flySpeed = tokenMovement?.air || 0;
 			}
 			else {
 				tokenMovement = tokenDocument.actor.system.attributes.movement;

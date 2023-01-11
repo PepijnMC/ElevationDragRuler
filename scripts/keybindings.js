@@ -99,7 +99,6 @@ function handleToggleTerrain(event) {
 
 function handleForceTeleport(event) {
 	keybindForceTeleport = true;
-	console.log(keybindForceTeleport)
 }
 
 function unhandleForceTeleport(event) {

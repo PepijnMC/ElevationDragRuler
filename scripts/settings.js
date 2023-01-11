@@ -52,6 +52,15 @@ export function registerSettings() {
 		type: Boolean,
 		default: true
 	});
+
+	game.settings.register('elevation-drag-ruler', 'conditionMovement', {
+		name: game.i18n.localize('Dnd5eDragRulerIntegration.settings.conditionMovement.name'),
+		hint: game.i18n.localize('Dnd5eDragRulerIntegration.settings.conditionMovement.hint'),
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true
+	});
 	
 	game.settings.register('elevation-drag-ruler', 'hideSpeedButton', {
 		name: game.i18n.localize('Dnd5eDragRulerIntegration.settings.hideSpeedButton.name'),
@@ -89,6 +98,15 @@ export function registerSettings() {
 		type: String,
 		default: "1",
 		choices: {1: "Player", 2: "Trusted", 3: "Assistant", 4: "Game Master"}
+	});
+
+	game.settings.register('elevation-drag-ruler', 'teleport', {
+		name: game.i18n.localize('Dnd5eDragRulerIntegration.settings.teleport.name'),
+		hint: game.i18n.localize('Dnd5eDragRulerIntegration.settings.teleport.hint'),
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: false
 	});
 	
 	game.settings.register('elevation-drag-ruler', 'oneDnd', {

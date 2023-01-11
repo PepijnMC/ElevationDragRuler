@@ -38,7 +38,7 @@ export function getTokenSpeeds(tokenDocument) {
 	const defaultSpeeds = actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
 	for (const [key, value] of Object.entries(defaultSpeeds)) if (value > 0 && key != 'hover') tokenSpeeds.push(key);
-	if (tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0 && game.modules.get('terrain-ruler')?.active) tokenSpeeds.push('teleport');
+	if (game.settings.get('elevation-drag-ruler', 'teleport') && game.modules.get('terrain-ruler')?.active && tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
 	return tokenSpeeds;
 };
 
@@ -74,8 +74,9 @@ export function getMovementMode(token) {
 
 	//Default movement mode.
 	const defaultMovementMode = 'walk';
+	const movementMode = ''
 	
-	if (terrainRulerAvailable && (forceTeleport || keybindForceTeleport || selectedSpeed == 'teleport'))
+	if (game.settings.get('elevation-drag-ruler', 'teleport') && terrainRulerAvailable && (forceTeleport || keybindForceTeleport || selectedSpeed == 'teleport'))
 		return 'teleport';
 	//If a token has a speed selected use that.
 	if (selectedSpeed && selectedSpeed != 'auto' && selectedSpeed != 'teleport')
@@ -93,10 +94,11 @@ export function getMovementMode(token) {
 	return 'swim';
 	if (elevation > 0 && movementModes.fly > 0)
 	return 'fly';
-	if (elevation == 0 && settingForceFlying && (movementModes.fly > movementModes.walk))
-	return 'fly';
+	
 	if (elevation == 0 && settingForceSwimming && environments.includes('water') && (movementModes.swim > 0))
 	return 'swim';
+	if (elevation == 0 && settingForceFlying && (movementModes.fly > movementModes.walk))
+	return 'fly';
 	if (elevation == 0 && settingForceBurrowing && !environments.includes('water') && (movementModes.burrow > movementModes.walk) && (movementModes.burrow > movementModes.fly))
 	return 'burrow';
 
@@ -122,18 +124,21 @@ export function getMovementTotal(token) {
 	return movementTotal;
 };
 
-export function hasFeature(tokenDocument, flag, features) {
-	const hasFlag = tokenDocument.getFlag('elevation-drag-ruler', flag)
-	if (hasFeature === undefined) {
-		const actor = tokenDocument._actor || tokenDocument.parent;
-		if (!actor) return false;
-		var hasFeature = false;
-		const items = actor.items;
-		items.forEach((value) => {
-			if (features.includes(value.name)) hasFeature = true;
-		});
-	};
-	return hasFlag || hasFeature;
+export function hasCondition(tokenDocument, searchList) {
+	const conditionFound = searchList.find(condition => tokenDocument.hasStatusEffect(condition))
+	return conditionFound !== undefined;
+}
+
+export function hasFeature(tokenDocument, flag, searchList) {
+	const hasFlag = tokenDocument.getFlag('elevation-drag-ruler', flag);
+	if (hasFlag !== undefined) return hasFlag;
+	
+	const actor = tokenDocument._actor || tokenDocument.parent;
+	if (!actor) return false;
+
+	const actorFeatures = actor.items.filter(feature => feature.type == 'feat').map(feature => feature.name);
+	const featureFound = searchList.find(searchFeature => actorFeatures.includes(searchFeature));
+	return featureFound !== undefined;
 };
 
 //Returns true if the token is in combat.

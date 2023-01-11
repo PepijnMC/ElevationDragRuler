@@ -1,9 +1,9 @@
-import { getConfiguredEnvironments, hasFeature } from "./util.js";
+import { getConfiguredEnvironments, hasCondition, hasFeature } from "./util.js";
 
 Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 	class DnD5eRuleProvider extends RuleProvider {
 		calculateCombinedCost(terrain, options) {
-			const token = options.token;
+			const token = options.token || canvas.tokens.controlled[0];
 	
 			const tokenSizes = {'tiny': 0, 'sm': 1, 'med': 2, 'lg': 3, 'huge': 4, 'grg': 5};
 			const incapacitatedConditions = ['dead', 'incapacitated', 'paralysis', 'petrified', 'sleep', 'stun', 'unconscious'];
@@ -19,8 +19,7 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 			var tokenSize = 'medium';
 			var tokenDisposition = 1;
 			var movementSizeOffset = {smaller: -1, bigger: 1};
-			var hasElementalForm = false;
-			var hasIncorporealMovement = false;
+			var canMoveThroughTokens = false;
 			var hasFreedomofMovement = false;
 
 			var baseCost = 1;
@@ -38,11 +37,10 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 				tokenSize = getProperty(token, 'actor.system.traits.size');
 				tokenDisposition = tokenDocument.disposition;
 				movementSizeOffset = {smaller: -1, bigger: hasFeature(tokenDocument, 'hasNimbleness', ['Halfling', 'Halfling Nimbleness']) ? 0 : 1};
-				hasElementalForm = hasFeature(token.document, 'hasElementalForm', ['Air Form', "Fire Form", "Water Form"])
-				hasIncorporealMovement = hasFeature(token.document, 'hasIncorporealMovement', ['Incorporeal Movement']);
-				hasFreedomofMovement = hasFeature(token.document, 'hasFreedomofMovement', ['Freedom of Movement']);
+				canMoveThroughTokens = hasFeature(tokenDocument, 'canMoveThroughTokens', ['Air Form', 'Fire Form', 'Water Form', 'Incorporeal Movement', 'Swarm']);
+				hasFreedomofMovement = hasFeature(tokenDocument, 'hasFreedomofMovement', ['Freedom of Movement']);
 
-				crawlingCost = tokenDocument.hasStatusEffect("prone") ? 2 : 1;		
+				crawlingCost = hasCondition(tokenDocument, ['prone']) ? 2 : 1;		
 				configuredEnvironments = getConfiguredEnvironments(tokenDocument);	
 			}
 		
@@ -59,25 +57,24 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 					if (Object.keys(terrainInfo).length > 0) {
 						const terrainEnvironment = terrainInfo.environment;
 		
-						var ignoreTerrain = (settingFlyingElevation && movementMode == 'fly' && tokenElevation == terrainInfo.elevation + terrainInfo.depth);
+						var ignoreTerrain = (tokenElevation < terrainInfo.elevation && tokenElevation > terrainInfo.elevation + terrainInfo.depth) || (settingFlyingElevation && movementMode == 'fly' && tokenElevation == terrainInfo.elevation + terrainInfo.depth);
 						if (!ignoreTerrain && terrainEnvironment != '') ignoreTerrain = (configuredEnvironments[terrainEnvironment][movementMode] || configuredEnvironments[terrainEnvironment]['any']);
 						
 						if (!ignoreTerrain) terrainList.push(terrainInfo);
 					}
 					else if (settingTokenTerrain && 'token' in x && tokenCost != Infinity) {
-						const terrainTokenDisposition = x.token.document.disposition;
-						const terrainTokenSize = getProperty(x.token, 'actor.system.traits.size');
-						const terrainTokenElevation = x.token.document.elevation;
-						var terrainTokenIncapacitated = false;
-						if (settingOneDnd) {
-							incapacitatedConditions.forEach(condition => {
-								if (x.token.document.hasStatusEffect(condition)) terrainTokenIncapacitated = true;
-							});
-						};
-						if (tokenDisposition + terrainTokenDisposition == 0 && !terrainTokenIncapacitated && !hasIncorporealMovement && !hasElementalForm && (tokenSizes[tokenSize] + movementSizeOffset['smaller'] <= tokenSizes[terrainTokenSize] && tokenSizes[terrainTokenSize] <= tokenSizes[tokenSize] + movementSizeOffset['bigger']))
-							tokenCost = Infinity;
-						else if (tokenElevation == terrainTokenElevation && (!settingOneDnd || terrainTokenSize != 'tiny'))
-							tokenCost = 2;
+						const terrainToken = x.token;
+						const terrainTokenDocument = terrainToken.document;
+						const terrainTokenDisposition = terrainTokenDocument.disposition;
+						const terrainTokenSize = getProperty(terrainToken, 'actor.system.traits.size');
+						const terrainTokenElevation = terrainTokenDocument.elevation;
+						const terrainTokenIncapacitated = (settingOneDnd && hasCondition(terrainTokenDocument, incapacitatedConditions));
+						if (tokenElevation == terrainTokenElevation) {
+							if (tokenDisposition + terrainTokenDisposition == 0 && !canMoveThroughTokens && !terrainTokenIncapacitated && (tokenSizes[tokenSize] + movementSizeOffset['smaller'] <= tokenSizes[terrainTokenSize] && tokenSizes[terrainTokenSize] <= tokenSizes[tokenSize] + movementSizeOffset['bigger']))
+								tokenCost = Infinity;
+							else if (!settingOneDnd || terrainTokenSize != 'tiny')
+								tokenCost = 2;
+						}
 					}
 				});
 				terrainList.forEach(terrainInfo => {

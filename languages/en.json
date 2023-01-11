@@ -25,6 +25,10 @@
 				"name": "Force Burrowing",
 				"hint": "Tokens at elevation 0 but not in water terrain will default to their burrowing speed if it is bigger than their walking and flying speed."
 			},
+			"conditionMovement": {
+				"name": "Condition Based Movement",
+				"hint": "Movement speed ranges are affected by character conditions. Should be disabled if another module already automates this."
+			},
 			"hideSpeedButton": {
 				"name": "Hide \"Switch Speed\" Button",
 				"hint": "Hides the \"Switch Speed\" button from the Token HUD for the current user."
@@ -40,6 +44,10 @@
 			"restrictTerrainButton": {
 				"name": "Restrict \"Toggle Terrain\" Button",
 				"hint": "Restricts the \"Toggle Terrain\" button to a minimal permission level."
+			},
+			"teleport": {
+				"name": "Enable Teleportation (Experimental)",
+				"hint": "Adds a teleportation movement mode. This feature is experimental and has known issues."
 			},
 			"oneDnd": {
 				"name": "Enable OneDnD Playtest Rules",

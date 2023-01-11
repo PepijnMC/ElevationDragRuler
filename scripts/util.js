@@ -38,7 +38,7 @@ export function getTokenSpeeds(tokenDocument) {
 	const defaultSpeeds = actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
 	for (var [key, value] of Object.entries(defaultSpeeds)) {
-		if (value > 0 && key != 'hover') 
+		if (value > 0 && key != 'hover') {
 			switch (key) {
 				case 'land':
 					key = 'walk';
@@ -51,6 +51,7 @@ export function getTokenSpeeds(tokenDocument) {
 					break;
 			};
 			tokenSpeeds.push(key);
+		}
 	}
 	if (game.settings.get('elevation-drag-ruler', 'teleport') && game.modules.get('terrain-ruler')?.active && tokenDocument.getFlag('elevation-drag-ruler', 'teleportRange') > 0) tokenSpeeds.push('teleport');
 	return tokenSpeeds;
@@ -68,10 +69,10 @@ export function getMovementMode(token) {
 	var climbSpeed = 0;
 
 	if (tokenType == 'group') {
-		tokenMovement = tokenDocument.actorData.system.attributes.movement;
-		walkSpeed = tokenMovement.land;
-		swimSpeed = tokenMovement.water;
-		flySpeed = tokenMovement.air;
+		tokenMovement = tokenDocument.actorData.system?.attributes?.movement;
+		walkSpeed = tokenMovement?.land || 0;
+		swimSpeed = tokenMovement?.water || 0;
+		flySpeed = tokenMovement?.air || 0;
 	}
 	else {
 		tokenMovement = tokenDocument.actor.system.attributes.movement;

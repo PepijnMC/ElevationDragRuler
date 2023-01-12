@@ -40,6 +40,18 @@
 			"oneDnd": {
 				"name": "Activer les règles du test du jeu OneDnD",
 				"hint": "Implémente les règles de mouvement alternatives du dernier test du jeu de OneDnD."
+			},
+			"teleport": {
+				"name": "Activer la téléportation (Expérimental)",
+				"hint": "Ajoute un mode de déplacement par téléportation. Cette fonctionnalité est expérimentale et présente des problèmes connus."
+			},
+			"forceSwimming": {
+				"name": "Forcer la nage",
+				"hint": "Les jetons à l'altitude 0 et dans un terrain aquatique utiliseront par défaut leur vitesse de natation si elle est supérieure à leur vitesse de marche."
+			},
+			"conditionMovement": {
+				"name": "Mouvement basé sur la condition",
+				"hint": "Les plages de vitesse de déplacement sont affectées par les conditions du personnage. Devrait être désactivé si un autre module automatise déjà cela."
 			}
 		},
 		"keybindings": {

@@ -2,12 +2,12 @@
 	"Dnd5eDragRulerIntegration": {
 		"settings": {
 			"tokenTerrain": {
-				"name": "Jeton Terrain difficile",
-				"hint": "Implémente les règles de Dnd5e pour se déplacer à travers les jetons (nécessite s'inclure les jetons vivants/morts du module Enhanced Terrain Layer)."
+				"name": "Token Terrain difficile",
+				"hint": "Implémente les règles de Dnd5e pour se déplacer à travers les tokens (nécessite Inclure les tokens vivants/morts du module Enhanced Terrain Layer)."
 			},
 			"elevationSwitching": {
 				"name": "Utiliser l'élévation",
-				"hint": "Les jetons dont la vitesse de déplacement est réglée sur automatique prendront en compte leur élévation. Lorsqu'il est désactivé, il utilisera sa vitesse de déplacement la plus élevée à la place."
+				"hint": "Les tokens dont la vitesse de déplacement est réglée sur automatique prendront en compte leur élévation. Lorsqu'il est désactivé, il utilisera sa vitesse de déplacement la plus élevée à la place."
 			},
 			"hideTerrainButton": {
 				"name": "Masquer le bouton \"Basculer le Terrain\"",
@@ -19,11 +19,11 @@
 			},
 			"flyingElevation": {
 				"name": "Elévation en vol",
-				"hint": "Les jetons volants ignorent le terrain sur lequel ils se trouvent."
+				"hint": "Les tokens volants ignorent le terrain sur lequel ils se trouvent."
 			},
 			"forceFlying": {
 				"name": "Forcer le vol",
-				"hint": "Les jetons à l'élévation 0 utiliseront par défaut leur vitesse de vol si elle est supérieure à leur vitesse de marche."
+				"hint": "Les tokens à l'élévation 0 utiliseront par défaut leur vitesse de vol si elle est supérieure à leur vitesse de marche."
 			},
 			"forceBurrowing": {
 				"name": "Force le creusement",
@@ -40,6 +40,18 @@
 			"oneDnd": {
 				"name": "Activer les règles du test du jeu OneDnD",
 				"hint": "Implémente les règles de mouvement alternatives du dernier test du jeu de OneDnD."
+			},
+			"teleport": {
+				"name": "Activer la téléportation (Expérimental)",
+				"hint": "Ajoute un mode de déplacement par téléportation. Cette fonctionnalité est expérimentale et présente des problèmes connus."
+			},
+			"forceSwimming": {
+				"name": "Forcer la nage",
+				"hint": "Les jetons à l'altitude 0 et dans un terrain aquatique utiliseront par défaut leur vitesse de natation si elle est supérieure à leur vitesse de marche."
+			},
+			"conditionMovement": {
+				"name": "Mouvement basé sur la condition",
+				"hint": "Les plages de vitesse de déplacement sont affectées par les conditions du personnage. Devrait être désactivé si un autre module automatise déjà cela."
 			}
 		},
 		"keybindings": {

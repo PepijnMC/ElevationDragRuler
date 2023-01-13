@@ -27,7 +27,7 @@
 			},
 			"forceBurrowing": {
 				"name": "Force le creusement",
-				"hint": "Les jetons à l'altitude 0 mais qui ne sont pas dans un terrain aquatique utiliseront par défaut leur vitesse de creusement si elle est supérieure à leur vitesse de marche et de vol."
+				"hint": "Les tokens à l'altitude 0 mais qui ne sont pas dans un terrain aquatique utiliseront par défaut leur vitesse de creusement si elle est supérieure à leur vitesse de marche et de vol."
 			},
 			"restrictSpeedButton": {
 				"name": "Bouton \"Changer de Vitesse\" restreint",
@@ -47,7 +47,7 @@
 			},
 			"forceSwimming": {
 				"name": "Forcer la nage",
-				"hint": "Les jetons à l'altitude 0 et dans un terrain aquatique utiliseront par défaut leur vitesse de natation si elle est supérieure à leur vitesse de marche."
+				"hint": "Les tokens à l'altitude 0 et dans un terrain aquatique utiliseront par défaut leur vitesse de natation si elle est supérieure à leur vitesse de marche."
 			},
 			"conditionMovement": {
 				"name": "Mouvement basé sur la condition",
@@ -57,19 +57,19 @@
 		"keybindings": {
 			"forceTeleport": {
 				"name": "Déplacement par téléportation forcée",
-				"hint": "Lorsqu'il est tenu, le jeton se téléporte quel que soit le mode de déplacement choisi."
+				"hint": "Lorsqu'il est tenu, le token se téléporte quel que soit le mode de déplacement choisi."
 			},
 			"cycleMovement": {
 				"name": "Cycle des modes de déplacement",
-				"hint": "Fait défiler les modes de déplacement des jetons sélectionnés."
+				"hint": "Fait défiler les modes de déplacement des tokens sélectionnés."
 			},
 			"cycleMovementReverse": {
 				"name": "Cycles des modes de déplacement (Inverse)",
-				"hint": "Repasse en revue les modes de déplacement des jetons sélectionnés."
+				"hint": "Repasse en revue les modes de déplacement des tokens sélectionnés."
 			},
 			"toggleTerrain": {
 				"name": "Basculer le terrain",
-				"hint": "Active tous les coûts de mouvement supplémentaires pour les jetons sélectionnés."
+				"hint": "Active tous les coûts de mouvement supplémentaires pour les tokens sélectionnés."
 			}
 		},
 		"environment": {

@@ -2,70 +2,82 @@
 	"Dnd5eDragRulerIntegration": {
 		"settings": {
 			"tokenTerrain": {
-				"name": "Token Schwieriges Terrain",
-				"hint": "Implementiert die Dnd5e-Regeln für das Bewegen durch Plättchen (erfordert \"Lebende/Tote Plättchen einbeziehen\" aus dem Erweiterten Terrain-Layer)."
+				"name": "Schwieriges Gelände für Spielfiguren",
+				"hint": "Implementiert die Dnd5e-Regeln für das Bewegen durch Spielfiguren hindurch (erfordert \"Tote zählen als schwieriges Gelände\" aus dem \"Enhanced Terrain-Layer\" Modul)."
 			},
 			"elevationSwitching": {
-				"name": "Höhe verwenden",
-				"hint": "Bei Spielsteinen, deren Bewegungsgeschwindigkeit auf automatisch eingestellt ist, wird die Höhe berücksichtigt. Wenn sie deaktiviert sind, wird stattdessen ihre höchste Bewegungsgeschwindigkeit verwendet."
+				"name": "Höhe einbeziehen",
+				"hint": "Bei Spielfiguren, deren Bewegungswert auf automatisch eingestellt ist, wird die Höhe berücksichtigt. Ist diese Einstellung deaktiviert, wird stattdessen der höchste Bewegungswert verwendet."
 			},
 			"forceFlying": {
-				"hint": "Spielsteine auf Höhe 0 nehmen standardmäßig ihre Fluggeschwindigkeit an, wenn diese größer ist als ihre Gehgeschwindigkeit.",
-				"name": "Kraftflug"
+				"hint": "Spielfiguren auf Höhe 0 nutzen standardmäßig ihren Flug-Bewegungswert, wenn dieser größer als ihr Lauf-Bewegungswert ist .",
+				"name": "Fliegen erzwingen"
 			},
 			"forceBurrowing": {
-				"name": "Erzwingen von Graben",
-				"hint": "Spielsteine, die sich auf Höhe 0, aber nicht in einem Wassergebiet befinden, verwenden standardmäßig ihre Wühlgeschwindigkeit, wenn diese größer ist als ihre Geh- und Fluggeschwindigkeit."
+				"name": "Wühlen erzwingen",
+				"hint": "Spielfiguren, die sich auf Höhe 0, aber nicht in einem Wassergebiet befinden, verwenden standardmäßig ihren Wühl-Bewegungswert, wenn dieser größer als ihr Geh- und Flug-Bewegungswert ist."
 			},
 			"hideSpeedButton": {
-				"name": "Taste \"Geschwindigkeit wechseln\" ausblenden",
-				"hint": "Blendet die Schaltfläche \"Geschwindigkeit wechseln\" aus dem Token-HUD für den aktuellen Benutzer aus."
+				"name": "Taste \"Bewegungsart wechseln\" ausblenden",
+				"hint": "Blendet die Schaltfläche \"Bewegungsart wechseln\" aus dem Token-HUD für den aktuellen Benutzer aus."
 			},
 			"restrictSpeedButton": {
-				"hint": "Schränkt die Schaltfläche \"Geschwindigkeit wechseln\" auf eine minimale Berechtigungsstufe ein.",
-				"name": "Taste \"Geschwindigkeit wechseln\" einschränken"
+				"hint": "Schränkt die Schaltfläche \"Bewegungsart wechseln\" auf eine minimale Berechtigungsstufe ein.",
+				"name": "Berechtigungen der \"Bewegungsart wechseln\" Schaltfläche einschränken"
 			},
 			"hideTerrainButton": {
-				"name": "Schaltfläche \"Terrain umschalten\" ausblenden",
-				"hint": "Blendet die Schaltfläche \"Umschalten des Geländes\" aus dem Token-HUD für den aktuellen Benutzer aus."
+				"name": "\"Gelände umschalten\" Schaltfläche ausblenden",
+				"hint": "Blendet die Schaltfläche \"Gelände umschalten\" aus dem Token-HUD für den aktuellen Benutzer aus."
 			},
 			"restrictTerrainButton": {
-				"name": "Schaltfläche \"Umschalten des Geländes\" einschränken",
-				"hint": "Schränkt die Schaltfläche \"Umschalten des Geländes\" auf eine minimale Berechtigungsstufe ein."
+				"name": "\"Gelände umschalten\" Schaltfläche einschränken",
+				"hint": "Schränkt die Schaltfläche \"Gelände umschalten\" auf eine minimale Berechtigungsstufe ein."
 			},
 			"oneDnd": {
-				"name": "Ein DnD-Spieltest-Regeln aktivieren",
-				"hint": "Setzt alternative Bewegungsregeln aus dem letzten OneDnD-Spieltest um."
+				"name": "OneDnD Spieltest-Regeln aktivieren",
+				"hint": "Setzt alternative Bewegungsregeln aus dem aktuellen OneDnD-Spieltest um."
 			},
 			"flyingElevation": {
 				"name": "Flughöhe erhöhen",
-				"hint": "Fliegende Spielsteine ignorieren das Gelände, an dessen oberem Rand sie sich befinden."
+				"hint": "Fliegende Spielfiguren ignorieren das Gelände, an dessen oberen Rand sie sich befinden."
+			},
+			"forceSwimming": {
+				"name": "Schwimmen erzwingen",
+				"hint": "Spielfiguren auf Höhe 0 und in einem Wassergebiet, nutzen standardmäßig ihren Schwimm-Bewegungswert, wenn dieser größer als ihr Lauf-Bewegungswert ist ."
+			},
+			"conditionMovement": {
+				"name": "Zustands abhängiger Bewegungswert",
+				"hint": "Der Bewegungswert einer Spielfigur sie betreffende Zustände beeinflusst. Dies sollte deaktiviert sein, wenn andere Module diese Rolle übernehmen."
+			},
+			"teleport": {
+				"name": "Teleportation ermöglichen (Experimentell)",
+				"hint": "Fügt den Teleportations-Bewegunsmodus hinzu. Diese Funktion ist experimentell und hat Fehler."
 			}
 		},
 		"keybindings": {
 			"cycleMovement": {
-				"name": "Bewegungsmodi des Zyklus",
-				"hint": "Wechselt durch die Bewegungsmodi der ausgewählten Spielsteine."
+				"name": "Bewegungsmodi durchschalten",
+				"hint": "Wechselt durch die Bewegungsmodi der ausgewählten Spielfiguren."
 			},
 			"cycleMovementReverse": {
-				"name": "Zyklus-Bewegungsmodi (Rückwärts)",
-				"hint": "Durchläuft rückwärts die Bewegungsmodi der ausgewählten Spielsteine."
+				"name": "Bewegungsmodi durchschalten (Rückwärts)",
+				"hint": "Durchläuft rückwärts die Bewegungsmodi der ausgewählten Spielfiguren."
 			},
 			"toggleTerrain": {
 				"name": "Gelände umschalten",
-				"hint": "Schaltet alle zusätzlichen Bewegungskosten für die ausgewählten Spielsteine aus."
+				"hint": "Schaltet alle zusätzlichen Bewegungskosten für die ausgewählten Spielfiguren aus."
 			},
 			"forceTeleport": {
-				"hint": "Wenn er gehalten wird, teleportieren sich die Spielsteine unabhängig von ihrem gewählten Bewegungsmodus.",
-				"name": "Teleportation erzwingen Bewegung"
+				"hint": "Wenn gedrückt, teleportieren sich Spielfiguren unabhängig von ihrem gewählten Bewegungsmodus.",
+				"name": "Erzwinge Teleportations-Bewegung"
 			}
 		},
 		"environment": {
-			"controlwinds": "Zauber Winde kontrollieren",
-			"gustofwind": "Zauberspruch Windstoß",
-			"plantgrowth": "Wachstumszauber für Pflanzen",
-			"wallofthorns": "Wand aus Doner Zauber",
-			"wallofsand": "Wand aus Sand Zauberspruch"
+			"controlwinds": "Zauber \"Wind kontrollieren\" (Control Winds)",
+			"gustofwind": "Zauber \"Windstoß\" (Gust of Wind)",
+			"plantgrowth": "Zauber \"Pflanzenwachstum\" (Plant Growth)",
+			"wallofthorns": "Zauber \"Dornenwand\" (Wall of Thorns)",
+			"wallofsand": "Zauber \"Sandwand\" (Wall of Sand)"
 		}
 	}
 }

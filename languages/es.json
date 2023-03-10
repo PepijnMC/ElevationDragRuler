@@ -1,1 +1,22 @@
-{}
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"hideSpeedButton": {
+				"name": "Ocultar el botón «Cambiar Velocidad»",
+				"hint": "Oculta el botón «Cambiar Velocidad» del HUD de la Ficha para el usuario actual."
+			},
+			"restrictSpeedButton": {
+				"name": "Restringir el botón «Cambiar Velocidad»",
+				"hint": "Restringe el botón «Cambiar Velocidad» a un nivel de permiso mínimo."
+			},
+			"teleport": {
+				"name": "Activar Teletransportación (Experimental)",
+				"hint": "Añade un modo de movimiento de teletransportación. Esta característica es experimental y tiene problemas conocidos."
+			},
+			"elevationSwitching": {
+				"name": "Usar Elevación",
+				"hint": "Las fichas con velocidad de movimiento en automático van a tener en cuenta su elevación. En cambio, cuando esté desactivado, van a utilizar su velocidad de moviendo más alta."
+			}
+		}
+	}
+}

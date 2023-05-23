@@ -66,14 +66,23 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
 						const terrainToken = x.token;
 						const terrainTokenDocument = terrainToken.document;
 						const terrainTokenDisposition = terrainTokenDocument.disposition;
+						const isEnemy = (tokenDisposition != 0 && terrainTokenDisposition != 0 && tokenDisposition + terrainTokenDisposition == 0);
+						const isAlly = (tokenDisposition != 0 && terrainTokenDisposition != 0 && !isEnemy);
 						const terrainTokenSize = getProperty(terrainToken, 'actor.system.traits.size');
 						const terrainTokenElevation = terrainTokenDocument.elevation;
 						const terrainTokenIncapacitated = (settingOneDnd && hasCondition(terrainTokenDocument, incapacitatedConditions));
 						if (tokenElevation == terrainTokenElevation) {
-							if (tokenDisposition + terrainTokenDisposition == 0 && !canMoveThroughTokens && !terrainTokenIncapacitated && (tokenSizes[tokenSize] + movementSizeOffset['smaller'] <= tokenSizes[terrainTokenSize] && tokenSizes[terrainTokenSize] <= tokenSizes[tokenSize] + movementSizeOffset['bigger']))
-								tokenCost = Infinity;
-							else if (!settingOneDnd || terrainTokenSize != 'tiny')
+							if (!settingOneDnd) {
+								//Hostile creatures cannot be moved through unless the token has specific features. Moving through other creatures is considered difficult terrain.
+								if (isEnemy && !canMoveThroughTokens && !terrainTokenIncapacitated && (tokenSizes[tokenSize] + movementSizeOffset['smaller'] <= tokenSizes[terrainTokenSize] && tokenSizes[terrainTokenSize] <= tokenSizes[tokenSize] + movementSizeOffset['bigger']))
+									tokenCost = Infinity;
+								else
+									tokenCost = 2;
+							}
+							//If using the OneDnD rules you can move through all creatures but if the creature is not an ally or not tiny it is considered difficult terrain.
+							else if (!isAlly && terrainTokenSize != 'tiny') {
 								tokenCost = 2;
+							}
 						}
 					}
 				});

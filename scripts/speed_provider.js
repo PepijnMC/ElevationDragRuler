@@ -20,7 +20,6 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 		//This is called by Drag Ruler once when a token starts being dragged. Does not get called again when setting a waypoint.
 		getRanges(token) {
 			const tokenDocument = token.document
-			const tokenType = tokenDocument.actor.type;
 			//Retrieves the total movement in the token's movement history to be used by the teleportation range.
 			var movementTotal = 0;
 			if (isTokenInCombat(tokenDocument) && game.settings.get('drag-ruler', 'enableMovementHistory') && game.modules.get('terrain-ruler')?.active) movementTotal = getMovementTotal(token) || 0;
@@ -33,6 +32,7 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			var burrowSpeed = 0;
 			var climbSpeed = 0;
 		
+			const tokenType = tokenDocument.actor.type;
 			if (tokenType == 'group') {
 				tokenMovement = tokenDocument.actorData.system?.attributes?.movement;
 				walkSpeed = tokenMovement?.land || 0;

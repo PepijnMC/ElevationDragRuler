@@ -61,21 +61,19 @@ export function getTokenSpeeds(tokenDocument) {
 export function getMovementMode(token) {
 	const tokenDocument = token.document;
 	const tokenType = tokenDocument.actor.type;
-	var tokenMovement = {};
 	var walkSpeed = 0;
 	var swimSpeed = 0;
 	var flySpeed = 0;
 	var burrowSpeed = 0;
 	var climbSpeed = 0;
 
+	const tokenMovement = tokenDocument.actor.system.attributes.movement;
 	if (tokenType == 'group') {
-		tokenMovement = tokenDocument.actorData.system?.attributes?.movement;
-		walkSpeed = tokenMovement?.land || 0;
-		swimSpeed = tokenMovement?.water || 0;
-		flySpeed = tokenMovement?.air || 0;
+		walkSpeed = tokenMovement.land;
+		swimSpeed = tokenMovement.water;
+		flySpeed = tokenMovement.air;
 	}
 	else {
-		tokenMovement = tokenDocument.actor.system.attributes.movement;
 		walkSpeed = tokenMovement.walk;
 		swimSpeed = tokenMovement.swim;
 		flySpeed = tokenMovement.fly;

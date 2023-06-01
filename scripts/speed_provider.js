@@ -25,22 +25,20 @@ Hooks.once('dragRuler.ready', (SpeedProvider) => {
 			if (isTokenInCombat(tokenDocument) && game.settings.get('drag-ruler', 'enableMovementHistory') && game.modules.get('terrain-ruler')?.active) movementTotal = getMovementTotal(token) || 0;
 
 			//Retrieves and compiles relevant movement data of the token.
-			var tokenMovement = {};
 			var walkSpeed = 0;
 			var swimSpeed = 0;
 			var flySpeed = 0;
 			var burrowSpeed = 0;
 			var climbSpeed = 0;
-		
+
+			const tokenMovement = tokenDocument.actor.system?.attributes?.movement;
 			const tokenType = tokenDocument.actor.type;
 			if (tokenType == 'group') {
-				tokenMovement = tokenDocument.actorData.system?.attributes?.movement;
-				walkSpeed = tokenMovement?.land || 0;
-				swimSpeed = tokenMovement?.water || 0;
-				flySpeed = tokenMovement?.air || 0;
+				walkSpeed = tokenMovement.land;
+				swimSpeed = tokenMovement.water;
+				flySpeed = tokenMovement.air;
 			}
 			else {
-				tokenMovement = tokenDocument.actor.system.attributes.movement;
 				walkSpeed = tokenMovement.walk;
 				swimSpeed = tokenMovement.swim;
 				flySpeed = tokenMovement.fly;

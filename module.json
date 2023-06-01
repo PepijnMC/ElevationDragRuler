@@ -2,7 +2,7 @@
   "id": "elevation-drag-ruler",
   "title": "DnD5e Drag Ruler Integration",
   "description": "An enhancement of Drag Ruler for the DnD5e system.",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "authors": [
     {
       "name": "Pepijn Sietsema",

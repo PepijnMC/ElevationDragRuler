@@ -36,10 +36,10 @@ Hooks.once('canvasInit', () => {
 });
 
 Hooks.on('renderTokenHUD', (app, html, data) => {
-	const tokenDocument = canvas.tokens.get(data._id).document
-	if (!game.settings.get('elevation-drag-ruler', 'hideSpeedButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideSpeedButton') && game.user.role >= game.settings.get('elevation-drag-ruler', 'restrictSpeedButton'))
+	const tokenDocument = app.object.document
+	if (!game.settings.get('elevation-drag-ruler', 'hideSpeedButton') && !tokenDocument.getFlag('elevation-drag-ruler', 'hideSpeedButton') && game.user.role >= game.settings.get('elevation-drag-ruler', 'restrictSpeedButton'))
 		addSpeedButton(tokenDocument, html);
-	if (!game.settings.get('elevation-drag-ruler', 'hideTerrainButton') && !app.object.document.getFlag('elevation-drag-ruler', 'hideTerrainButton') && game.modules.get('terrain-ruler')?.active && game.user.role >= game.settings.get('elevation-drag-ruler', 'restrictTerrainButton'))
+	if (!game.settings.get('elevation-drag-ruler', 'hideTerrainButton') && !tokenDocument.getFlag('elevation-drag-ruler', 'hideTerrainButton') && game.modules.get('terrain-ruler')?.active && game.user.role >= game.settings.get('elevation-drag-ruler', 'restrictTerrainButton'))
 		addTerrainButton(tokenDocument, html);
 });
 

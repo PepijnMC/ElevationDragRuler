@@ -22,7 +22,7 @@ export function getHighestMovementMode(movementModes) {
 
 //Returns the highest movement speed of a token.
 export function getHighestMovementSpeed(tokenDocument) {
-	const actor = tokenDocument._actor || tokenDocument.parent;
+	const actor = tokenDocument.actor || tokenDocument.parent;
 	const walkSpeed = actor.system.attributes.movement.walk;
 	const flySpeed = actor.system.attributes.movement.fly
 	const burrowSpeed = actor.system.attributes.movement.burrow
@@ -33,7 +33,7 @@ export function getHighestMovementSpeed(tokenDocument) {
 
 //Returns the non-zero movement speeds of a token, including the module's automatic mode and an optional teleportation mode.
 export function getTokenSpeeds(tokenDocument) {
-	const actor = tokenDocument._actor || tokenDocument.parent;
+	const actor = tokenDocument.actor || tokenDocument.parent;
 	if (!actor) return false;
 	const defaultSpeeds = actor.system.attributes.movement;
 	var tokenSpeeds = ['auto'] ;
@@ -160,7 +160,7 @@ export function hasFeature(tokenDocument, flag, searchList) {
 	const hasFlag = tokenDocument.getFlag('elevation-drag-ruler', flag);
 	if (hasFlag !== undefined) return hasFlag;
 	
-	const actor = tokenDocument._actor || tokenDocument.parent;
+	const actor = tokenDocument.actor || tokenDocument.parent;
 	if (!actor) return false;
 
 	const actorFeatures = actor.items.filter(feature => feature.type == 'feat').map(feature => feature.name);
@@ -170,5 +170,5 @@ export function hasFeature(tokenDocument, flag, searchList) {
 
 //Returns true if the token is in combat.
 export function isTokenInCombat(tokenDocument) {
-	return (game.combat && game.combat.getCombatantByToken(tokenDocument._id))
+	return (game.combat && game.combat.getCombatantByToken(tokenDocument.id))
 };

@@ -6,7 +6,7 @@
 				"hint": "Implementuje zasady Dnd5e dotyczące poruszania się przez tokeny (wymaga dołączenia żywych/umarłych tokenów z ulepszonej warstwy terenu)."
 			},
 			"elevationSwitching": {
-				"name": "Użycie elewacji",
+				"name": "Użycie wzniesienia",
 				"hint": "Tokeny z ustawioną automatyczną prędkością ruchu będą brały pod uwagę swoją wysokość. Gdy opcja ta jest wyłączona, zamiast tego używana będzie najwyższa prędkość ruchu."
 			}
 		}

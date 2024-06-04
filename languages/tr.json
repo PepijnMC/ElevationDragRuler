@@ -1,1 +1,83 @@
-{}
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"tokenTerrain": {
+				"name": "Simge Zor Arazi",
+				"hint": "Simgeler arasında hareket etmek için Dnd5e kurallarını (Geliştirilmiş Arazi Katmanından Canlı/Ölü Simgeleri Dahil Etmeyi gerektirir) uygular."
+			},
+			"elevationSwitching": {
+				"name": "Yükseklik Kullan",
+				"hint": "Hareket hızı otomatik olarak ayarlanmış Simgelerin yüksekliklerini dikkate alacaktır. Devre dışı bırakıldığında, bunun yerine en yüksek hareket hızlarını kullanacaktır."
+			},
+			"flyingElevation": {
+				"name": "Yüksekten Uçmak",
+				"hint": "Uçan Simgeler, üstünde bulundukları araziyi yok sayacaktır."
+			},
+			"forceFlying": {
+				"name": "Uçmaya Zorla",
+				"hint": "Yüksekliği 0'da olan Simgeler, yürüme hızlarından daha büyükse varsayılan olarak uçma hızlarına geçecektir."
+			},
+			"forceSwimming": {
+				"name": "Yüzmeye Zorla",
+				"hint": "Yüksekliği 0'da ve su arazisinde bulunan Simgeler, yürüme hızlarından daha büyükse varsayılan olarak yüzme hızlarına geçerler."
+			},
+			"forceBurrowing": {
+				"name": "Kazmaya Zorla",
+				"hint": "Yüksekliği 0'da bulunan ancak su arazisinde olmayan Simgeler, yürüme ve uçma hızlarından daha büyükse varsayılan olarak yeri kazma hızlarına sahip olurlar."
+			},
+			"conditionMovement": {
+				"name": "Duruma Dayalı Hareket",
+				"hint": "Hareket hızı aralıkları karakter koşullarından etkilenir. Başka bir modül bunu zaten otomatikleştiriyorsa devre dışı bırakılmalıdır."
+			},
+			"hideSpeedButton": {
+				"name": "\"Hız Değiştir\" Düğmesini Gizle",
+				"hint": "Geçerli kullanıcı için Token HUD'dan \"Hızı Değiştir\" düğmesini gizler."
+			},
+			"restrictSpeedButton": {
+				"name": "\"Hız Değiştir\" Düğmesini Kısıtla",
+				"hint": "\"Hızı Değiştir\" düğmesini minimum izin seviyesiyle kısıtlar."
+			},
+			"hideTerrainButton": {
+				"name": "\"Araziyi Değiştir\" Düğmesini Gizle",
+				"hint": "Geçerli kullanıcı için \"Araziyi Değiştir\" düğmesini Token HUD'dan gizler."
+			},
+			"restrictTerrainButton": {
+				"name": "\"Araziyi Değiştir\" Düğmesini Kısıtla",
+				"hint": "\"Araziyi Değiştir\" düğmesini minimum izin seviyesiyle kısıtlar."
+			},
+			"teleport": {
+				"name": "Işınlanmayı Etkinleştir (Deneysel)",
+				"hint": "Işınlanma hareket modu ekler. Bu özellik deneyseldir ve bilinen sorunları vardır."
+			},
+			"oneDnd": {
+				"name": "OneDnD Oyun Testi Kurallarını Etkinleştir",
+				"hint": "En son OneDnD oyun testindeki alternatif hareket kurallarını uygular."
+			}
+		},
+		"keybindings": {
+			"cycleMovement": {
+				"name": "Döngü Hareket Modları",
+				"hint": "Seçilen Simgelerin hareket modları arasında geçiş yapar."
+			},
+			"cycleMovementReverse": {
+				"hint": "Seçilen Simgelerin hareket modları arasında geriye doğru geçiş yapar.",
+				"name": "Döngü Hareket Modları (Ters)"
+			},
+			"toggleTerrain": {
+				"hint": "Seçilen Simgeler için tüm ek hareket gereksinimini değiştirir.",
+				"name": "Araziyi Değiştir"
+			},
+			"forceTeleport": {
+				"name": "Işınlanma Hareketini Zorla",
+				"hint": "Tutulduğunda, seçilen hareket modundan bağımsız olarak Simgelerin ışınlanmasını sağlar."
+			}
+		},
+		"environment": {
+			"controlwinds": "Rüzgarları Kontrol Et Büyüsü",
+			"plantgrowth": "Bitki Büyüt Büyüsü",
+			"gustofwind": "Kuvvetli Rüzgar Büyüsü",
+			"wallofsand": "Kum Duvarı Büyüsü",
+			"wallofthorns": "Dikenli Duvar Büyüsü"
+		}
+	}
+}

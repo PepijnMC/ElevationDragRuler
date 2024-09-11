@@ -48,6 +48,11 @@
 			"lang": "tr",
 			"name": "Türkçe",
 			"path": "languages/tr.json"
+		},
+		{
+			"lang": "zh-Hans",
+			"name": "中文（简体）",
+			"path": "languages/zh_Hans.json"
 		}
 	],
 	"relationships": {

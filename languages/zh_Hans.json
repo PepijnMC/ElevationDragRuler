@@ -1,0 +1,83 @@
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"tokenTerrain": {
+				"name": "困难地形",
+				"hint": "使用DND5e 绕过其他生物规则（需要增强地形模组的活/死Token功能）。"
+			},
+			"elevationSwitching": {
+				"name": "使用高度",
+				"hint": "移动速度设置为自动的Token将考虑其高度。禁用后，它将使用最高移动速度。"
+			},
+			"flyingElevation": {
+				"name": "提高飞行",
+				"hint": "飞行的Token将忽略其所在的地形影响。"
+			},
+			"forceFlying": {
+				"name": "强制飞行",
+				"hint": "如果高度为0的Token，飞行速度大于步行速度，则默认使用飞行速度。"
+			},
+			"forceSwimming": {
+				"name": "强制游泳",
+				"hint": "如果高度为0的Token，游泳速度大于步行速度，则默认使用游泳速度。"
+			},
+			"forceBurrowing": {
+				"name": "强制掘穴",
+				"hint": "如果高度为0的Token，掘穴速度大于步行速度，则默认使用掘穴速度。"
+			},
+			"conditionMovement": {
+				"name": "基于条件的移动",
+				"hint": "移动速度受角色条件影响。如果另一个模块已经自动执行此操作，则应禁用。"
+			},
+			"hideSpeedButton": {
+				"name": "隐藏“切换速度”按钮",
+				"hint": "从当前用户的Token HUD 中隐藏“切换速度”按钮。"
+			},
+			"restrictSpeedButton": {
+				"hint": "将“切换速度”按钮限制为最低权限级别。",
+				"name": "限制“切换速度”按钮"
+			},
+			"hideTerrainButton": {
+				"name": "隐藏“切换地形”按钮",
+				"hint": "从当前用户的Token HUD 中隐藏“切换地形”按钮。"
+			},
+			"teleport": {
+				"name": "启用传送（实验性）",
+				"hint": "增加传送移动模式。此功能是实验性的，存在已知问题。"
+			},
+			"oneDnd": {
+				"name": "启用 DND ONE 测试规则",
+				"hint": "使用DND ONE 最新测试中的替代移动规则。"
+			},
+			"restrictTerrainButton": {
+				"name": "限制“切换地形”按钮",
+				"hint": "将“切换地形”按钮限制为最低权限级别。"
+			}
+		},
+		"keybindings": {
+			"cycleMovementReverse": {
+				"hint": "向后循环显示选择Token的移动模式。",
+				"name": "循环显示移动模式（反向）"
+			},
+			"toggleTerrain": {
+				"name": "切换地形",
+				"hint": "切换所选Token的所有额外移动消耗。"
+			},
+			"forceTeleport": {
+				"name": "强制传送移动",
+				"hint": "选中时，无论选择的移动模式是什么，Token都会传送移动。"
+			},
+			"cycleMovement": {
+				"name": "循环显示移动模式",
+				"hint": "循环显示所选Token的移动模式。"
+			}
+		},
+		"environment": {
+			"gustofwind": "造风术",
+			"controlwinds": "操控风力",
+			"plantgrowth": "植物滋长",
+			"wallofsand": "沙墙术",
+			"wallofthorns": "棘墙术"
+		}
+	}
+}

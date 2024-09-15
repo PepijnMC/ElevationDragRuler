@@ -53,6 +53,11 @@
 			"lang": "zh-Hans",
 			"name": "中文（简体）",
 			"path": "languages/zh_Hans.json"
+		},
+		{
+			"lang": "uk",
+			"name": "українська",
+			"path": "languages/uk.json"
 		}
 	],
 	"relationships": {

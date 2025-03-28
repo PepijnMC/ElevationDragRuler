@@ -58,6 +58,11 @@
 			"lang": "uk",
 			"name": "українська",
 			"path": "languages/uk.json"
+		},
+		{
+			"lang": "th",
+			"name": "ไทย",
+			"path": "languages/th.json"
 		}
 	],
 	"relationships": {

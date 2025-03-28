@@ -1,0 +1,15 @@
+{
+	"Dnd5eDragRulerIntegration": {
+		"settings": {
+			"elevationSwitching": {
+				"name": "ใช้งานระดับความสูง"
+			},
+			"flyingElevation": {
+				"name": "ความสูงในการบิน"
+			},
+			"forceFlying": {
+				"name": "บังคับบิน"
+			}
+		}
+	}
+}

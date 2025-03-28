@@ -8,6 +8,16 @@
 			"elevationSwitching": {
 				"name": "Użycie wzniesienia",
 				"hint": "Tokeny z ustawioną automatyczną prędkością ruchu będą brały pod uwagę swoją wysokość. Gdy opcja ta jest wyłączona, zamiast tego używana będzie najwyższa prędkość ruchu."
+			},
+			"forceSwimming": {
+				"name": "Wymuś pływanie"
+			},
+			"forceFlying": {
+				"name": "Wymuś latanie"
+			},
+			"teleport": {
+				"name": "Włącz teleportację (eksperymentalne)",
+				"hint": "Dodaje tryb ruchu z teleportacją. Ta funkcja jest eksperymentalna i ma znane problemy."
 			}
 		}
 	}
